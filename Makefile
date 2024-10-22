@@ -12,7 +12,7 @@ build:
 run: build DNDCP.pro
 	cd build && qmake -makefile -Wall ../DNDCP.pro
 	cd build && make
-	./build/DNDCP
+	QT_QPA_PLATFORM=xcb ./build/DNDCP
 
 clean:
 	cd build && \
