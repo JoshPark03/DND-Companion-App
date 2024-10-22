@@ -18,6 +18,6 @@ run: build DNDCP.pro
 clean:
 	cd build && \
 	make distclean ;
-	rm DNDCP
+	rm DNDCP.pro
 
 .PHONY: all run clean
