@@ -10,7 +10,6 @@ build:
 	mkdir build
 
 run: build DNDCP.pro
-	chmod 0700 /run/user/1000
 	cd build && qmake -makefile -Wall ../DNDCP.pro
 	cd build && make
 	./build/DNDCP
