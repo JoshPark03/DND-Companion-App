@@ -20,13 +20,15 @@ int main(int argc, char ** argv) {
 	
 	CharacterSelect * characterSelect = new CharacterSelect();
 	characterSelect->resize(app.primaryScreen()->availableGeometry().size()*.7);
+	// characterSelect->adjustSize();
 
 	// mainWindow.setCentralWidget(characterSelect);
 
 
 	// Displays window in maximized state
 	// mainWindow.showMaximized();
-	characterSelect->showMaximized();
+	// characterSelect->showMaximized();
+	characterSelect->show();
 
 	// Displays window
 	// mainWindow.show();
