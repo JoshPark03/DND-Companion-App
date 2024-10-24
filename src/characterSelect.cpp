@@ -32,14 +32,43 @@ CharacterSelect::CharacterSelect(QWidget * parent)
 	// List of all of the characters
 	QListWidget * characters = new QListWidget();
 	layout->addWidget(characters, 10, 20, 80, 60);
+
+	// button to delete selected character
+	QPushButton * deleteChar = new QPushButton("Delete Character", this);
+	layout->addWidget(deleteChar, 87, 20, 10, 60);
+	
+	// temp for loop to add test items to the list
+	for(int i = 0; i < 100; i++) {
+		QListWidgetItem * item = new QListWidgetItem("Character " + QString::number(i+1));
+		characters->addItem(item);
+	}
+
+	
+	// TODO for loop that adds all characters to the list
 	
 
-	// TODO for loop that adds all characters to the list
-
 	if (characters->count() == 0) {
-		QListWidgetItem * nochars = new QListWidgetItem("No Chracters Have been created");
+		QListWidgetItem * nochars = new QListWidgetItem("No Characters Have been created");
 		characters->addItem(nochars);
 	}
+
+	// delete character button click event
+	connect(deleteChar, &QPushButton::clicked, [=](){
+		// TODO SQL or function call to delete character
+		QListWidgetItem * item = characters->currentItem();
+		if (item != nullptr) {
+			// removes the character from the list
+			characters->removeItemWidget(item);
+
+			// gets the name of the character
+			QString name = item->text();
+
+			// TODO delete character from database
+
+			// deletes the pointer from memory
+			delete item;
+		}
+	});
 
 
 	std::cout << layout->rowCount() << ", " << layout->columnCount() << std::endl;

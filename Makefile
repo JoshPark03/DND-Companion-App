@@ -3,7 +3,7 @@
 
 all: DNDCP.pro run build
 
-DNDCP.pro: *.cpp *.h
+DNDCP.pro: src/*.cpp src/*.h
 	qmake -project "QT += widgets" -o DNDCP.pro
 
 build:
