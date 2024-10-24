@@ -24,9 +24,7 @@ CharacterSelect::CharacterSelect(QWidget * parent)
 	layout->addItem(spacer, 0, 0, 100, 100);
 
 	// button for character creation
-	QPushButton * createChar = new QPushButton("Create Character", this);
-	// std::cout << gridBoxHeight << ", " << gridBoxWidth << std::endl;
-	// std::cout << createChar->height() << ", " << createChar->width() << std::endl;
+	QPushButton * createChar = new QPushButton("Create Character");
 	layout->addWidget(createChar, 5, 8, 5, 10);
 	
 	// List of all of the characters
@@ -34,7 +32,7 @@ CharacterSelect::CharacterSelect(QWidget * parent)
 	layout->addWidget(characters, 10, 20, 80, 60);
 
 	// button to delete selected character
-	QPushButton * deleteChar = new QPushButton("Delete Character", this);
+	QPushButton * deleteChar = new QPushButton("Delete Character");
 	layout->addWidget(deleteChar, 87, 20, 10, 60);
 	
 	// temp for loop to add test items to the list
@@ -71,7 +69,7 @@ CharacterSelect::CharacterSelect(QWidget * parent)
 	});
 
 
-	std::cout << layout->rowCount() << ", " << layout->columnCount() << std::endl;
+	// std::cout << layout->rowCount() << ", " << layout->columnCount() << std::endl;
 
 }
 
