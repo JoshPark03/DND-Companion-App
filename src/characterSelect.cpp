@@ -5,6 +5,7 @@
 
 #include <iostream>
 
+#include <QStackedWidget>
 #include <QPushButton>
 #include <QListWidget>
 #include <QLayout>
@@ -26,6 +27,10 @@ CharacterSelect::CharacterSelect(QWidget * parent)
 	// button for character creation
 	QPushButton * createChar = new QPushButton("Create Character");
 	layout->addWidget(createChar, 5, 8, 5, 10);
+
+	// button for settings
+	QPushButton * settings = new QPushButton("Settings");
+	layout->addWidget(settings, 5, 82, 5, 10);
 	
 	// List of all of the characters
 	QListWidget * characters = new QListWidget();
@@ -66,6 +71,16 @@ CharacterSelect::CharacterSelect(QWidget * parent)
 			// deletes the pointer from memory
 			delete item;
 		}
+	});
+
+	// settings button click event
+	connect(settings, &QPushButton::clicked, [this](){
+		// find the parent stacked widget and switch to settings page
+		QStackedWidget * stackedWidget = qobject_cast<QStackedWidget *>(this->parentWidget());
+		if (stackedWidget) {
+			stackedWidget->setCurrentIndex(2); // settings is the third page so index 2
+		}
+
 	});
 
 
