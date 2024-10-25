@@ -5,27 +5,22 @@ Description: Main landing page for the application, allowing users to create, de
 Authors: Carson Treece, Zachary Craig, Josh Park
 Other Sources: ...
 Date Created: 10/24/2024
-Last Modified: 10/24/2024
+Last Modified: 10/25/2024
 */
-
-#ifndef CHARACTER_SELECT_H
-#define CHARACTER_SELECT_H
 
 #include "characterSelect.h"
 
-#include <iostream>
-
+#include <QStackedWidget>
+#include <QInputDialog>
+#include <QMessageBox>
 #include <QPushButton>
 #include <QListWidget>
 #include <QWidget>
 #include <QLayout>
-#include <QLabel>
 #include <QDialog>
-#include <QDir>
+#include <QLabel>
 #include <QFile>
-#include <QInputDialog>
-#include <QMessageBox>
-#include <QStackedWidget>
+#include <QDir>
 
 // Add a new character to the list
 void CharacterSelect::addCharacter(QListWidget &characters)
@@ -172,8 +167,6 @@ CharacterSelect::CharacterSelect(QWidget * parent)
 
 	// Layout object for automatically centering and placing widgets
 	QGridLayout * layout = new QGridLayout(this);
-	layout->setContentsMargins(0, 0, 0, 0);
-	layout->setGeometry(this->geometry());
 
 	//spcer item for spacing
 	QSpacerItem * spacer = new QSpacerItem(this->width(), this->height());
@@ -232,14 +225,17 @@ CharacterSelect::CharacterSelect(QWidget * parent)
 
 	// create character button click event
 	connect(createChar, &QPushButton::clicked, [=](){
-		addCharacter(*characters);
-
-		// remove the message since a character has been created
-		if (characters->count() > 1 && characters->item(0)->text() == "No Characters Have been created")
-		{
-			// QListWidgetItem * item = characters->item(0)
-			delete characters->item(0); // removes the item
-		}
+		// addCharacter(*characters);
+		QStackedWidget *stackedWidget = qobject_cast<QStackedWidget *>(this->parentWidget());
+		if (stackedWidget) {
+            stackedWidget->setCurrentIndex(1); // character select is the first page so index 0
+        }
+		// // remove the message since a character has been created
+		// if (characters->count() > 1 && characters->item(0)->text() == "No Characters Have been created")
+		// {
+		// 	// QListWidgetItem * item = characters->item(0)
+		// 	delete characters->item(0); // removes the item
+		// }
 	});
 
 	// settings button click event
@@ -251,11 +247,7 @@ CharacterSelect::CharacterSelect(QWidget * parent)
 		}
 
 	});
-	
-
 
 	// std::cout << layout->rowCount() << ", " << layout->columnCount() << std::endl;
 
 }
-
-#endif
