@@ -6,6 +6,7 @@
 
 #include "characterSelect.h"
 #include "addCharacter.h"
+#include "viewCharacter.h"
 #include "settings.h"
 
 // QLineEdit for textbox
@@ -24,12 +25,14 @@ int main(int argc, char ** argv) {
 	// Create the different pages
 	CharacterSelect * characterSelect = new CharacterSelect();
 	AddCharacter * addCharacter = new AddCharacter();
+	ViewCharacter * viewCharacter = new ViewCharacter();
 	Settings * settings = new Settings();
 	
 
 	// Add pages to the stacked widget
 	stackedWidget->addWidget(characterSelect);
 	stackedWidget->addWidget(addCharacter);
+	stackedWidget->addWidget(viewCharacter);
 	stackedWidget->addWidget(settings);
 
 	// Set the screen to start with the character select page

@@ -2,6 +2,7 @@
 #define CHARACTER_SELECT_H
 
 #include "characterSelect.h"
+#include "viewCharacter.h"
 
 #include <iostream>
 
@@ -40,7 +41,7 @@ void CharacterSelect::addCharacter(QListWidget &characters)
             // Create the character directory
             if (dir.mkpath(charPath)) {
                 // Create the notes and databases files inside the folder
-                QFile notesFile(charPath + "/notes.txt"); // Create a notes file
+                QFile notesFile(charPath + "/notes.json"); // Create a notes file
                 if (notesFile.open(QIODevice::WriteOnly | QIODevice::Text)) {
                     QTextStream out(&notesFile);
                     out << "Character Notes"; // Add default content to notes.txt
@@ -220,6 +221,31 @@ CharacterSelect::CharacterSelect(QWidget * parent)
 		deleteChar->setEnabled(true);
 	});
 
+	// double click event to view character
+	connect(characters, &QListWidget::itemDoubleClicked, [=](){
+		// get the name of the character
+		QString name = characters->currentItem()->text();
+
+
+		QStackedWidget * stackedWidget = qobject_cast<QStackedWidget *>(this->parentWidget());
+		if (stackedWidget) {
+			// get the viewCharacter page
+			QWidget * viewCharacter = stackedWidget->widget(2); // viewCharacter is the third page so index 2
+
+			// delete the current viewCharacter page
+			delete viewCharacter;
+
+			// create a new viewCharacter page with new character
+			ViewCharacter * newViewCharacter = new ViewCharacter(0, name);
+
+			stackedWidget->insertWidget(2, newViewCharacter); // insert the new viewCharacter page
+			stackedWidget->setCurrentIndex(2); // viewCharacter is the third page so index 2
+		}
+
+		// disable delete button since itemClicked collides with itemDoubleClicked
+		deleteChar->setEnabled(false);
+	});
+
 	// create character button click event
 	connect(createChar, &QPushButton::clicked, [=](){
 		addCharacter(*characters);
@@ -237,7 +263,7 @@ CharacterSelect::CharacterSelect(QWidget * parent)
 		// find the parent stacked widget and switch to settings page
 		QStackedWidget * stackedWidget = qobject_cast<QStackedWidget *>(this->parentWidget());
 		if (stackedWidget) {
-			stackedWidget->setCurrentIndex(2); // settings is the third page so index 2
+			stackedWidget->setCurrentIndex(3); // settings is the fourth page so index 3
 		}
 
 	});
