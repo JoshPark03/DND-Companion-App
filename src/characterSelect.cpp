@@ -1,3 +1,13 @@
+/*
+Name: characterSelect.cpp
+Description: Main landing page for the application, allowing users to create, delete, and manage characters.
+			 Also provides navigation to settings.
+Authors: Carson Treece, Zachary Craig, Josh Park
+Other Sources: ...
+Date Created: 10/24/2024
+Last Modified: 10/24/2024
+*/
+
 #ifndef CHARACTER_SELECT_H
 #define CHARACTER_SELECT_H
 
@@ -137,7 +147,8 @@ void CharacterSelect::loadCharacterList(QListWidget &characters) {
     QDir charDir(charDirPath);
 
     // Check if the directory exists
-    if (charDir.exists()) {
+    if (charDir.exists())
+	{
         // Get the list of directories in the characters folder
 		// Because the name of each folder is the name of the character
         QStringList characterFolders = charDir.entryList(QDir::Dirs | QDir::NoDotAndDotDot);
@@ -151,7 +162,9 @@ void CharacterSelect::loadCharacterList(QListWidget &characters) {
         if (characters.count() == 0) {
             characters.addItem("No Characters Have been created");
         }
-    } else {
+    } 
+	else
+	{
         // Make sure the characters directory exists
         QMessageBox::warning(this, "Error", "Characters directory does not exist.");
     }

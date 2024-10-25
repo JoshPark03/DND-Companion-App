@@ -1,3 +1,13 @@
+/*
+Name: main.cpp
+Description: Main entry point for the application, initializes the GUI and sets up the main window.
+Authors: Carson Treece, Zachary Craig, Josh Park
+Other Sources: ...
+Date Created: 10/24/2024
+Last Modified: 10/24/2024
+*/
+
+
 #include <QApplication>
 #include <QMainWindow>
 #include <QLayout>
