@@ -20,9 +20,17 @@ AddCharacter::AddCharacter(QWidget * parent) :
 {
 	StartWidget * startWidget = new StartWidget();
 	BaseStatsWidget * baseStatsWidget = new BaseStatsWidget();
+	ClassWidget * classWidget = new ClassWidget();
+	RaceWidget * raceWidget = new RaceWidget();
+	BackgroundWidget * backgroundWidget = new BackgroundWidget();
+	InventoryWidget * inventoryWidget = new InventoryWidget();
 
 	this->addWidget(startWidget);
 	this->addWidget(baseStatsWidget);
+	this->addWidget(classWidget);
+	this->addWidget(raceWidget);
+	this->addWidget(backgroundWidget);
+	this->addWidget(inventoryWidget);
 
 	this->setCurrentWidget(startWidget);
 }
@@ -72,3 +80,4 @@ BaseStatsWidget::BaseStatsWidget(QWidget * parent) :
 	layout->addWidget(wisdomVal, 4, 1, Qt::AlignLeft);
 	layout->addWidget(charismaVal, 5, 1, Qt::AlignLeft);
 }
+

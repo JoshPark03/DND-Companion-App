@@ -28,4 +28,24 @@ public:
 	explicit BaseStatsWidget(QWidget * parent = 0);
 };
 
+class ClassWidget : public QWidget {
+public:
+	explicit ClassWidget(QWidget * parent = 0);
+};
+
+class RaceWidget : public QWidget {
+public:
+	explicit RaceWidget(QWidget * parent = 0);
+};
+
+class BackgroundWidget : public QWidget {
+public:
+	explicit BackgroundWidget(QWidget * parent = 0);
+};
+
+class InventoryWidget : public QWidget {
+public:
+	explicit InventoryWidget(QWidget * parent = 0);
+};
+
 #endif // ADD_CHARACTER_H
