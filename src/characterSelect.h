@@ -16,5 +16,4 @@ public:
 	void addCharacter(QListWidget & characters);
 	void deleteCharacter(QListWidget & characters);
 	void loadCharacterList(QListWidget & characters);
-
 };

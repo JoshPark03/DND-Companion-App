@@ -15,6 +15,7 @@
 #include <QFile>
 #include <QInputDialog>
 #include <QMessageBox>
+#include <QStackedWidget>
 
 // Add a new character to the list
 void CharacterSelect::addCharacter(QListWidget &characters)
@@ -169,10 +170,13 @@ CharacterSelect::CharacterSelect(QWidget * parent)
 	layout->addItem(spacer, 0, 0, 100, 100);
 
 	// button for character creation
-	QPushButton * createChar = new QPushButton("Create Character", this);
-	// std::cout << gridBoxHeight << ", " << gridBoxWidth << std::endl;
-	// std::cout << createChar->height() << ", " << createChar->width() << std::endl;
+
+	QPushButton * createChar = new QPushButton("Create Character");
 	layout->addWidget(createChar, 5, 8, 5, 10);
+
+	// button for settings
+	QPushButton * settings = new QPushButton("Settings");
+	layout->addWidget(settings, 5, 82, 5, 10);
 	
 	// List of all of the characters
 	QListWidget * characters = new QListWidget();
@@ -227,10 +231,20 @@ CharacterSelect::CharacterSelect(QWidget * parent)
 			delete characters->item(0); // removes the item
 		}
 	});
+
+	// settings button click event
+	connect(settings, &QPushButton::clicked, [this](){
+		// find the parent stacked widget and switch to settings page
+		QStackedWidget * stackedWidget = qobject_cast<QStackedWidget *>(this->parentWidget());
+		if (stackedWidget) {
+			stackedWidget->setCurrentIndex(2); // settings is the third page so index 2
+		}
+
+	});
 	
 
 
-	std::cout << layout->rowCount() << ", " << layout->columnCount() << std::endl;
+	// std::cout << layout->rowCount() << ", " << layout->columnCount() << std::endl;
 
 }
 
