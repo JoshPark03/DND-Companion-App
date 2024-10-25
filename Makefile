@@ -9,7 +9,12 @@ DNDCP.pro: src/*.cpp src/*.h
 build:
 	mkdir build
 
-run: build DNDCP.pro
+data:
+	mkdir data
+	mkdir data/characters
+	mkdir data/databases
+
+run: build data DNDCP.pro
 	cd build && qmake -makefile -Wall ../DNDCP.pro
 	cd build && make
 	QT_QPA_PLATFORM=xcb ./build/DNDCP
