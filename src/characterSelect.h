@@ -4,7 +4,7 @@ Description: Main landing page for the application, allowing users to create, de
 			 Also provides navigation to settings.
 Authors: Carson Treece, Zachary Craig, Josh Park
 Other Sources: ...
-Date Created: 10/24/2024
+Date Created: 10/22/2024
 Last Modified: 10/25/2024
 */
 
@@ -23,12 +23,23 @@ Last Modified: 10/25/2024
 #include <QMessageBox>
 
 class CharacterSelect : public QWidget {
+	Q_OBJECT
 public:
 	explicit CharacterSelect(QWidget * parent = 0);
+	~CharacterSelect();
 
-	void addCharacter(QListWidget & characters);
-	void deleteCharacter(QListWidget & characters);
-	void loadCharacterList(QListWidget & characters);
+	QListWidget * getCharacters() { return this->characters; }
+
+	void addCharacter(QString charName = 0);
+	void deleteCharacter();
+	void loadCharacterList();
+
+private:
+	QGridLayout * layout;
+	QPushButton * createChar;
+	QPushButton * settings;
+	QListWidget * characters;
+	QPushButton * deleteChar;
 };
 
 #endif // CHARACTER_SELECT_H

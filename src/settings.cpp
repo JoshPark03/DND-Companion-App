@@ -1,10 +1,10 @@
 /*
 Name: settings.cpp
 Description: Basic settings page to allow the user to import/export characters and return to character select.
-Authors: Carson Treece
+Authors: Carson Treece, Josh Park
 Other Sources: ...
 Date Created: 10/24/2024
-Last Modified: 10/24/2024
+Last Modified: 10/25/2024
 */
 
 #include "settings.h"
@@ -34,6 +34,7 @@ Settings::Settings(QWidget *parent) :
         if (stackedWidget) {
             stackedWidget->setCurrentIndex(0); // character select is the first page so index 0
         }
+        delete stackedWidget;
     });
 }
 
