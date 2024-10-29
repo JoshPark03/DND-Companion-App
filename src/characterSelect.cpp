@@ -4,38 +4,38 @@ Description: Main landing page for the application, allowing users to create, de
 			 Also provides navigation to settings.
 Authors: Carson Treece, Zachary Craig, Josh Park
 Other Sources: ...
-Date Created: 10/24/2024
-Last Modified: 10/24/2024
+Date Created: 10/22/2024
+Last Modified: 10/25/2024
 */
-
-#ifndef CHARACTER_SELECT_H
-#define CHARACTER_SELECT_H
 
 #include "characterSelect.h"
 #include "viewCharacter.h"
 
 #include <iostream>
+#include <string>
 
+#include <QStackedWidget>
+#include <QInputDialog>
+#include <QMessageBox>
 #include <QPushButton>
 #include <QListWidget>
 #include <QWidget>
 #include <QLayout>
-#include <QLabel>
 #include <QDialog>
-#include <QDir>
+#include <QLabel>
 #include <QFile>
-#include <QInputDialog>
-#include <QMessageBox>
-#include <QStackedWidget>
+#include <QDir>
 
 // Add a new character to the list
-void CharacterSelect::addCharacter(QListWidget &characters)
+void CharacterSelect::addCharacter(QString charName)
 {
     // Get character name from the user
-    bool ok;
-    QString charName = QInputDialog::getText(this, tr("Create New Character"),
-                                             tr("Character Name:"), QLineEdit::Normal,
-                                             "", &ok);
+    bool ok = true;
+	if (charName.isEmpty()) {
+		charName = QInputDialog::getText(this, tr("Create New Character"),
+												tr("Character Name:"), QLineEdit::Normal,
+												"", &ok);
+	}
 
     // Check if ok is clicked and the name is not empty
     if (ok && !charName.isEmpty()) {
@@ -58,20 +58,23 @@ void CharacterSelect::addCharacter(QListWidget &characters)
                     notesFile.close(); // Close the file
                 }
 
-
                 // Add character to the list
-                characters.addItem(charName);
+				std::cout << "before addItem(charName);, charName = " << charName.toStdString() << std::endl;
+                this->characters->addItem(charName);
+				std::cout << "after addItem(charName);" << std::endl;
+
             } else {
                 QMessageBox::warning(this, "Error", "Failed to create character directory."); // This is a warning message if the directory creation fails
             }
         }
     }
+	std::cout << "End of addCharacter" << std::endl;
 }
 
 // Delete the selected character
-void CharacterSelect::deleteCharacter(QListWidget &characters)
+void CharacterSelect::deleteCharacter()
 {
-	QListWidgetItem * item = characters.currentItem();
+	QListWidgetItem * item = this->characters->currentItem();
 	if (item != nullptr) {
 		// gets the name of the character
 		QString name = item->text();
@@ -113,7 +116,7 @@ void CharacterSelect::deleteCharacter(QListWidget &characters)
 		if (popup.result() == QDialog::Accepted) 
 		{
 			// removes the character from the list
-			// characters.removeItemWidget(item);
+			// this->characters->removeItemWidget(item);
 
 
 			QString charName = item->text();  // Get the name of the character
@@ -123,7 +126,7 @@ void CharacterSelect::deleteCharacter(QListWidget &characters)
 			QDir charDir(charPath);
 			if (charDir.removeRecursively()) {  // Remove the folder and its contents
 				// Remove the character from the UI list
-				// delete characters.takeItem(characters.row(item));
+				// delete this->characters->takeItem(this->characters->row(item));
 				delete item;
 
 				QMessageBox::information(this, "Character Deleted", "Character " + charName + " was deleted successfully."); // This is a message box that appears when the character is deleted
@@ -136,11 +139,11 @@ void CharacterSelect::deleteCharacter(QListWidget &characters)
 	
 	// clear the selection
 	// this is so that no character is selected after deletion
-	characters.selectionModel()->clear();
+	this->characters->selectionModel()->clear();
 }
 
 // Load the list of characters from the characters directory
-void CharacterSelect::loadCharacterList(QListWidget &characters) {
+void CharacterSelect::loadCharacterList() {
 
 	// Path to the characters directory
     QString charDirPath = QDir::currentPath() + "/data/characters";
@@ -155,12 +158,12 @@ void CharacterSelect::loadCharacterList(QListWidget &characters) {
 
         // Add each character to the list
         for (const QString& charFolder : characterFolders) {
-            characters.addItem(charFolder);
+            this->characters->addItem(charFolder);
         }
 
         // Shows a message if no characters have been created
-        if (characters.count() == 0) {
-            characters.addItem("No Characters Have been created");
+        if (this->characters->count() == 0) {
+            this->characters->addItem("No Characters Have been created");
         }
     } 
 	else
@@ -175,9 +178,7 @@ CharacterSelect::CharacterSelect(QWidget * parent)
 	// TODO SQL or function call to get list of characters
 
 	// Layout object for automatically centering and placing widgets
-	QGridLayout * layout = new QGridLayout(this);
-	layout->setContentsMargins(0, 0, 0, 0);
-	layout->setGeometry(this->geometry());
+	layout = new QGridLayout(this);
 
 	//spcer item for spacing
 	QSpacerItem * spacer = new QSpacerItem(this->width(), this->height());
@@ -185,25 +186,25 @@ CharacterSelect::CharacterSelect(QWidget * parent)
 
 	// button for character creation
 
-	QPushButton * createChar = new QPushButton("Create Character");
+	createChar = new QPushButton("Create Character");
 	layout->addWidget(createChar, 5, 8, 5, 10);
 
 	// button for settings
-	QPushButton * settings = new QPushButton("Settings");
+	settings = new QPushButton("Settings");
 	layout->addWidget(settings, 5, 82, 5, 10);
 	
 	// List of all of the characters
-	QListWidget * characters = new QListWidget();
+	this->characters = new QListWidget();
 	layout->addWidget(characters, 10, 20, 80, 60);
 
 	// button to delete selected character
-	QPushButton * deleteChar = new QPushButton("Delete Character", this);
-	layout->addWidget(deleteChar, 87, 20, 10, 60);
+	this->deleteChar = new QPushButton("Delete Character", this);
+	layout->addWidget(this->deleteChar, 87, 20, 10, 60);
 
 	// set the delete button to be disabled by default
-	deleteChar->setEnabled(false);
+	this->deleteChar->setEnabled(false);
 
-	loadCharacterList(*characters);
+	loadCharacterList();
 
 
 
@@ -213,25 +214,25 @@ CharacterSelect::CharacterSelect(QWidget * parent)
 
 
 	// delete character button click event
-	connect(deleteChar, &QPushButton::clicked, [=](){
+	connect(this->deleteChar, &QPushButton::clicked, [=](){
 		// call the delete character function
-		deleteCharacter(*characters);
+		deleteCharacter();
 
 		// if there are no characters left, add a message to the list
 		if(characters->count() == 0)
 		{
 			QListWidgetItem * nochars = new QListWidgetItem("No Characters Have been created");
-			characters->addItem(nochars);
+			this->characters->addItem(nochars);
 		}
 
 		// disable delete button after character deletion
-		deleteChar->setEnabled(false);
+		this->deleteChar->setEnabled(false);
 	});
 	
 	// enable the delete button when a character is clicked
 	connect(characters, &QListWidget::itemClicked, [=](){
 		// enable delete button
-		deleteChar->setEnabled(true);
+		this->deleteChar->setEnabled(true);
 	});
 
 	// double click event to view character
@@ -261,14 +262,17 @@ CharacterSelect::CharacterSelect(QWidget * parent)
 
 	// create character button click event
 	connect(createChar, &QPushButton::clicked, [=](){
-		addCharacter(*characters);
-
-		// remove the message since a character has been created
-		if (characters->count() > 1 && characters->item(0)->text() == "No Characters Have been created")
-		{
-			// QListWidgetItem * item = characters->item(0)
-			delete characters->item(0); // removes the item
-		}
+		// addCharacter(*characters);
+		QStackedWidget *stackedWidget = qobject_cast<QStackedWidget *>(this->parentWidget());
+		if (stackedWidget) {
+            stackedWidget->setCurrentIndex(1); // character select is the first page so index 0
+        }
+		// // remove the message since a character has been created
+		// if (characters->count() > 1 && characters->item(0)->text() == "No Characters Have been created")
+		// {
+		// 	// QListWidgetItem * item = characters->item(0)
+		// 	delete characters->item(0); // removes the item
+		// }
 	});
 
 	// settings button click event
@@ -280,11 +284,15 @@ CharacterSelect::CharacterSelect(QWidget * parent)
 		}
 
 	});
-	
-
 
 	// std::cout << layout->rowCount() << ", " << layout->columnCount() << std::endl;
 
 }
 
-#endif
+CharacterSelect::~CharacterSelect() {
+	delete this->layout;
+	delete this->createChar;
+	delete this->characters;
+	delete this->settings;
+	delete this->deleteChar;
+}
