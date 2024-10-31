@@ -101,6 +101,7 @@ private slots:
 };
 
 class RaceWidget : public QWidget {
+	Q_OBJECT
 public:
 	explicit RaceWidget(QWidget * parent = 0);
 	// ~RaceWidget();
@@ -115,9 +116,12 @@ private:
 	QRadioButton * half_elf;
 	QRadioButton * half_orc;
 	QRadioButton * tiefling;
+private slots:
+	void nextPage();
 };
 
 class BackgroundWidget : public QWidget {
+	Q_OBJECT
 public:
 	explicit BackgroundWidget(QWidget * parent = 0);
 	// ~BackgroundWidget();
@@ -136,11 +140,16 @@ private:
 	QRadioButton * sailor;
 	QRadioButton * soldier;
 	QRadioButton * urchin;
+private slots:
+	void nextPage();
 };
 
 class InventoryWidget : public QWidget {
+	Q_OBJECT
 public:
 	explicit InventoryWidget(QWidget * parent = 0);
+private slots:
+	void nextPage();
 };
 
 #endif // ADD_CHARACTER_H

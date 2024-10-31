@@ -229,10 +229,17 @@ RaceWidget::RaceWidget(QWidget * parent) :
 	QPushButton * confirm = new QPushButton("Confirm Race");
 	layout->addWidget(confirm, 3, 0, 1, 3, Qt::AlignCenter);
 
-	connect(confirm, &QPushButton::clicked, [=]{
-		QStackedWidget * stackedWidget = qobject_cast<QStackedWidget *>(this->parentWidget());
-		stackedWidget->setCurrentIndex(4);
-	});
+	// connect(confirm, &QPushButton::clicked, [=]{
+	// 	QStackedWidget * stackedWidget = qobject_cast<QStackedWidget *>(this->parentWidget());
+	// 	stackedWidget->setCurrentIndex(4);
+	// });
+
+	connect(confirm, SIGNAL (clicked()), SLOT (this->nextPage()));
+}
+
+void RaceWidget::nextPage() {
+	QStackedWidget * stackedWidget = qobject_cast<QStackedWidget *>(this->parentWidget());
+	stackedWidget->setCurrentIndex(4);
 }
 
 // RaceWidget::~RaceWidget() {
@@ -282,10 +289,17 @@ BackgroundWidget::BackgroundWidget(QWidget * parent) :
 	QPushButton * confirm = new QPushButton("Confirm Background");
 	layout->addWidget(confirm, 5, 0, 1, 3, Qt::AlignCenter);
 
-	connect(confirm, &QPushButton::clicked, [=]{
-		QStackedWidget * stackedWidget = qobject_cast<QStackedWidget *>(this->parentWidget());
-		stackedWidget->setCurrentIndex(5);
-	});
+	// connect(confirm, &QPushButton::clicked, [=]{
+	// 	QStackedWidget * stackedWidget = qobject_cast<QStackedWidget *>(this->parentWidget());
+	// 	stackedWidget->setCurrentIndex(5);
+	// });
+
+	connect(confirm, SIGNAL (clicked()), SLOT (this->nextPage()));
+}
+
+void BackgroundWidget::nextPage() {
+	QStackedWidget * stackedWidget = qobject_cast<QStackedWidget *>(this->parentWidget());
+	stackedWidget->setCurrentIndex(5);
 }
 
 // BackgroundWidget::~BackgroundWidget() {
@@ -324,12 +338,23 @@ InventoryWidget::InventoryWidget(QWidget * parent) :
 	QPushButton * confirm = new QPushButton("Confirm Inventory");
 	layout->addWidget(confirm, 3, 3, Qt::AlignCenter);
 
-	connect(confirm, &QPushButton::clicked, [=]{
-		AddCharacter * addCharacterWidget = qobject_cast<AddCharacter *>(this->parentWidget());
-		addCharacterWidget->setCurrentIndex(0);
-		QStackedWidget * mainStackedWidget = qobject_cast<QStackedWidget *>(addCharacterWidget->parentWidget());
-		mainStackedWidget->setCurrentIndex(0);
-		// Need to somehow get access to the SelectCharacterWidget to call addCharacter(QString name)
-		// Alternatively we could move addCharacter to this file and have the QListWidget characters auto-upadte
-	});
+	// connect(confirm, &QPushButton::clicked, [=]{
+	// 	AddCharacter * addCharacterWidget = qobject_cast<AddCharacter *>(this->parentWidget());
+	// 	addCharacterWidget->setCurrentIndex(0);
+	// 	QStackedWidget * mainStackedWidget = qobject_cast<QStackedWidget *>(addCharacterWidget->parentWidget());
+	// 	mainStackedWidget->setCurrentIndex(0);
+	// 	// Need to somehow get access to the SelectCharacterWidget to call addCharacter(QString name)
+	// 	// Alternatively we could move addCharacter to this file and have the QListWidget characters auto-upadte
+	// });
+
+	connect(confirm, SIGNAL (clicked()), SLOT (this->nextPage()));
+}
+
+void InventoryWidget::nextPage() {
+	AddCharacter * addCharacterWidget = qobject_cast<AddCharacter *>(this->parentWidget());
+	addCharacterWidget->setCurrentIndex(0);
+	QStackedWidget * mainStackedWidget = qobject_cast<QStackedWidget *>(addCharacterWidget->parentWidget());
+	mainStackedWidget->setCurrentIndex(0);
+	// Need to somehow get access to the SelectCharacterWidget to call addCharacter(QString name)
+	// Alternatively we could move addCharacter to this file and have the QListWidget characters auto-upadte
 }
