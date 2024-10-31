@@ -276,7 +276,7 @@ CharacterSelect::CharacterSelect(QWidget * parent)
 	});
 
 	// settings button click event
-	connect(settings, &QPushButton::clicked, [this](){
+	connect(settings, &QPushButton::clicked, [=](){
 		// find the parent stacked widget and switch to settings page
 		QStackedWidget * stackedWidget = qobject_cast<QStackedWidget *>(this->parentWidget());
 		if (stackedWidget) {

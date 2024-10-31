@@ -37,14 +37,14 @@ AddCharacter::AddCharacter(QWidget * parent) :
 	this->setCurrentWidget(startWidget);
 }
 
-AddCharacter::~AddCharacter() {
-	delete this->startWidget;
-	delete this->baseStatsWidget;
-	delete this->classWidget;
-	delete this->raceWidget;
-	delete this->backgroundWidget;
-	delete this->inventoryWidget;
-}
+// AddCharacter::~AddCharacter() {
+// 	delete this->startWidget;
+// 	delete this->baseStatsWidget;
+// 	delete this->classWidget;
+// 	delete this->raceWidget;
+// 	delete this->backgroundWidget;
+// 	delete this->inventoryWidget;
+// }
 
 StartWidget::StartWidget(QWidget * parent) :
 	QWidget(parent)
@@ -60,15 +60,22 @@ StartWidget::StartWidget(QWidget * parent) :
 	QPushButton * start = new QPushButton("Start Creation");
 	layout->addWidget(start, 2, 0, {Qt::AlignCenter, Qt::AlignTop});
 
-	connect(start, &QPushButton::clicked, [=]{
-		QStackedWidget * stackedWidget = qobject_cast<QStackedWidget *>(this->parentWidget());
-		stackedWidget->setCurrentIndex(1);
-	});
+	// connect(start, &QPushButton::clicked, [=]{
+	// 	QStackedWidget * stackedWidget = qobject_cast<QStackedWidget *>(this->parentWidget());
+	// 	stackedWidget->setCurrentIndex(1);
+	// });
+
+	connect(start, SIGNAL (clicked()),  SLOT (this->nextPage()));
 }
 
-StartWidget::~StartWidget() {
-	delete this->name;
+void StartWidget::nextPage() {
+	QStackedWidget * stackedWidget = qobject_cast<QStackedWidget *>(this->parentWidget());
+	stackedWidget->setCurrentIndex(1);
 }
+
+// StartWidget::~StartWidget() {
+// 	delete this->name;
+// }
 
 BaseStatsWidget::BaseStatsWidget(QWidget * parent) :
 	QWidget(parent)
@@ -110,20 +117,27 @@ BaseStatsWidget::BaseStatsWidget(QWidget * parent) :
 	QPushButton * confirm = new QPushButton("Confirm Stats");
 	layout->addWidget(confirm, 6, 0, 1, 2, Qt::AlignCenter);
 
-	connect(confirm, &QPushButton::clicked, [=]{
-		QStackedWidget * stackedWidget = qobject_cast<QStackedWidget *>(this->parentWidget());
-		stackedWidget->setCurrentIndex(2);
-	});
+	// connect(confirm, &QPushButton::clicked, [=]{
+	// 	QStackedWidget * stackedWidget = qobject_cast<QStackedWidget *>(this->parentWidget());
+	// 	stackedWidget->setCurrentIndex(2);
+	// });
+
+	connect(confirm, SIGNAL (clicked()), SLOT (this->nextPage()));
 }
 
-BaseStatsWidget::~BaseStatsWidget() {
-	delete this->strengthVal;
-	delete this->dexterityVal;
-	delete this->constitutionVal;
-	delete this->intelligenceVal;
-	delete this->wisdomVal;
-	delete this->charismaVal;
+void BaseStatsWidget::nextPage() {
+	QStackedWidget * stackedWidget = qobject_cast<QStackedWidget *>(this->parentWidget());
+	stackedWidget->setCurrentIndex(2);
 }
+
+// BaseStatsWidget::~BaseStatsWidget() {
+// 	delete this->strengthVal;
+// 	delete this->dexterityVal;
+// 	delete this->constitutionVal;
+// 	delete this->intelligenceVal;
+// 	delete this->wisdomVal;
+// 	delete this->charismaVal;
+// }
 
 ClassWidget::ClassWidget(QWidget * parent) :
 	QWidget(parent)
@@ -159,26 +173,33 @@ ClassWidget::ClassWidget(QWidget * parent) :
 	QPushButton * confirm = new QPushButton("Confirm Class");
 	layout->addWidget(confirm, 4, 0, 1, 3, Qt::AlignCenter);
 
-	connect(confirm, &QPushButton::clicked, [=]{
-		QStackedWidget * stackedWidget = qobject_cast<QStackedWidget *>(this->parentWidget());
-		stackedWidget->setCurrentIndex(3);
-	});
+	// connect(confirm, &QPushButton::clicked, [=]{
+	// 	QStackedWidget * stackedWidget = qobject_cast<QStackedWidget *>(this->parentWidget());
+	// 	stackedWidget->setCurrentIndex(3);
+	// });
+
+	connect(confirm, SIGNAL (clicked()), SLOT (this->nextPage()));
 }
 
-ClassWidget::~ClassWidget() {
-	delete this->barbarian;
-	delete this->bard;
-	delete this->cleric;
-	delete this->druid;
-	delete this->fighter;
-	delete this->monk;
-	delete this->paladin;
-	delete this->ranger;
-	delete this->rogue;
-	delete this->sorcerer;
-	delete this->warlock;
-	delete this->wizard;
+void ClassWidget::nextPage() {
+	QStackedWidget * stackedWidget = qobject_cast<QStackedWidget *>(this->parentWidget());
+	stackedWidget->setCurrentIndex(3);
 }
+
+// ClassWidget::~ClassWidget() {
+// 	delete this->barbarian;
+// 	delete this->bard;
+// 	delete this->cleric;
+// 	delete this->druid;
+// 	delete this->fighter;
+// 	delete this->monk;
+// 	delete this->paladin;
+// 	delete this->ranger;
+// 	delete this->rogue;
+// 	delete this->sorcerer;
+// 	delete this->warlock;
+// 	delete this->wizard;
+// }
 
 RaceWidget::RaceWidget(QWidget * parent) :
 	QWidget(parent)
@@ -214,16 +235,16 @@ RaceWidget::RaceWidget(QWidget * parent) :
 	});
 }
 
-RaceWidget::~RaceWidget() {
-	delete this->dwarf;
-	delete this->elf;
-	delete this->halfling;
-	delete this->dragonborn;
-	delete this->gnome;
-	delete this->half_elf;
-	delete this->half_orc;
-	delete this->tiefling;
-}
+// RaceWidget::~RaceWidget() {
+// 	delete this->dwarf;
+// 	delete this->elf;
+// 	delete this->halfling;
+// 	delete this->dragonborn;
+// 	delete this->gnome;
+// 	delete this->half_elf;
+// 	delete this->half_orc;
+// 	delete this->tiefling;
+// }
 
 BackgroundWidget::BackgroundWidget(QWidget * parent) :
 	QWidget(parent)
@@ -267,20 +288,20 @@ BackgroundWidget::BackgroundWidget(QWidget * parent) :
 	});
 }
 
-BackgroundWidget::~BackgroundWidget() {
-	delete this->acolyte;
-	delete this->charlatan;
-	delete this->criminal;
-	delete this->entertainer;
-	delete this->folk_hero;
-	delete this->guild_artisan;
-	delete this->hermit;
-	delete this->noble;
-	delete this->outlander;
-	delete this->sage;
-	delete this->sage;
-	delete this->urchin;
-}
+// BackgroundWidget::~BackgroundWidget() {
+// 	delete this->acolyte;
+// 	delete this->charlatan;
+// 	delete this->criminal;
+// 	delete this->entertainer;
+// 	delete this->folk_hero;
+// 	delete this->guild_artisan;
+// 	delete this->hermit;
+// 	delete this->noble;
+// 	delete this->outlander;
+// 	delete this->sage;
+// 	delete this->sage;
+// 	delete this->urchin;
+// }
 
 InventoryWidget::InventoryWidget(QWidget * parent) :
 	QWidget(parent)

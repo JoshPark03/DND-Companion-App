@@ -34,7 +34,7 @@ private:
 	InventoryWidget * inventoryWidget;
 public:
 	explicit AddCharacter(QWidget * parent = 0);
-	~AddCharacter();
+	// ~AddCharacter();
 	StartWidget * getStartWidget() { return this->startWidget; }
 	BaseStatsWidget * getBaseStatsWidget() { return this->baseStatsWidget; }
 	ClassWidget * getClassWidget() { return this->classWidget; }
@@ -44,18 +44,22 @@ public:
 };
 
 class StartWidget : public QWidget {
+	Q_OBJECT
 public:
 	explicit StartWidget(QWidget * parent = 0);
-	~StartWidget();
+	// ~StartWidget();
 	QLineEdit * getName() { return this->name; }
 private:
 	QLineEdit * name;
+private slots:
+	void nextPage();
 };
 
 class BaseStatsWidget : public QWidget {
+	Q_OBJECT
 public:
 	explicit BaseStatsWidget(QWidget * parent = 0);
-	~BaseStatsWidget();
+	// ~BaseStatsWidget();
 	int getStrength() { return this->strengthVal->value(); }
 	int getDexterity() { return this->dexterityVal->value(); }
 	int getConstitution() { return this->constitutionVal->value(); }
@@ -69,12 +73,15 @@ private:
 	QSpinBox * intelligenceVal;
 	QSpinBox * wisdomVal;
 	QSpinBox * charismaVal;
+private slots:
+	void nextPage();
 };
 
 class ClassWidget : public QWidget {
+	Q_OBJECT
 public:
 	explicit ClassWidget(QWidget * parent = 0);
-	~ClassWidget();
+	// ~ClassWidget();
 	QRadioButton * getSelected();
 private:
 	QRadioButton * barbarian;
@@ -89,12 +96,14 @@ private:
 	QRadioButton * sorcerer;
 	QRadioButton * warlock;
 	QRadioButton * wizard;
+private slots:
+	void nextPage();
 };
 
 class RaceWidget : public QWidget {
 public:
 	explicit RaceWidget(QWidget * parent = 0);
-	~RaceWidget();
+	// ~RaceWidget();
 	QRadioButton * getSelected();
 private:
 	QRadioButton * dwarf;
@@ -111,7 +120,7 @@ private:
 class BackgroundWidget : public QWidget {
 public:
 	explicit BackgroundWidget(QWidget * parent = 0);
-	~BackgroundWidget();
+	// ~BackgroundWidget();
 	QRadioButton * getSelected();
 private:
 	QRadioButton * acolyte;

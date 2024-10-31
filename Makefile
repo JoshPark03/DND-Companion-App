@@ -5,6 +5,11 @@
 # Date Created: 10/20/2024
 # Last Modified: 10/31/2024
 
+VALGRIND_FLAGS += --leak-check=full
+VALGRIND_FLAGS += --track-origins=yes
+# VALGRIND_FLAGS += --show-leak-kinds=all
+VALGRIND_FLAGS += -s
+
 all: DNDCA.pro run build data
 
 DNDCA.pro: src/*.cpp src/*.h
@@ -26,7 +31,7 @@ test:
 	QT_QPA_PLATFORM=xcb ./build/DNDCA
 
 valgrind:
-	QT_QPA_PLATFORM=xcb valgrind --leak-check=full --track-origins=yes ./build/DNDCA
+	QT_QPA_PLATFORM=xcb valgrind $(VALGRIND_FLAGS) ./build/DNDCA
 
 clean:
 	cd build && \
