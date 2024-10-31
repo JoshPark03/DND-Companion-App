@@ -25,9 +25,12 @@ run: build data DNDCA.pro
 test:
 	QT_QPA_PLATFORM=xcb ./build/DNDCA
 
+valgrind:
+	QT_QPA_PLATFORM=xcb valgrind --leak-check=full --track-origins=yes ./build/DNDCA
+
 clean:
 	cd build && \
 	make distclean ;
 	rm DNDCA.pro
 
-.PHONY: all run test clean
+.PHONY: all run test valgrind clean

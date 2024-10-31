@@ -1,10 +1,10 @@
 /*
 Name: viewCharacter.cpp
 Description: Page to view a character's information, notes, and stats.
-Authors: Zachary Craig
+Authors: Zachary Craig, Josh Park
 Other Sources: ...
 Date Created: 10/25/2024
-Last Modified: 10/25/2024
+Last Modified: 10/31/2024
 */
 
 #include "viewCharacter.h"
