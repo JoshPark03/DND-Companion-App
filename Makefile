@@ -5,10 +5,12 @@
 # Date Created: 10/20/2024
 # Last Modified: 10/31/2024
 
-VALGRIND_FLAGS += --leak-check=full
-VALGRIND_FLAGS += --track-origins=yes
+# VALGRIND_FLAGS += --leak-check=full
+VALGRIND_FLAGS += --tool=memcheck
+VALGRIND_FLAGS += --gen-suppressions=no
+# VALGRIND_FLAGS += --track-origins=yes
 # VALGRIND_FLAGS += --show-leak-kinds=all
-VALGRIND_FLAGS += -s
+# VALGRIND_FLAGS += -s
 
 all: DNDCA.pro run build data
 

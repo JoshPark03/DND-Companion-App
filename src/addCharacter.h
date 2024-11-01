@@ -11,6 +11,7 @@ Last Modified: 10/31/2024
 #define ADD_CHARACTER_H
 
 #include <QStackedWidget>
+#include <QListWidget>
 #include <QRadioButton>
 #include <QLineEdit>
 #include <QSpinBox>
@@ -148,6 +149,8 @@ class InventoryWidget : public QWidget {
 	Q_OBJECT
 public:
 	explicit InventoryWidget(QWidget * parent = 0);
+private:
+	QListWidget * items;
 private slots:
 	void nextPage();
 };

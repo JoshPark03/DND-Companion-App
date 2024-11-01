@@ -14,13 +14,19 @@ Last Modified: 10/31/2024
 
 class ViewCharacter : public QWidget
 {
+    Q_OBJECT
 public:
     explicit ViewCharacter(QWidget *parent = 0, QString name = "");
     ~ViewCharacter();
     void printCharacterToConsole(std::string path);
 
 private:
-    void loadCharacter(QString name);
+    void loadCharacter();
+    QString name;
+
+private slots:
+    void goBack();
+    void importChar();
 };
 
 #endif // SETTINGS_H

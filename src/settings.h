@@ -12,13 +12,13 @@ Last Modified: 10/25/2024
 
 #include <QWidget>
 
-class Settings : public QWidget
-{
+class Settings : public QWidget {
     Q_OBJECT
-
 public:
     explicit Settings(QWidget *parent = nullptr);
     ~Settings();
+private slots:
+    void nextPage();
 };
 
 #endif // SETTINGS_H

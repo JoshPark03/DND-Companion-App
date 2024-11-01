@@ -65,12 +65,14 @@ StartWidget::StartWidget(QWidget * parent) :
 	// 	stackedWidget->setCurrentIndex(1);
 	// });
 
-	connect(start, SIGNAL (clicked()),  SLOT (this->nextPage()));
+	connect(start, SIGNAL (clicked()),  SLOT (nextPage()));
 }
 
 void StartWidget::nextPage() {
 	QStackedWidget * stackedWidget = qobject_cast<QStackedWidget *>(this->parentWidget());
-	stackedWidget->setCurrentIndex(1);
+	if (stackedWidget) {
+		stackedWidget->setCurrentIndex(1);
+	}
 }
 
 // StartWidget::~StartWidget() {
@@ -122,12 +124,14 @@ BaseStatsWidget::BaseStatsWidget(QWidget * parent) :
 	// 	stackedWidget->setCurrentIndex(2);
 	// });
 
-	connect(confirm, SIGNAL (clicked()), SLOT (this->nextPage()));
+	connect(confirm, SIGNAL (clicked()), SLOT (nextPage()));
 }
 
 void BaseStatsWidget::nextPage() {
 	QStackedWidget * stackedWidget = qobject_cast<QStackedWidget *>(this->parentWidget());
-	stackedWidget->setCurrentIndex(2);
+	if (stackedWidget) {
+		stackedWidget->setCurrentIndex(2);
+	}
 }
 
 // BaseStatsWidget::~BaseStatsWidget() {
@@ -178,12 +182,14 @@ ClassWidget::ClassWidget(QWidget * parent) :
 	// 	stackedWidget->setCurrentIndex(3);
 	// });
 
-	connect(confirm, SIGNAL (clicked()), SLOT (this->nextPage()));
+	connect(confirm, SIGNAL (clicked()), SLOT (nextPage()));
 }
 
 void ClassWidget::nextPage() {
 	QStackedWidget * stackedWidget = qobject_cast<QStackedWidget *>(this->parentWidget());
-	stackedWidget->setCurrentIndex(3);
+	if (stackedWidget) {
+		stackedWidget->setCurrentIndex(3);
+	}
 }
 
 // ClassWidget::~ClassWidget() {
@@ -234,12 +240,14 @@ RaceWidget::RaceWidget(QWidget * parent) :
 	// 	stackedWidget->setCurrentIndex(4);
 	// });
 
-	connect(confirm, SIGNAL (clicked()), SLOT (this->nextPage()));
+	connect(confirm, SIGNAL (clicked()), SLOT (nextPage()));
 }
 
 void RaceWidget::nextPage() {
 	QStackedWidget * stackedWidget = qobject_cast<QStackedWidget *>(this->parentWidget());
-	stackedWidget->setCurrentIndex(4);
+	if (stackedWidget) {
+		stackedWidget->setCurrentIndex(4);
+	}
 }
 
 // RaceWidget::~RaceWidget() {
@@ -294,12 +302,14 @@ BackgroundWidget::BackgroundWidget(QWidget * parent) :
 	// 	stackedWidget->setCurrentIndex(5);
 	// });
 
-	connect(confirm, SIGNAL (clicked()), SLOT (this->nextPage()));
+	connect(confirm, SIGNAL (clicked()), SLOT (nextPage()));
 }
 
 void BackgroundWidget::nextPage() {
 	QStackedWidget * stackedWidget = qobject_cast<QStackedWidget *>(this->parentWidget());
-	stackedWidget->setCurrentIndex(5);
+	if (stackedWidget) {
+		stackedWidget->setCurrentIndex(5);
+	}
 }
 
 // BackgroundWidget::~BackgroundWidget() {
@@ -347,14 +357,18 @@ InventoryWidget::InventoryWidget(QWidget * parent) :
 	// 	// Alternatively we could move addCharacter to this file and have the QListWidget characters auto-upadte
 	// });
 
-	connect(confirm, SIGNAL (clicked()), SLOT (this->nextPage()));
+	connect(confirm, SIGNAL (clicked()), SLOT (nextPage()));
 }
 
 void InventoryWidget::nextPage() {
 	AddCharacter * addCharacterWidget = qobject_cast<AddCharacter *>(this->parentWidget());
-	addCharacterWidget->setCurrentIndex(0);
+	if (addCharacterWidget) {
+		addCharacterWidget->setCurrentIndex(0);
+	}
 	QStackedWidget * mainStackedWidget = qobject_cast<QStackedWidget *>(addCharacterWidget->parentWidget());
-	mainStackedWidget->setCurrentIndex(0);
+	if (mainStackedWidget) {
+		mainStackedWidget->setCurrentIndex(0);
+	}
 	// Need to somehow get access to the SelectCharacterWidget to call addCharacter(QString name)
 	// Alternatively we could move addCharacter to this file and have the QListWidget characters auto-upadte
 }

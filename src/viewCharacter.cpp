@@ -17,10 +17,10 @@ Last Modified: 10/31/2024
 #include <QPushButton>
 #include <QStackedWidget>
 
-void ViewCharacter::loadCharacter(QString name)
+void ViewCharacter::loadCharacter()
 {
     // Load the character's information, notes, and stats
-    this->printCharacterToConsole("./data/characters/" + name.toStdString() + "/stats.csv");
+    this->printCharacterToConsole("./data/characters/" + this->name.toStdString() + "/stats.csv");
 }
 
 void ViewCharacter::printCharacterToConsole(std::string path) {
@@ -175,15 +175,16 @@ void ViewCharacter::printCharacterToConsole(std::string path) {
     file.close();
 }
 
-ViewCharacter::ViewCharacter(QWidget *parent, QString name) :
+ViewCharacter::ViewCharacter(QWidget *parent, QString nameIn) :
     QWidget(parent)
 {
+    this->name = nameIn;
     // Create the verticle layout for buttons
     QVBoxLayout *layout = new QVBoxLayout(this);
 
     // Create buttons for settings
     QPushButton *Backbutton = new QPushButton("Return to Character Select");
-    QPushButton *importButton = new QPushButton(name);
+    QPushButton *importButton = new QPushButton(this->name);
     QPushButton *exportButton = new QPushButton("Export Character");
 
     // Add buttons to layout
@@ -191,18 +192,34 @@ ViewCharacter::ViewCharacter(QWidget *parent, QString name) :
     layout->addWidget(importButton);
     layout->addWidget(exportButton);
 
-    // Make back button return to character select page
-    connect(Backbutton, &QPushButton::clicked, [this]() {
-        QStackedWidget *stackedWidget = qobject_cast<QStackedWidget *>(this->parentWidget());
-        if (stackedWidget) {
-            stackedWidget->setCurrentIndex(0); // character select is the first page so index 0
-        }
-    });
+    // // Make back button return to character select page
+    // connect(Backbutton, &QPushButton::clicked, [this]() {
+    //     QStackedWidget *stackedWidget = qobject_cast<QStackedWidget *>(this->parentWidget());
+    //     if (stackedWidget) {
+    //         stackedWidget->setCurrentIndex(0); // character select is the first page so index 0
+    //     }
+    // });
 
-    // Prints information to the console for testing
-    connect(importButton, &QPushButton::clicked, [this, name]() {
-        this->loadCharacter(name);
-    });
+    // Make back button return to character select page
+    connect(Backbutton, SIGNAL (clicked()), SLOT (goBack()));
+
+    // // Prints information to the console for testing
+    // connect(importButton, &QPushButton::clicked, [this, name]() {
+    //     this->loadCharacter(name);
+    // });
+
+    connect(importButton, SIGNAL (clicked()), SLOT (importChar()));
+}
+
+void ViewCharacter::goBack() {
+    QStackedWidget *stackedWidget = qobject_cast<QStackedWidget *>(this->parentWidget());
+    if (stackedWidget) {
+        stackedWidget->setCurrentIndex(0); // character select is the first page so index 0
+    }
+}
+
+void ViewCharacter::importChar() {
+    this->loadCharacter();
 }
 
 ViewCharacter::~ViewCharacter()
