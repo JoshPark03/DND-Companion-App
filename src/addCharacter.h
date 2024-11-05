@@ -4,7 +4,7 @@ Description: Implementation of the AddCharacter class, which allows users to cre
 Authors: Josh Park
 Other Sources: ...
 Date Created: 10/24/2024
-Last Modified: 10/31/2024
+Last Modified: 11/5/2024
 */
 
 #ifndef ADD_CHARACTER_H
@@ -27,6 +27,7 @@ class InventoryWidget;
 class AddCharacter : public QStackedWidget {
 	Q_OBJECT
 private:
+	// Declaration of all custom widget class variables
 	StartWidget * startWidget;
 	BaseStatsWidget * baseStatsWidget;
 	ClassWidget * classWidget;
@@ -35,7 +36,8 @@ private:
 	InventoryWidget * inventoryWidget;
 public:
 	explicit AddCharacter(QWidget * parent = 0);
-	// ~AddCharacter();
+
+	// get functions for each widget variable
 	StartWidget * getStartWidget() { return this->startWidget; }
 	BaseStatsWidget * getBaseStatsWidget() { return this->baseStatsWidget; }
 	ClassWidget * getClassWidget() { return this->classWidget; }
@@ -48,7 +50,8 @@ class StartWidget : public QWidget {
 	Q_OBJECT
 public:
 	explicit StartWidget(QWidget * parent = 0);
-	// ~StartWidget();
+
+	// get function for name widget
 	QLineEdit * getName() { return this->name; }
 private:
 	QLineEdit * name;
@@ -60,7 +63,8 @@ class BaseStatsWidget : public QWidget {
 	Q_OBJECT
 public:
 	explicit BaseStatsWidget(QWidget * parent = 0);
-	// ~BaseStatsWidget();
+
+	// get funcions for each stat val widget
 	int getStrength() { return this->strengthVal->value(); }
 	int getDexterity() { return this->dexterityVal->value(); }
 	int getConstitution() { return this->constitutionVal->value(); }
@@ -68,6 +72,7 @@ public:
 	int getWisdom() { return this->wisdomVal->value(); }
 	int getCharisma() { return this->charismaVal->value(); }
 private:
+	// Declarations for each stat val widget 
 	QSpinBox * strengthVal;
 	QSpinBox * dexterityVal;
 	QSpinBox * constitutionVal;
@@ -82,9 +87,11 @@ class ClassWidget : public QWidget {
 	Q_OBJECT
 public:
 	explicit ClassWidget(QWidget * parent = 0);
-	// ~ClassWidget();
+
+	// function for getting which radio button is selected
 	QRadioButton * getSelected();
 private:
+	// Declarations for each class radio button
 	QRadioButton * barbarian;
 	QRadioButton * bard;
 	QRadioButton * cleric;
@@ -105,9 +112,11 @@ class RaceWidget : public QWidget {
 	Q_OBJECT
 public:
 	explicit RaceWidget(QWidget * parent = 0);
-	// ~RaceWidget();
+
+	// function for getting which radio button is selected
 	QRadioButton * getSelected();
 private:
+	// Declarations for each race radio button
 	QRadioButton * dwarf;
 	QRadioButton * elf;
 	QRadioButton * halfling;
@@ -125,9 +134,11 @@ class BackgroundWidget : public QWidget {
 	Q_OBJECT
 public:
 	explicit BackgroundWidget(QWidget * parent = 0);
-	// ~BackgroundWidget();
+
+	// function for getting which radio button is selected
 	QRadioButton * getSelected();
 private:
+	// Declarations for each background radio button
 	QRadioButton * acolyte;
 	QRadioButton * charlatan;
 	QRadioButton * criminal;
@@ -150,6 +161,7 @@ class InventoryWidget : public QWidget {
 public:
 	explicit InventoryWidget(QWidget * parent = 0);
 private:
+	// Declaration for the items list widget
 	QListWidget * items;
 private slots:
 	void nextPage();
