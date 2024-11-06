@@ -96,6 +96,7 @@ public:
 private:
 	QComboBox *classComboBox;
 private slots:
+	void backPage();
 	void nextPage();
 };
 
@@ -110,6 +111,7 @@ public:
 private:
 	QComboBox *raceComboBox;
 private slots:
+	void backPage();
 	void nextPage();
 };
 
@@ -124,6 +126,7 @@ public:
 private:
 	QComboBox *backgroundComboBox;
 private slots:
+	void backPage();
 	void nextPage();
 };
 
@@ -136,6 +139,7 @@ public:
 private:
 	QListWidget *items;
 private slots:
+	void backPage();
 	void nextPage();
 };
 

@@ -78,9 +78,11 @@ StartWidget::StartWidget(QWidget *parent) : QWidget(parent)
 	connect(nextButton, SIGNAL(clicked()), SLOT(nextPage()));
 }
 
-void StartWidget::backPage() {
+void StartWidget::backPage()
+{
 	QStackedWidget *mainStackedWidget = qobject_cast<QStackedWidget *>(this->parentWidget()->parentWidget());
-	if (mainStackedWidget) {
+	if (mainStackedWidget)
+	{
 		mainStackedWidget->setCurrentIndex(0);
 	}
 }
@@ -160,7 +162,8 @@ BaseStatsWidget::BaseStatsWidget(QWidget *parent) : QWidget(parent)
 	connect(nextButton, SIGNAL(clicked()), SLOT(nextPage()));
 }
 
-void BaseStatsWidget::backPage() {
+void BaseStatsWidget::backPage()
+{
 	QStackedWidget *stackedWidget = qobject_cast<QStackedWidget *>(this->parentWidget());
 	if (stackedWidget)
 	{
@@ -176,6 +179,7 @@ void BaseStatsWidget::nextPage()
 		stackedWidget->setCurrentIndex(2);
 	}
 }
+
 ClassWidget::ClassWidget(QWidget *parent) : QWidget(parent)
 {
 	// Create the main vertical layout
@@ -218,7 +222,18 @@ ClassWidget::ClassWidget(QWidget *parent) : QWidget(parent)
 	layout->addWidget(body);
 	layout->addWidget(navbar);
 
+	// When back button is clicked it calls the public SLOT function backPage()
+	connect(backButton, SIGNAL(clicked()), SLOT(backPage()));
 	connect(nextButton, SIGNAL(clicked()), SLOT(nextPage()));
+}
+
+void ClassWidget::backPage()
+{
+	QStackedWidget *stackedWidget = qobject_cast<QStackedWidget *>(this->parentWidget());
+	if (stackedWidget)
+	{
+		stackedWidget->setCurrentIndex(1);
+	}
 }
 
 void ClassWidget::nextPage()
@@ -269,7 +284,18 @@ RaceWidget::RaceWidget(QWidget *parent) : QWidget(parent)
 	layout->addWidget(body);
 	layout->addWidget(navbar);
 
+	// When back button is clicked it calls the public SLOT function backPage()
+	connect(backButton, SIGNAL(clicked()), SLOT(backPage()));
 	connect(nextButton, SIGNAL(clicked()), SLOT(nextPage()));
+}
+
+void RaceWidget::backPage()
+{
+	QStackedWidget *stackedWidget = qobject_cast<QStackedWidget *>(this->parentWidget());
+	if (stackedWidget)
+	{
+		stackedWidget->setCurrentIndex(2);
+	}
 }
 
 void RaceWidget::nextPage()
@@ -324,7 +350,18 @@ BackgroundWidget::BackgroundWidget(QWidget *parent) : QWidget(parent)
 	layout->addWidget(body);
 	layout->addWidget(navbar);
 
+	// When back button is clicked it calls the public SLOT function backPage()
+	connect(backButton, SIGNAL(clicked()), SLOT(backPage()));
 	connect(nextButton, SIGNAL(clicked()), SLOT(nextPage()));
+}
+
+void BackgroundWidget::backPage()
+{
+	QStackedWidget *stackedWidget = qobject_cast<QStackedWidget *>(this->parentWidget());
+	if (stackedWidget)
+	{
+		stackedWidget->setCurrentIndex(3);
+	}
 }
 
 void BackgroundWidget::nextPage()
@@ -375,7 +412,18 @@ InventoryWidget::InventoryWidget(QWidget *parent) : QWidget(parent)
 	layout->addWidget(inventory);
 	layout->addWidget(navbar);
 
+	// When back button is clicked it calls the public SLOT function backPage()
+	connect(backButton, SIGNAL(clicked()), SLOT(backPage()));
 	connect(finishButton, SIGNAL(clicked()), SLOT(nextPage()));
+}
+
+void InventoryWidget::backPage()
+{
+	QStackedWidget *stackedWidget = qobject_cast<QStackedWidget *>(this->parentWidget());
+	if (stackedWidget)
+	{
+		stackedWidget->setCurrentIndex(4);
+	}
 }
 
 void InventoryWidget::nextPage()
