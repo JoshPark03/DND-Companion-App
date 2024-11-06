@@ -51,12 +51,12 @@ class StartWidget : public QWidget
 	Q_OBJECT
 public:
 	explicit StartWidget(QWidget *parent = 0);
-	// ~StartWidget();
 	QLineEdit *getName() { return this->name; }
 
 private:
 	QLineEdit *name;
 private slots:
+	void backPage();
 	void nextPage();
 };
 
@@ -81,6 +81,7 @@ private:
 	QSpinBox *wisdomVal;
 	QSpinBox *charismaVal;
 private slots:
+	void backPage();
 	void nextPage();
 };
 

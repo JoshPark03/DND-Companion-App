@@ -38,15 +38,6 @@ AddCharacter::AddCharacter(QWidget *parent) : QStackedWidget(parent)
 	this->setCurrentWidget(startWidget);
 }
 
-// AddCharacter::~AddCharacter() {
-// 	delete this->startWidget;
-// 	delete this->baseStatsWidget;
-// 	delete this->classWidget;
-// 	delete this->raceWidget;
-// 	delete this->backgroundWidget;
-// 	delete this->inventoryWidget;
-// }
-
 StartWidget::StartWidget(QWidget *parent) : QWidget(parent)
 {
 	// Create the main vertical layout
@@ -81,12 +72,17 @@ StartWidget::StartWidget(QWidget *parent) : QWidget(parent)
 	layout->addWidget(form);
 	layout->addWidget(navbar);
 
-	// connect(start, &QPushButton::clicked, [=]{
-	// 	QStackedWidget * stackedWidget = qobject_cast<QStackedWidget *>(this->parentWidget());
-	// 	stackedWidget->setCurrentIndex(1);
-	// });
+	// When back button is clicked it calls the public SLOT function backPage()
+	connect(backButton, SIGNAL(clicked()), SLOT(backPage()));
 
 	connect(nextButton, SIGNAL(clicked()), SLOT(nextPage()));
+}
+
+void StartWidget::backPage() {
+	QStackedWidget *mainStackedWidget = qobject_cast<QStackedWidget *>(this->parentWidget()->parentWidget());
+	if (mainStackedWidget) {
+		mainStackedWidget->setCurrentIndex(0);
+	}
 }
 
 void StartWidget::nextPage()
@@ -97,10 +93,6 @@ void StartWidget::nextPage()
 		stackedWidget->setCurrentIndex(1);
 	}
 }
-
-// StartWidget::~StartWidget() {
-// 	delete this->name;
-// }
 
 BaseStatsWidget::BaseStatsWidget(QWidget *parent) : QWidget(parent)
 {
@@ -162,12 +154,18 @@ BaseStatsWidget::BaseStatsWidget(QWidget *parent) : QWidget(parent)
 	layout->addWidget(form);
 	layout->addWidget(navbar);
 
-	// connect(confirm, &QPushButton::clicked, [=]{
-	// 	QStackedWidget * stackedWidget = qobject_cast<QStackedWidget *>(this->parentWidget());
-	// 	stackedWidget->setCurrentIndex(2);
-	// });
+	// When back button is clicked it calls the public SLOT function backPage()
+	connect(backButton, SIGNAL(clicked()), SLOT(backPage()));
 
 	connect(nextButton, SIGNAL(clicked()), SLOT(nextPage()));
+}
+
+void BaseStatsWidget::backPage() {
+	QStackedWidget *stackedWidget = qobject_cast<QStackedWidget *>(this->parentWidget());
+	if (stackedWidget)
+	{
+		stackedWidget->setCurrentIndex(0);
+	}
 }
 
 void BaseStatsWidget::nextPage()
@@ -178,16 +176,6 @@ void BaseStatsWidget::nextPage()
 		stackedWidget->setCurrentIndex(2);
 	}
 }
-
-// BaseStatsWidget::~BaseStatsWidget() {
-// 	delete this->strengthVal;
-// 	delete this->dexterityVal;
-// 	delete this->constitutionVal;
-// 	delete this->intelligenceVal;
-// 	delete this->wisdomVal;
-// 	delete this->charismaVal;
-// }
-
 ClassWidget::ClassWidget(QWidget *parent) : QWidget(parent)
 {
 	// Create the main vertical layout
@@ -230,11 +218,6 @@ ClassWidget::ClassWidget(QWidget *parent) : QWidget(parent)
 	layout->addWidget(body);
 	layout->addWidget(navbar);
 
-	// connect(confirm, &QPushButton::clicked, [=]{
-	// 	QStackedWidget * stackedWidget = qobject_cast<QStackedWidget *>(this->parentWidget());
-	// 	stackedWidget->setCurrentIndex(3);
-	// });
-
 	connect(nextButton, SIGNAL(clicked()), SLOT(nextPage()));
 }
 
@@ -246,21 +229,6 @@ void ClassWidget::nextPage()
 		stackedWidget->setCurrentIndex(3);
 	}
 }
-
-// ClassWidget::~ClassWidget() {
-// 	delete this->barbarian;
-// 	delete this->bard;
-// 	delete this->cleric;
-// 	delete this->druid;
-// 	delete this->fighter;
-// 	delete this->monk;
-// 	delete this->paladin;
-// 	delete this->ranger;
-// 	delete this->rogue;
-// 	delete this->sorcerer;
-// 	delete this->warlock;
-// 	delete this->wizard;
-// }
 
 RaceWidget::RaceWidget(QWidget *parent) : QWidget(parent)
 {
@@ -301,11 +269,6 @@ RaceWidget::RaceWidget(QWidget *parent) : QWidget(parent)
 	layout->addWidget(body);
 	layout->addWidget(navbar);
 
-	// connect(confirm, &QPushButton::clicked, [=]{
-	// 	QStackedWidget * stackedWidget = qobject_cast<QStackedWidget *>(this->parentWidget());
-	// 	stackedWidget->setCurrentIndex(4);
-	// });
-
 	connect(nextButton, SIGNAL(clicked()), SLOT(nextPage()));
 }
 
@@ -317,17 +280,6 @@ void RaceWidget::nextPage()
 		stackedWidget->setCurrentIndex(4);
 	}
 }
-
-// RaceWidget::~RaceWidget() {
-// 	delete this->dwarf;
-// 	delete this->elf;
-// 	delete this->halfling;
-// 	delete this->dragonborn;
-// 	delete this->gnome;
-// 	delete this->half_elf;
-// 	delete this->half_orc;
-// 	delete this->tiefling;
-// }
 
 BackgroundWidget::BackgroundWidget(QWidget *parent) : QWidget(parent)
 {
@@ -372,11 +324,6 @@ BackgroundWidget::BackgroundWidget(QWidget *parent) : QWidget(parent)
 	layout->addWidget(body);
 	layout->addWidget(navbar);
 
-	// connect(confirm, &QPushButton::clicked, [=]{
-	// 	QStackedWidget * stackedWidget = qobject_cast<QStackedWidget *>(this->parentWidget());
-	// 	stackedWidget->setCurrentIndex(5);
-	// });
-
 	connect(nextButton, SIGNAL(clicked()), SLOT(nextPage()));
 }
 
@@ -388,21 +335,6 @@ void BackgroundWidget::nextPage()
 		stackedWidget->setCurrentIndex(5);
 	}
 }
-
-// BackgroundWidget::~BackgroundWidget() {
-// 	delete this->acolyte;
-// 	delete this->charlatan;
-// 	delete this->criminal;
-// 	delete this->entertainer;
-// 	delete this->folk_hero;
-// 	delete this->guild_artisan;
-// 	delete this->hermit;
-// 	delete this->noble;
-// 	delete this->outlander;
-// 	delete this->sage;
-// 	delete this->sage;
-// 	delete this->urchin;
-// }
 
 InventoryWidget::InventoryWidget(QWidget *parent) : QWidget(parent)
 {
@@ -442,15 +374,6 @@ InventoryWidget::InventoryWidget(QWidget *parent) : QWidget(parent)
 	// Add the body and navbar to the main layout
 	layout->addWidget(inventory);
 	layout->addWidget(navbar);
-
-	// connect(confirm, &QPushButton::clicked, [=]{
-	// 	AddCharacter * addCharacterWidget = qobject_cast<AddCharacter *>(this->parentWidget());
-	// 	addCharacterWidget->setCurrentIndex(0);
-	// 	QStackedWidget * mainStackedWidget = qobject_cast<QStackedWidget *>(addCharacterWidget->parentWidget());
-	// 	mainStackedWidget->setCurrentIndex(0);
-	// 	// Need to somehow get access to the SelectCharacterWidget to call addCharacter(QString name)
-	// 	// Alternatively we could move addCharacter to this file and have the QListWidget characters auto-upadte
-	// });
 
 	connect(finishButton, SIGNAL(clicked()), SLOT(nextPage()));
 }
