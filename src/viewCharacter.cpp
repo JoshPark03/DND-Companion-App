@@ -232,7 +232,7 @@ ViewCharacter::ViewCharacter(QWidget *parent, QString nameIn) :
     QLabel *nameLabel = new QLabel(characterName);
     QLabel *pictureLabel = new QLabel();
     pictureLabel->setFixedSize(200,250);
-    QPixmap characterPicture("data/" + characterName + "/character.png");
+    QPixmap characterPicture("data/characters/" + characterName + "/character.png");
     QPixmap scaledCharacterPicture = characterPicture.scaled(200,250,Qt::KeepAspectRatio,Qt::SmoothTransformation);
     pictureLabel->setPixmap(scaledCharacterPicture);
     QLabel *classAndSubclassLabel = new QLabel(characterClass + " | " + characterSubclass);
@@ -295,7 +295,7 @@ ViewCharacter::ViewCharacter(QWidget *parent, QString nameIn) :
     //     this->loadCharacter(name);
     // });
 
-    connect(importButton, SIGNAL (clicked()), SLOT (importChar()));
+    // connect(importButton, SIGNAL (clicked()), SLOT (importChar()));
 }
 
 void ViewCharacter::goBack() {
