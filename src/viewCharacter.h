@@ -1,10 +1,10 @@
 /*
-Name: viewCharacter.cpp
+Name: viewCharacter.h
 Description: Page to view a character's information, notes, and stats.
 Authors: Zachary Craig, Josh Park
 Other Sources: ...
 Date Created: 10/25/2024
-Last Modified: 10/31/2024
+Last Modified: 11/6/2024
 */
 
 #ifndef VIEWCHARACTER_H
@@ -18,15 +18,31 @@ class ViewCharacter : public QWidget
 public:
     explicit ViewCharacter(QWidget *parent = 0, QString name = "");
     ~ViewCharacter();
-    void printCharacterToConsole(std::string path);
+    void printCharacterToConsole();
 
 private:
-    void loadCharacter();
+    void loadCharacter(QString name);
     QString name;
+    QString characterName;
+    QString characterClass;
+    QString characterSubclass;
+    QString characterRace;
+    QString characterBackground;
+    QString characterAlignment;
+    QList<int> characterStats;
+    int characterLevel;
+    QStringList characterStatProficiencies;
+    QStringList characterPreppedSpells;
+    QStringList characterKnownSpells;
+    QStringList characterFeats;
+    QStringList characterLanguages;
+    QStringList characterEquipmentProficiencies;
+    QStringList characterAttunedItems;
+    QList<int> characterCoins;
 
 private slots:
     void goBack();
-    void importChar();
+    // void importChar();
 };
 
 #endif // SETTINGS_H
