@@ -26,7 +26,7 @@ class CharacterSelect : public QWidget {
 	Q_OBJECT
 public:
 	explicit CharacterSelect(QWidget * parent = 0);
-	~CharacterSelect();
+	// ~CharacterSelect();
 
 	QListWidget * getCharacters() { return this->characters; }
 
@@ -40,6 +40,12 @@ private:
 	QPushButton * settings;
 	QListWidget * characters;
 	QPushButton * deleteChar;
+private slots:
+	void deleteCharSlot();
+	void selectChar();
+	void openChar();
+	void gotoAddCharacter();
+	void gotoSettings();
 };
 
 #endif // CHARACTER_SELECT_H

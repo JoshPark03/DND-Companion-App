@@ -34,8 +34,17 @@ Settings::Settings(QWidget *parent) :
         if (stackedWidget) {
             stackedWidget->setCurrentIndex(0); // character select is the first page so index 0
         }
-        delete stackedWidget;
     });
+
+    connect(Backbutton, SIGNAL (clicked()), SLOT (nextPage()));
+}
+
+void Settings::nextPage() {
+    QStackedWidget *stackedWidget = qobject_cast<QStackedWidget *>(this->parentWidget());
+    if (stackedWidget) {
+        stackedWidget->setCurrentIndex(0); // character select is the first page so index 0
+    }
+
 }
 
 Settings::~Settings()
