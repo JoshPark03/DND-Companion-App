@@ -1,3 +1,6 @@
+<<<<<<< Updated upstream
+#include "settings.h"
+=======
 /*
 Name: settings.cpp
 Description: Enhanced settings page to allow the user to import characters, switch themes, and return to character select with a structured layout.
@@ -16,10 +19,14 @@ Last Modified: 11/06/2024
 #include <QApplication>
 #include <QGridLayout>
 #include <QSpacerItem>
+>>>>>>> Stashed changes
 
 Settings::Settings(QWidget *parent) :
     QWidget(parent)
 {
+<<<<<<< Updated upstream
+    // TODO literally the entire settings page
+=======
     // Main layout for the settings page
     QGridLayout *mainLayout = new QGridLayout(this);
 
@@ -81,6 +88,7 @@ void Settings::changeTheme(const QString &theme) {
         out << theme;
         themeFile.close();
     }
+>>>>>>> Stashed changes
 }
 
 Settings::~Settings()

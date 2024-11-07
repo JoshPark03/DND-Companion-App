@@ -1,3 +1,5 @@
+<<<<<<< Updated upstream
+=======
 /*
 Name: main.cpp
 Description: Main entry point for the application, initializes the GUI and sets up the main window.
@@ -8,6 +10,7 @@ Last Modified: 11/06/2024
 */
 
 
+>>>>>>> Stashed changes
 #include <QApplication>
 #include <QMainWindow>
 #include <QLayout>
