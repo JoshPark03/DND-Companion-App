@@ -74,6 +74,7 @@ int main(int argc, char ** argv) {
 	// Add pages to the stacked widget
 	stackedWidget->addWidget(characterSelect);
 	stackedWidget->addWidget(addCharacter);
+	stackedWidget->addWidget(new QWidget()); // ViewCharacter will be added later
 	stackedWidget->addWidget(settings);
 
 	// Set the screen to start with the character select page
