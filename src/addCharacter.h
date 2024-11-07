@@ -12,7 +12,7 @@ Last Modified: 10/31/2024
 
 #include <QStackedWidget>
 #include <QListWidget>
-#include <QRadioButton>
+#include <QComboBox>
 #include <QLineEdit>
 #include <QSpinBox>
 #include <QWidget>
@@ -24,42 +24,47 @@ class RaceWidget;
 class BackgroundWidget;
 class InventoryWidget;
 
-class AddCharacter : public QStackedWidget {
+class AddCharacter : public QStackedWidget
+{
 	Q_OBJECT
 private:
-	StartWidget * startWidget;
-	BaseStatsWidget * baseStatsWidget;
-	ClassWidget * classWidget;
-	RaceWidget * raceWidget;
-	BackgroundWidget * backgroundWidget;
-	InventoryWidget * inventoryWidget;
+	StartWidget *startWidget;
+	BaseStatsWidget *baseStatsWidget;
+	ClassWidget *classWidget;
+	RaceWidget *raceWidget;
+	BackgroundWidget *backgroundWidget;
+	InventoryWidget *inventoryWidget;
+
 public:
-	explicit AddCharacter(QWidget * parent = 0);
+	explicit AddCharacter(QWidget *parent = 0);
 	// ~AddCharacter();
-	StartWidget * getStartWidget() { return this->startWidget; }
-	BaseStatsWidget * getBaseStatsWidget() { return this->baseStatsWidget; }
-	ClassWidget * getClassWidget() { return this->classWidget; }
-	RaceWidget * getRaceWidget() { return this->raceWidget; }
-	BackgroundWidget * getBackgroundWidget() { return this->backgroundWidget; }
-	InventoryWidget * getInventoryWidget() { return this->inventoryWidget; }
+	StartWidget *getStartWidget() { return this->startWidget; }
+	BaseStatsWidget *getBaseStatsWidget() { return this->baseStatsWidget; }
+	ClassWidget *getClassWidget() { return this->classWidget; }
+	RaceWidget *getRaceWidget() { return this->raceWidget; }
+	BackgroundWidget *getBackgroundWidget() { return this->backgroundWidget; }
+	InventoryWidget *getInventoryWidget() { return this->inventoryWidget; }
 };
 
-class StartWidget : public QWidget {
+class StartWidget : public QWidget
+{
 	Q_OBJECT
 public:
-	explicit StartWidget(QWidget * parent = 0);
-	// ~StartWidget();
-	QLineEdit * getName() { return this->name; }
+	explicit StartWidget(QWidget *parent = 0);
+	QLineEdit *getName() { return this->name; }
+
 private:
-	QLineEdit * name;
+	QLineEdit *name;
 private slots:
+	void backPage();
 	void nextPage();
 };
 
-class BaseStatsWidget : public QWidget {
+class BaseStatsWidget : public QWidget
+{
 	Q_OBJECT
 public:
-	explicit BaseStatsWidget(QWidget * parent = 0);
+	explicit BaseStatsWidget(QWidget *parent = 0);
 	// ~BaseStatsWidget();
 	int getStrength() { return this->strengthVal->value(); }
 	int getDexterity() { return this->dexterityVal->value(); }
@@ -67,91 +72,74 @@ public:
 	int getIntelligence() { return this->intelligenceVal->value(); }
 	int getWisdom() { return this->wisdomVal->value(); }
 	int getCharisma() { return this->charismaVal->value(); }
+
 private:
-	QSpinBox * strengthVal;
-	QSpinBox * dexterityVal;
-	QSpinBox * constitutionVal;
-	QSpinBox * intelligenceVal;
-	QSpinBox * wisdomVal;
-	QSpinBox * charismaVal;
+	QSpinBox *strengthVal;
+	QSpinBox *dexterityVal;
+	QSpinBox *constitutionVal;
+	QSpinBox *intelligenceVal;
+	QSpinBox *wisdomVal;
+	QSpinBox *charismaVal;
 private slots:
+	void backPage();
 	void nextPage();
 };
 
-class ClassWidget : public QWidget {
+class ClassWidget : public QWidget
+{
 	Q_OBJECT
 public:
-	explicit ClassWidget(QWidget * parent = 0);
+	explicit ClassWidget(QWidget *parent = 0);
 	// ~ClassWidget();
-	QRadioButton * getSelected();
+	QComboBox *getSelected();
+
 private:
-	QRadioButton * barbarian;
-	QRadioButton * bard;
-	QRadioButton * cleric;
-	QRadioButton * druid;
-	QRadioButton * fighter;
-	QRadioButton * monk;
-	QRadioButton * paladin;
-	QRadioButton * ranger;
-	QRadioButton * rogue;
-	QRadioButton * sorcerer;
-	QRadioButton * warlock;
-	QRadioButton * wizard;
+	QComboBox *classComboBox;
 private slots:
+	void backPage();
 	void nextPage();
 };
 
-class RaceWidget : public QWidget {
+class RaceWidget : public QWidget
+{
 	Q_OBJECT
 public:
-	explicit RaceWidget(QWidget * parent = 0);
+	explicit RaceWidget(QWidget *parent = 0);
 	// ~RaceWidget();
-	QRadioButton * getSelected();
+	QComboBox *getSelected();
+
 private:
-	QRadioButton * dwarf;
-	QRadioButton * elf;
-	QRadioButton * halfling;
-	QRadioButton * human;
-	QRadioButton * dragonborn;
-	QRadioButton * gnome;
-	QRadioButton * half_elf;
-	QRadioButton * half_orc;
-	QRadioButton * tiefling;
+	QComboBox *raceComboBox;
 private slots:
+	void backPage();
 	void nextPage();
 };
 
-class BackgroundWidget : public QWidget {
+class BackgroundWidget : public QWidget
+{
 	Q_OBJECT
 public:
-	explicit BackgroundWidget(QWidget * parent = 0);
+	explicit BackgroundWidget(QWidget *parent = 0);
 	// ~BackgroundWidget();
-	QRadioButton * getSelected();
+	QComboBox *getSelected();
+
 private:
-	QRadioButton * acolyte;
-	QRadioButton * charlatan;
-	QRadioButton * criminal;
-	QRadioButton * entertainer;
-	QRadioButton * folk_hero;
-	QRadioButton * guild_artisan;
-	QRadioButton * hermit;
-	QRadioButton * noble;
-	QRadioButton * outlander;
-	QRadioButton * sage;
-	QRadioButton * sailor;
-	QRadioButton * soldier;
-	QRadioButton * urchin;
+	QComboBox *backgroundComboBox;
 private slots:
+	void backPage();
 	void nextPage();
 };
 
-class InventoryWidget : public QWidget {
+class InventoryWidget : public QWidget
+{
 	Q_OBJECT
 public:
-	explicit InventoryWidget(QWidget * parent = 0);
+	explicit InventoryWidget(QWidget *parent = 0);
+
 private:
-	QListWidget * items;
+	QListWidget *items;
 private slots:
+	void backPage();
 	void nextPage();
 };
 
