@@ -5,7 +5,7 @@ Description: Main landing page for the application, allowing users to create, de
 Authors: Carson Treece, Zachary Craig, Josh Park
 Other Sources: ...
 Date Created: 10/22/2024
-Last Modified: 10/25/2024
+Last Modified: 11/6/2024
 */
 
 #include "characterSelect.h"
@@ -330,11 +330,16 @@ void CharacterSelect::openChar() {
 
 	QStackedWidget * stackedWidget = qobject_cast<QStackedWidget *>(this->parentWidget());
 	if (stackedWidget) {
-		// get the viewCharacter page
-		QWidget * viewCharacter = stackedWidget->widget(2); // viewCharacter is the third page so index 2
 
-		// delete the current viewCharacter page
-		delete viewCharacter;
+		if(stackedWidget->widget(2))
+		{
+			// get the viewCharacter page
+			QWidget * viewCharacter = stackedWidget->widget(2); // viewCharacter is the third page so index 2
+
+			// delete the current viewCharacter page
+			delete viewCharacter;
+		}
+		
 
 		// create a new viewCharacter page with new character
 		ViewCharacter * newViewCharacter = new ViewCharacter(0, name);
