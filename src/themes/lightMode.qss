@@ -1,0 +1,79 @@
+/* Main Background */
+QWidget {
+    background-color: #F5F5F5; /* Light gray for main background */
+    color: #333333;            /* Dark gray text for readability */
+}
+
+/* QPushButton Styling */
+QPushButton {
+    background-color: #FFFFFF; /* White background for buttons */
+    color: #333333;            /* Dark text */
+    border-radius: 5px;
+    padding: 20px;
+    font-weight: bold;
+    border: 1px solid #0051BA; /* Blue border for accent */
+}
+QPushButton:hover {
+    background-color: #E0E0E0; /* Light gray on hover */
+}
+QPushButton:pressed {
+    background-color: #0051BA; /* Blue background when pressed */
+    color: #FFFFFF;            /* White text on press */
+}
+
+/* QLabel Styling */
+QLabel {
+    color: #333333;            /* Dark gray for readability */
+    font-size: 14px;
+    font-weight: bold;
+}
+
+/* QListWidget Styling */
+QListWidget {
+    background-color: #FFFFFF; /* White for list background */
+    color: #333333;            /* Dark text */
+    border: 1px solid #C0C0C0; /* Soft light gray border */
+    padding: 5px;
+}
+
+QListWidget::item {
+    background-color: #FFFFFF; /* White for each item */
+    color: #333333;            /* Dark gray text */
+    padding: 8px;
+}
+
+QListWidget::item:selected {
+    background-color: #0051BA; /* Blue for selected item */
+    color: #FFFFFF;            /* White text for selected item */
+}
+
+QListWidget::item:hover {
+    background-color: #E0E0E0; /* Light gray on hover */
+    color: #333333;            /* Dark text on hover */
+}
+
+/* QLineEdit and QTextEdit Styling */
+QLineEdit, QTextEdit {
+    background-color: #FFFFFF; /* White background for inputs */
+    color: #333333;            /* Dark text */
+    border: 1px solid #0051BA; /* Blue border for accent */
+    padding: 5px;
+    border-radius: 4px;
+}
+QLineEdit:focus, QTextEdit:focus {
+    border: 1px solid #0051BA; /* Blue border on focus */
+}
+
+/* QScrollBar */
+QScrollBar:vertical, QScrollBar:horizontal {
+    background: #F5F5F5;       /* Matches main background */
+    width: 10px;
+    border: 1px solid #E0E0E0;
+}
+QScrollBar::handle:vertical, QScrollBar::handle:horizontal {
+    background: #B0B0B0;       /* Light gray for scroll handle */
+    border-radius: 5px;
+}
+QScrollBar::handle:vertical:hover, QScrollBar::handle:horizontal:hover {
+    background: #0051BA;       /* Blue on hover */
+}

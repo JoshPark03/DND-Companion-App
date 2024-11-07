@@ -14,11 +14,13 @@ Last Modified: 11/5/2024
 
 #include <QPushButton>
 #include <QListWidget>
+#include <QComboBox>
 #include <QLayout>
+#include <QFormLayout>
 #include <QLabel>
 
 /**
- * Cunstructor for the class
+ * Constructor for the class
  */
 AddCharacter::AddCharacter(QWidget * parent) :
 	QStackedWidget(parent)
@@ -44,305 +46,462 @@ AddCharacter::AddCharacter(QWidget * parent) :
 }
 
 /**
- * Cunstructor for the class
+ * Constructor for the class
  */
 StartWidget::StartWidget(QWidget * parent) :
 	QWidget(parent)
 {
-	QGridLayout * layout = new QGridLayout(this);
+	// Create the main vertical layout
+	QVBoxLayout *layout = new QVBoxLayout(this);
 
-	// Defining the name widget and adding it to the layout
+	// Create the form layout
+	QWidget *form = new QWidget();
+	QFormLayout *formLayout = new QFormLayout(form);
+	formLayout->setFormAlignment(Qt::AlignCenter);
+
+	// Create and configure layout for the navbar
+	QWidget *navbar = new QWidget();
+	QHBoxLayout *navbarLayout = new QHBoxLayout(navbar);
+	navbar->setFixedHeight(40);
+
+	// Create text box for the character name
 	name = new QLineEdit();
-	layout->addWidget(name, 0, 0, {Qt::AlignCenter, Qt::AlignBottom});
+	name->setFixedWidth(100);
 
-	// Creating the spacer items for spacing the other widgets
-	QSpacerItem * spacer = new QSpacerItem(50, 50);
-	layout->addItem(spacer, 1, 0);
+	// Create navigation buttons
+	QPushButton *backButton = new QPushButton("Back to Character Select");
+	QPushButton *nextButton = new QPushButton("Next");
 
-	// Creating the start button and adding it to the layout
-	QPushButton * start = new QPushButton("Start Creation");
-	layout->addWidget(start, 2, 0, {Qt::AlignCenter, Qt::AlignTop});
+	// Add character name input to the form
+	formLayout->addRow("Character Name:", name);
 
-	// When start is clicked it will move to the next page: BaseStatsWidget
-	connect(start, SIGNAL (clicked()),  SLOT (nextPage()));
+	// Add buttons to navbar
+	navbarLayout->addWidget(backButton);
+	navbarLayout->addWidget(nextButton);
+
+	// Add the navbar and form to the main layout
+	layout->addWidget(form);
+	layout->addWidget(navbar);
+
+	// When back button is clicked it calls the public SLOT function backPage()
+	connect(backButton, SIGNAL(clicked()), SLOT(backPage()));
+
+	connect(nextButton, SIGNAL(clicked()), SLOT(nextPage()));
+}
+
+/**
+ * This function changes mainStackedWidget to SelectWidget
+ */
+void StartWidget::backPage()
+{
+	QStackedWidget *mainStackedWidget = qobject_cast<QStackedWidget *>(this->parentWidget()->parentWidget());
+	if (mainStackedWidget)
+	{
+		mainStackedWidget->setCurrentIndex(0);
+	}
 }
 
 /**
  * This function changes AddCharacter's StackedWidget to BaseStatsWidget
  */
-void StartWidget::nextPage() {
-	QStackedWidget * stackedWidget = qobject_cast<QStackedWidget *>(this->parentWidget());
-	if (stackedWidget) {
+void StartWidget::nextPage()
+{
+	QStackedWidget *stackedWidget = qobject_cast<QStackedWidget *>(this->parentWidget());
+	if (stackedWidget)
+	{
 		stackedWidget->setCurrentIndex(1);
 	}
 }
 
 /**
- * Cunstructor for the class
+ * Constructor for the class
  */
 BaseStatsWidget::BaseStatsWidget(QWidget * parent) :
 	QWidget(parent)
 {
-	QGridLayout * layout = new QGridLayout(this);
+	// Create the main vertical layout
+	QVBoxLayout *layout = new QVBoxLayout(this);
 
-	// Defining all the val boxes and setting their ranges to valid values
+	// Create the form layout
+	QWidget *form = new QWidget();
+	QFormLayout *formLayout = new QFormLayout(form);
+	formLayout->setFormAlignment(Qt::AlignCenter);
+
+	// Create and configure layout for the navbar
+	QWidget *navbar = new QWidget();
+	QHBoxLayout *navbarLayout = new QHBoxLayout(navbar);
+	navbar->setFixedHeight(40);
+
+	// Create the stats spin boxes
 	strengthVal = new QSpinBox;
 	strengthVal->setRange(3, 18);
+	strengthVal->setFixedWidth(50);
+
 	dexterityVal = new QSpinBox;
 	dexterityVal->setRange(3, 18);
+	dexterityVal->setFixedWidth(50);
+
 	constitutionVal = new QSpinBox;
 	constitutionVal->setRange(3, 18);
+	constitutionVal->setFixedWidth(50);
+
 	intelligenceVal = new QSpinBox;
 	intelligenceVal->setRange(3, 18);
+	intelligenceVal->setFixedWidth(50);
+
 	wisdomVal = new QSpinBox;
 	wisdomVal->setRange(3, 18);
+	wisdomVal->setFixedWidth(50);
+
 	charismaVal = new QSpinBox;
 	charismaVal->setRange(3, 18);
+	charismaVal->setFixedWidth(50);
 
-	// adding all the val boxes to the layout
-	layout->addWidget(strengthVal, 0, 1, {Qt::AlignLeft, Qt::AlignBottom});
-	layout->addWidget(dexterityVal, 1, 1, {Qt::AlignLeft, Qt::AlignBottom});
-	layout->addWidget(constitutionVal, 2, 1, {Qt::AlignLeft, Qt::AlignBottom});
-	layout->addWidget(intelligenceVal, 3, 1, {Qt::AlignLeft, Qt::AlignBottom});
-	layout->addWidget(wisdomVal, 4, 1, {Qt::AlignLeft, Qt::AlignBottom});
-	layout->addWidget(charismaVal, 5, 1, {Qt::AlignLeft, Qt::AlignBottom});
+	// Create navigation buttons
+	QPushButton *backButton = new QPushButton("Back");
+	QPushButton *nextButton = new QPushButton("Next");
 
-	// Creating all the labels
-	QLabel * strengthLabel = new QLabel("Strength:\n");
-	QLabel * dexterityLabel = new QLabel("Dexterity:\n");
-	QLabel * constitutionLabel = new QLabel("Constitution:\n");
-	QLabel * intelligenceLabel = new QLabel("Intelligence:\n");
-	QLabel * wisdomLabel = new QLabel("Wisdom:\n");
-	QLabel * charismaLabel = new QLabel("Charisma:\n");
+	// Add spinboxes to the form
+	formLayout->addRow("Strength:", strengthVal);
+	formLayout->addRow("Dexterity:", dexterityVal);
+	formLayout->addRow("Constitution:", constitutionVal);
+	formLayout->addRow("Intelligence:", intelligenceVal);
+	formLayout->addRow("Wisdom:", wisdomVal);
+	formLayout->addRow("Charisma:", charismaVal);
 
-	// adding all the labels to the layout
-	layout->addWidget(strengthLabel, 0, 0, {Qt::AlignRight, Qt::AlignBottom});
-	layout->addWidget(dexterityLabel, 1, 0, {Qt::AlignRight, Qt::AlignBottom});
-	layout->addWidget(constitutionLabel, 2, 0, {Qt::AlignRight, Qt::AlignBottom});
-	layout->addWidget(intelligenceLabel, 3, 0, {Qt::AlignRight, Qt::AlignBottom});
-	layout->addWidget(wisdomLabel, 4, 0, {Qt::AlignRight, Qt::AlignBottom});
-	layout->addWidget(charismaLabel, 5, 0, {Qt::AlignRight, Qt::AlignBottom});
-	
-	// Creating the confirm button and adding it to the layout
-	QPushButton * confirm = new QPushButton("Confirm Stats");
-	layout->addWidget(confirm, 6, 0, 1, 2, Qt::AlignCenter);
+	// Add buttons to navbar
+	navbarLayout->addWidget(backButton);
+	navbarLayout->addWidget(nextButton);
 
-	// When confirm is clicked it will move to the next page: ClassWidget
-	connect(confirm, SIGNAL (clicked()), SLOT (nextPage()));
+	// Add the navbar and form to the main layout
+	layout->addWidget(form);
+	layout->addWidget(navbar);
+
+	// When back button is clicked it calls the public SLOT function backPage()
+	connect(backButton, SIGNAL(clicked()), SLOT(backPage()));
+
+	connect(nextButton, SIGNAL(clicked()), SLOT(nextPage()));
+}
+
+/**
+ * This function changes AddCharacter's StackedWidget to StartWidget
+ */
+void BaseStatsWidget::backPage()
+{
+	QStackedWidget *stackedWidget = qobject_cast<QStackedWidget *>(this->parentWidget());
+	if (stackedWidget)
+	{
+		stackedWidget->setCurrentIndex(0);
+	}
 }
 
 /**
  * This function changes AddCharacter's StackedWidget to ClassWidget
  */
-void BaseStatsWidget::nextPage() {
-	QStackedWidget * stackedWidget = qobject_cast<QStackedWidget *>(this->parentWidget());
-	if (stackedWidget) {
+void BaseStatsWidget::nextPage()
+{
+	QStackedWidget *stackedWidget = qobject_cast<QStackedWidget *>(this->parentWidget());
+	if (stackedWidget)
+	{
 		stackedWidget->setCurrentIndex(2);
 	}
 }
 
 /**
- * Cunstructor for the class
+ * Constructor for the class
  */
 ClassWidget::ClassWidget(QWidget * parent) :
-	QWidget(parent)
+	QWidget(parent) {
+	// Create the main vertical layout
+	QVBoxLayout *layout = new QVBoxLayout(this);
+
+	// Create horizontal layer for the columns
+	QWidget *body = new QWidget();
+	QHBoxLayout *bodyLayout = new QHBoxLayout(body);
+
+	// Create and configure layout for the navbar
+	QWidget *navbar = new QWidget();
+	QHBoxLayout *navbarLayout = new QHBoxLayout(navbar);
+	navbar->setFixedHeight(40);
+
+	// Create the class combo box
+	QComboBox *classComboBox = new QComboBox;
+	classComboBox->addItem("Barbarian");
+	classComboBox->addItem("Bard");
+	classComboBox->addItem("Cleric");
+	classComboBox->addItem("Druid");
+	classComboBox->addItem("Fighter");
+	classComboBox->addItem("Monk");
+	classComboBox->addItem("Paladin");
+	classComboBox->addItem("Ranger");
+	classComboBox->addItem("Rogue");
+	classComboBox->addItem("Sorcerer");
+	classComboBox->addItem("Warlock");
+	classComboBox->addItem("Wizard");
+
+	// Create navigation buttons
+	QPushButton *backButton = new QPushButton("Back");
+	QPushButton *nextButton = new QPushButton("Next");
+
+	// Add the combo box and navigation buttons to the navbar
+	navbarLayout->addWidget(backButton);
+	navbarLayout->addWidget(classComboBox);
+	navbarLayout->addWidget(nextButton);
+
+	// Add the navbar to the main layout
+	layout->addWidget(body);
+	layout->addWidget(navbar);
+
+	// When back button is clicked it calls the public SLOT function backPage()
+	connect(backButton, SIGNAL(clicked()), SLOT(backPage()));
+	connect(nextButton, SIGNAL(clicked()), SLOT(nextPage()));
+}
+
+/**
+ * This function changes AddCharacter's StackedWidget to BaseStatsWidget
+ */
+void ClassWidget::backPage()
 {
-	QGridLayout * layout = new QGridLayout(this);
-
-	// defining all radio buttons
-	barbarian = new QRadioButton("Barbarian");
-	bard = new QRadioButton("Bard");
-	cleric = new QRadioButton("Cleric");
-	druid = new QRadioButton("Druid");
-	fighter = new QRadioButton("Fighter");
-	monk = new QRadioButton("Monk");
-	paladin = new QRadioButton("Paladin");
-	ranger = new QRadioButton("Ranger");
-	rogue = new QRadioButton("Rogue");
-	sorcerer = new QRadioButton("Sorcerer");
-	warlock = new QRadioButton("Warlock");
-	wizard = new QRadioButton("Wizard");
-
-	// adding all radio buttons to the layout
-	layout->addWidget(barbarian, 0, 0, Qt::AlignCenter);
-	layout->addWidget(bard, 0, 1, Qt::AlignCenter);
-	layout->addWidget(cleric, 0, 2, Qt::AlignCenter);
-	layout->addWidget(druid, 1, 0, Qt::AlignCenter);
-	layout->addWidget(fighter, 1, 1, Qt::AlignCenter);
-	layout->addWidget(monk, 1, 2, Qt::AlignCenter);
-	layout->addWidget(paladin, 2, 0, Qt::AlignCenter);
-	layout->addWidget(ranger, 2, 1, Qt::AlignCenter);
-	layout->addWidget(rogue, 2, 2, Qt::AlignCenter);
-	layout->addWidget(sorcerer, 3, 0, Qt::AlignCenter);
-	layout->addWidget(warlock, 3, 1, Qt::AlignCenter);
-	layout->addWidget(wizard, 3, 2, Qt::AlignCenter);
-
-	// Creating the confirm button and adding it to the layout
-	QPushButton * confirm = new QPushButton("Confirm Class");
-	layout->addWidget(confirm, 4, 0, 1, 3, Qt::AlignCenter);
-
-	// When confirm is clicked it will move to the next page: RaceWidget
-	connect(confirm, SIGNAL (clicked()), SLOT (nextPage()));
+	QStackedWidget *stackedWidget = qobject_cast<QStackedWidget *>(this->parentWidget());
+	if (stackedWidget)
+	{
+		stackedWidget->setCurrentIndex(1);
+	}
 }
 
 /**
  * This function changes AddCharacter's StackedWidget to RaceWidget
  */
-void ClassWidget::nextPage() {
-	QStackedWidget * stackedWidget = qobject_cast<QStackedWidget *>(this->parentWidget());
-	if (stackedWidget) {
+void ClassWidget::nextPage()
+{
+	QStackedWidget *stackedWidget = qobject_cast<QStackedWidget *>(this->parentWidget());
+	if (stackedWidget)
+	{
 		stackedWidget->setCurrentIndex(3);
 	}
 }
 
 /**
- * Cunstructor for the class
+ * Constructor for the class
  */
-RaceWidget::RaceWidget(QWidget * parent) :
-	QWidget(parent)
+RaceWidget::RaceWidget(QWidget *parent) : QWidget(parent)
 {
-	QGridLayout * layout = new QGridLayout(this);
-	
-	// defining all radio buttons
-	dwarf = new QRadioButton("Dwarf");
-	elf = new QRadioButton("Elf");
-	halfling = new QRadioButton("Halfling");
-	human = new QRadioButton("Human");
-	dragonborn = new QRadioButton("Dragonborn");
-	gnome = new QRadioButton("Gnome");
-	half_elf = new QRadioButton("Half Elf");
-	half_orc = new QRadioButton("Half Orc");
-	tiefling = new QRadioButton("Tiefling");
+	// Create the main vertical layout
+	QVBoxLayout *layout = new QVBoxLayout(this);
 
-	// adding all radio buttons to the layout
-	layout->addWidget(dwarf, 0, 0, Qt::AlignCenter);
-	layout->addWidget(elf, 0, 1, Qt::AlignCenter);
-	layout->addWidget(halfling, 0, 2, Qt::AlignCenter);
-	layout->addWidget(human, 1, 0, Qt::AlignCenter);
-	layout->addWidget(dragonborn, 1, 1, Qt::AlignCenter);
-	layout->addWidget(gnome, 1, 2, Qt::AlignCenter);
-	layout->addWidget(half_elf, 2, 0, Qt::AlignCenter);
-	layout->addWidget(half_orc, 2, 1, Qt::AlignCenter);
-	layout->addWidget(tiefling, 2, 2, Qt::AlignCenter);
+	// Create horizontal layer for the columns
+	QWidget *body = new QWidget();
+	QHBoxLayout *bodyLayout = new QHBoxLayout(body);
 
-	// Creating the confirm button and adding it to the layout
-	QPushButton * confirm = new QPushButton("Confirm Race");
-	layout->addWidget(confirm, 3, 0, 1, 3, Qt::AlignCenter);
+	// Create and configure layout for the navbar
+	QWidget *navbar = new QWidget();
+	QHBoxLayout *navbarLayout = new QHBoxLayout(navbar);
+	navbar->setFixedHeight(40);
 
-	// When confirm is clicked it will move to the next page: BackgroundWidget
-	connect(confirm, SIGNAL (clicked()), SLOT (nextPage()));
+	// Create the race combo box
+	QComboBox *raceComboBox = new QComboBox;
+	raceComboBox->addItem("Dwarf");
+	raceComboBox->addItem("Elf");
+	raceComboBox->addItem("Halfling");
+	raceComboBox->addItem("Human");
+	raceComboBox->addItem("Dragonborn");
+	raceComboBox->addItem("Gnome");
+	raceComboBox->addItem("Half Elf");
+	raceComboBox->addItem("Half Orc");
+	raceComboBox->addItem("Tiefling");
+
+	// Create navigation buttons
+	QPushButton *backButton = new QPushButton("Back");
+	QPushButton *nextButton = new QPushButton("Next");
+
+	// Add the combo box and navigation buttons to the navbar
+	navbarLayout->addWidget(backButton);
+	navbarLayout->addWidget(raceComboBox);
+	navbarLayout->addWidget(nextButton);
+
+	// Add the navbar to the main layout
+	layout->addWidget(body);
+	layout->addWidget(navbar);
+
+	// When back button is clicked it calls the public SLOT function backPage()
+	connect(backButton, SIGNAL(clicked()), SLOT(backPage()));
+	connect(nextButton, SIGNAL(clicked()), SLOT(nextPage()));
+}
+
+/**
+ * This function changes AddCharacter's StackedWidget to ClassWidget
+ */
+void RaceWidget::backPage()
+{
+	QStackedWidget *stackedWidget = qobject_cast<QStackedWidget *>(this->parentWidget());
+	if (stackedWidget)
+	{
+		stackedWidget->setCurrentIndex(2);
+	}
 }
 
 /**
  * This function changes AddCharacter's StackedWidget to BackgroundWidget
  */
-void RaceWidget::nextPage() {
-	QStackedWidget * stackedWidget = qobject_cast<QStackedWidget *>(this->parentWidget());
-	if (stackedWidget) {
+void RaceWidget::nextPage()
+{
+	QStackedWidget *stackedWidget = qobject_cast<QStackedWidget *>(this->parentWidget());
+	if (stackedWidget)
+	{
 		stackedWidget->setCurrentIndex(4);
 	}
 }
 
 /**
- * Cunstructor for the class
+ * Constructor for the class
  */
 BackgroundWidget::BackgroundWidget(QWidget * parent) :
 	QWidget(parent)
 {
-	QGridLayout * layout = new QGridLayout(this);
+	// Create the main vertical layout
+	QVBoxLayout *layout = new QVBoxLayout(this);
 
-	// defining all radio buttons
-	acolyte = new QRadioButton("Acolyte");
-	charlatan = new QRadioButton("Charlatan");
-	criminal = new QRadioButton("Criminal");
-	entertainer = new QRadioButton("Entertainer");
-	folk_hero = new QRadioButton("Folk Hero");
-	guild_artisan = new QRadioButton("Guild Artisan");
-	hermit = new QRadioButton("Hermit");
-	noble = new QRadioButton("Noble");
-	outlander = new QRadioButton("Outlander");
-	sage = new QRadioButton("Sage");
-	sailor = new QRadioButton("Sailor");
-	soldier = new QRadioButton("Soldier");
-	urchin = new QRadioButton("Urchin");
+	// Create horizontal layer for the columns
+	QWidget *body = new QWidget();
+	QHBoxLayout *bodyLayout = new QHBoxLayout(body);
 
-	// adding all radio buttons to the layout
-	layout->addWidget(acolyte, 0, 0, Qt::AlignCenter);
-	layout->addWidget(charlatan, 0, 1, Qt::AlignCenter);
-	layout->addWidget(criminal, 0, 2, Qt::AlignCenter);
-	layout->addWidget(entertainer, 1, 0, Qt::AlignCenter);
-	layout->addWidget(folk_hero, 1, 1, Qt::AlignCenter);
-	layout->addWidget(guild_artisan, 1, 2, Qt::AlignCenter);
-	layout->addWidget(hermit, 2, 0, Qt::AlignCenter);
-	layout->addWidget(noble, 2, 1, Qt::AlignCenter);
-	layout->addWidget(outlander, 2, 2, Qt::AlignCenter);
-	layout->addWidget(sage, 3, 0, 1, 2, Qt::AlignCenter);
-	layout->addWidget(sailor, 3, 1, 1, 2, Qt::AlignCenter);
-	layout->addWidget(soldier, 4, 0, 1, 2, Qt::AlignCenter);
-	layout->addWidget(urchin, 4, 1, 1, 2, Qt::AlignCenter);
+	// Create and configure layout for the navbar
+	QWidget *navbar = new QWidget();
+	QHBoxLayout *navbarLayout = new QHBoxLayout(navbar);
+	navbar->setFixedHeight(40);
 
-	// Creating the confirm button and adding it to the layout
-	QPushButton * confirm = new QPushButton("Confirm Background");
-	layout->addWidget(confirm, 5, 0, 1, 3, Qt::AlignCenter);
+	// Create combo box for the background
+	QComboBox *backgroundComboBox = new QComboBox;
+	backgroundComboBox->addItem("Acolyte");
+	backgroundComboBox->addItem("Charlatan");
+	backgroundComboBox->addItem("Criminal");
+	backgroundComboBox->addItem("Entertainer");
+	backgroundComboBox->addItem("Folk Hero");
+	backgroundComboBox->addItem("Guild Artisan");
+	backgroundComboBox->addItem("Hermit");
+	backgroundComboBox->addItem("Noble");
+	backgroundComboBox->addItem("Outlander");
+	backgroundComboBox->addItem("Sage");
+	backgroundComboBox->addItem("Sailor");
+	backgroundComboBox->addItem("Soldier");
+	backgroundComboBox->addItem("Urchin");
 
-	// When confirm is clicked it will move to the next page: InventoryWidget
-	connect(confirm, SIGNAL (clicked()), SLOT (nextPage()));
+	// Create navigation buttons
+	QPushButton *backButton = new QPushButton("Back");
+	QPushButton *nextButton = new QPushButton("Next");
+
+	// Add the combo box and navigation buttons to the navbar
+	navbarLayout->addWidget(backButton);
+	navbarLayout->addWidget(backgroundComboBox);
+	navbarLayout->addWidget(nextButton);
+
+	// Add the body and navbar to the main layout
+	layout->addWidget(body);
+	layout->addWidget(navbar);
+
+	// When back button is clicked it calls the public SLOT function backPage()
+	connect(backButton, SIGNAL(clicked()), SLOT(backPage()));
+	connect(nextButton, SIGNAL(clicked()), SLOT(nextPage()));
+}
+
+/**
+ * This function changes AddCharacter's StackedWidget to RaceWidget
+ */
+void BackgroundWidget::backPage()
+{
+	QStackedWidget *stackedWidget = qobject_cast<QStackedWidget *>(this->parentWidget());
+	if (stackedWidget)
+	{
+		stackedWidget->setCurrentIndex(3);
+	}
 }
 
 /**
  * This function changes AddCharacter's StackedWidget to InventoryWidget
  */
-void BackgroundWidget::nextPage() {
-	QStackedWidget * stackedWidget = qobject_cast<QStackedWidget *>(this->parentWidget());
-	if (stackedWidget) {
+void BackgroundWidget::nextPage()
+{
+	QStackedWidget *stackedWidget = qobject_cast<QStackedWidget *>(this->parentWidget());
+	if (stackedWidget)
+	{
 		stackedWidget->setCurrentIndex(5);
 	}
 }
 
 /**
- * Cunstructor for the class
+ * Constructor for the class
  */
 InventoryWidget::InventoryWidget(QWidget * parent) :
 	QWidget(parent)
 {
-	QGridLayout * layout = new QGridLayout(this);
+	// Create the main vertical layout
+	QVBoxLayout *layout = new QVBoxLayout(this);
 
-	// Creating the spacer items for spacing the other widgets
-	QSpacerItem * spacer = new QSpacerItem(100, 100);
-	layout->addItem(spacer, 0, 3);
-	layout->addItem(spacer, 3, 3);
+	// Create the layout of the inventory
+	QWidget *inventory = new QWidget();
+	QGridLayout *inventoryLayout = new QGridLayout(inventory);
 
-	// Creating the items list and adding it to the layout
-	QListWidget * items = new QListWidget();
-	layout->addWidget(items, 2, 2, 1, 3);
+	// Create and configure layout for the navbar
+	QWidget *navbar = new QWidget();
+	QHBoxLayout *navbarLayout = new QHBoxLayout(navbar);
+	navbar->setFixedHeight(40);
 
-	// Creating the addItem button and adding it to the layout
-	QPushButton * addItem = new QPushButton("Add Item");
-	layout->addWidget(addItem, 1, 1, 1, 3, Qt::AlignCenter);
+	// Create inventory elements
+	QSpacerItem *spacer = new QSpacerItem(100, 100);
+	QListWidget *items = new QListWidget();
+	QPushButton *addItem = new QPushButton("Add Item");
+	QPushButton *removeItem = new QPushButton("Remove Selected Item");
 
-	// Creating the removeItme button and adding it to the layout
-	QPushButton * removeItem = new QPushButton("Remove Selected Item");
-	layout->addWidget(removeItem, 1, 3, 1, 3, Qt::AlignCenter);
+	// Create navigation buttons
+	QPushButton *backButton = new QPushButton("Back");
+	QPushButton *finishButton = new QPushButton("Finish");
 
-	// Creating the confirm button and adding it to the layout
-	QPushButton * confirm = new QPushButton("Confirm Inventory");
-	layout->addWidget(confirm, 3, 3, Qt::AlignCenter);
+	// Add inventory elements to the body
+	inventoryLayout->addItem(spacer, 0, 3);
+	inventoryLayout->addItem(spacer, 3, 3);
+	inventoryLayout->addWidget(items, 2, 2, 1, 3);
+	inventoryLayout->addWidget(addItem, 1, 1, 1, 3, Qt::AlignCenter);
+	inventoryLayout->addWidget(removeItem, 1, 3, 1, 3, Qt::AlignCenter);
 
-	// When confirm is clicked it will move to the next page: CharacterSelect
-	connect(confirm, SIGNAL (clicked()), SLOT (nextPage()));
+	// Add the combo box and navigation buttons to the navbar
+	navbarLayout->addWidget(backButton);
+	navbarLayout->addWidget(finishButton);
+
+	// Add the body and navbar to the main layout
+	layout->addWidget(inventory);
+	layout->addWidget(navbar);
+
+	// When back button is clicked it calls the public SLOT function backPage()
+	connect(backButton, SIGNAL(clicked()), SLOT(backPage()));
+	connect(finishButton, SIGNAL(clicked()), SLOT(nextPage()));
 }
 
 /**
- * This function resets the page of AddCharacter's StackedWidget
- * And changes the mainStackedWidget back to CharacterSelect
+ * This function changes AddCharacter's StackedWidget to BackgroundWidget
  */
-void InventoryWidget::nextPage() {
-	AddCharacter * addCharacterWidget = qobject_cast<AddCharacter *>(this->parentWidget());
-	if (addCharacterWidget) {
+void InventoryWidget::backPage()
+{
+	QStackedWidget *stackedWidget = qobject_cast<QStackedWidget *>(this->parentWidget());
+	if (stackedWidget)
+	{
+		stackedWidget->setCurrentIndex(4);
+	}
+}
+
+/**
+ * This function resets AddCharacter's StackedWidget to StartWidget
+ * It also changes mainStackedWidget to SelectCharacter
+ */
+void InventoryWidget::nextPage()
+{
+	AddCharacter *addCharacterWidget = qobject_cast<AddCharacter *>(this->parentWidget());
+	if (addCharacterWidget)
+	{
 		addCharacterWidget->setCurrentIndex(0);
 	}
-	QStackedWidget * mainStackedWidget = qobject_cast<QStackedWidget *>(addCharacterWidget->parentWidget());
-	if (mainStackedWidget) {
+	QStackedWidget *mainStackedWidget = qobject_cast<QStackedWidget *>(addCharacterWidget->parentWidget());
+	if (mainStackedWidget)
+	{
 		mainStackedWidget->setCurrentIndex(0);
 	}
 	// Need to somehow get access to the SelectCharacterWidget to call addCharacter(QString name)

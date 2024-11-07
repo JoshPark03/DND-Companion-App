@@ -12,7 +12,7 @@ Last Modified: 11/5/2024
 
 #include <QStackedWidget>
 #include <QListWidget>
-#include <QRadioButton>
+#include <QComboBox>
 #include <QLineEdit>
 #include <QSpinBox>
 #include <QWidget>
@@ -24,7 +24,8 @@ class RaceWidget;
 class BackgroundWidget;
 class InventoryWidget;
 
-class AddCharacter : public QStackedWidget {
+class AddCharacter : public QStackedWidget
+{
 	Q_OBJECT
 private:
 	// Declaration of all custom widget class variables
@@ -46,7 +47,8 @@ public:
 	InventoryWidget * getInventoryWidget() { return this->inventoryWidget; }
 };
 
-class StartWidget : public QWidget {
+class StartWidget : public QWidget
+{
 	Q_OBJECT
 public:
 	explicit StartWidget(QWidget * parent = 0);
@@ -54,12 +56,14 @@ public:
 	// get function for name widget
 	QLineEdit * getName() { return this->name; }
 private:
-	QLineEdit * name;
+	QLineEdit *name;
 private slots:
+	void backPage();
 	void nextPage();
 };
 
-class BaseStatsWidget : public QWidget {
+class BaseStatsWidget : public QWidget
+{
 	Q_OBJECT
 public:
 	explicit BaseStatsWidget(QWidget * parent = 0);
@@ -71,6 +75,7 @@ public:
 	int getIntelligence() { return this->intelligenceVal->value(); }
 	int getWisdom() { return this->wisdomVal->value(); }
 	int getCharisma() { return this->charismaVal->value(); }
+
 private:
 	// Declarations for each stat val widget 
 	QSpinBox * strengthVal;
@@ -80,90 +85,66 @@ private:
 	QSpinBox * wisdomVal;
 	QSpinBox * charismaVal;
 private slots:
+	void backPage();
 	void nextPage();
 };
 
-class ClassWidget : public QWidget {
+class ClassWidget : public QWidget
+{
 	Q_OBJECT
 public:
-	explicit ClassWidget(QWidget * parent = 0);
-
+	explicit ClassWidget(QWidget *parent = 0);
 	// function for getting which radio button is selected
-	QRadioButton * getSelected();
+	QComboBox *getSelected();
+
 private:
-	// Declarations for each class radio button
-	QRadioButton * barbarian;
-	QRadioButton * bard;
-	QRadioButton * cleric;
-	QRadioButton * druid;
-	QRadioButton * fighter;
-	QRadioButton * monk;
-	QRadioButton * paladin;
-	QRadioButton * ranger;
-	QRadioButton * rogue;
-	QRadioButton * sorcerer;
-	QRadioButton * warlock;
-	QRadioButton * wizard;
+	QComboBox *classComboBox;
 private slots:
+	void backPage();
 	void nextPage();
 };
 
-class RaceWidget : public QWidget {
+class RaceWidget : public QWidget
+{
 	Q_OBJECT
 public:
-	explicit RaceWidget(QWidget * parent = 0);
-
+	explicit RaceWidget(QWidget *parent = 0);
 	// function for getting which radio button is selected
-	QRadioButton * getSelected();
+	QComboBox *getSelected();
+
 private:
-	// Declarations for each race radio button
-	QRadioButton * dwarf;
-	QRadioButton * elf;
-	QRadioButton * halfling;
-	QRadioButton * human;
-	QRadioButton * dragonborn;
-	QRadioButton * gnome;
-	QRadioButton * half_elf;
-	QRadioButton * half_orc;
-	QRadioButton * tiefling;
+	QComboBox *raceComboBox;
 private slots:
+	void backPage();
 	void nextPage();
 };
 
-class BackgroundWidget : public QWidget {
+class BackgroundWidget : public QWidget
+{
 	Q_OBJECT
 public:
-	explicit BackgroundWidget(QWidget * parent = 0);
-
+	explicit BackgroundWidget(QWidget *parent = 0);
 	// function for getting which radio button is selected
-	QRadioButton * getSelected();
+	QComboBox *getSelected();
+
 private:
-	// Declarations for each background radio button
-	QRadioButton * acolyte;
-	QRadioButton * charlatan;
-	QRadioButton * criminal;
-	QRadioButton * entertainer;
-	QRadioButton * folk_hero;
-	QRadioButton * guild_artisan;
-	QRadioButton * hermit;
-	QRadioButton * noble;
-	QRadioButton * outlander;
-	QRadioButton * sage;
-	QRadioButton * sailor;
-	QRadioButton * soldier;
-	QRadioButton * urchin;
+	QComboBox *backgroundComboBox;
 private slots:
+	void backPage();
 	void nextPage();
 };
 
-class InventoryWidget : public QWidget {
+class InventoryWidget : public QWidget
+{
 	Q_OBJECT
 public:
-	explicit InventoryWidget(QWidget * parent = 0);
+	explicit InventoryWidget(QWidget *parent = 0);
+
 private:
 	// Declaration for the items list widget
 	QListWidget * items;
 private slots:
+	void backPage();
 	void nextPage();
 };
 
