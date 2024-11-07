@@ -9,7 +9,7 @@ QPushButton {
     background-color: #FFFFFF; /* White background for buttons */
     color: #333333;            /* Dark text */
     border-radius: 5px;
-    padding: 8px;
+    padding: 20px;
     font-weight: bold;
     border: 1px solid #0051BA; /* Blue border for accent */
 }

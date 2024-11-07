@@ -59,8 +59,6 @@ int main(int argc, char ** argv) {
 	QApplication app (argc, argv);
 	// Window Object
 
-	// Load the theme
-	loadTheme(app);
 
 	// Creating a stacked widget to hold multiple pages
 	QStackedWidget * stackedWidget = new QStackedWidget();
@@ -94,6 +92,10 @@ int main(int argc, char ** argv) {
 	// Displays window in maximized state
 	// characterSelect->showMaximized();
 	// characterSelect->show();
+
+	// Load the theme
+	loadTheme(app);
+
 	// Runs the app
 	return app.exec();
 }

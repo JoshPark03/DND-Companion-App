@@ -6,13 +6,14 @@ QWidget {
 
 /* QPushButton Styling */
 QPushButton {
-    background-color: #3B3B3B; /* Slightly lighter gray for buttons */
-    color: #E6E6E6;            /* Light text */
-    border-radius: 5px;
-    padding: 8px;
-    font-weight: bold;
-    border: 1px solid #0051BA; /* KU Blue border as an accent */
+    padding: 20px;  /* Adjust padding to provide more space inside the button */
+    font-size: 14px;     /* Set a readable font size */
+    border: 2px solid #0051BA; /* Border for accent */
+    color: #E6E6E6;      /* Text color */
+    background-color: #3B3B3B; /* Button background color */
+    border-radius: 5px;  /* Rounded corners */
 }
+
 QPushButton:hover {
     background-color: #505050; /* Slightly lighter gray on hover */
 }

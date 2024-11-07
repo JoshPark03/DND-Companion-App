@@ -33,6 +33,13 @@ Settings::Settings(QWidget *parent) :
     themeSelector->addItem("Dark Mode");
     mainLayout->addWidget(themeSelector, 1, 0, Qt::AlignLeft);
 
+    // Load saved theme and set combo box to it
+    QString savedTheme = loadSavedTheme();
+    int index = themeSelector->findText(savedTheme);
+    if (index != -1) {
+        themeSelector->setCurrentIndex(index);
+    }
+
     // Import button at the bottom left
     QPushButton *importButton = new QPushButton("Import Character");
     mainLayout->addWidget(importButton, 2, 0, Qt::AlignLeft);
@@ -81,6 +88,18 @@ void Settings::changeTheme(const QString &theme) {
         out << theme;
         themeFile.close();
     }
+}
+
+// Function to load the saved theme from a file
+QString Settings::loadSavedTheme() const {
+    QFile themeFile("src/themes/selectedTheme.txt");
+    if (themeFile.open(QFile::ReadOnly | QFile::Text)) {
+        QTextStream in(&themeFile);
+        QString savedTheme = in.readLine().trimmed(); // Read and trim any whitespace/newlines
+        themeFile.close();
+        return savedTheme;
+    }
+    return "Light Mode"; // Default to "Light Mode" if no file is found or an error occurs
 }
 
 Settings::~Settings()

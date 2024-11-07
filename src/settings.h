@@ -17,6 +17,7 @@ private slots:
 
 private:
     QComboBox *themeSelector;
+    QString loadSavedTheme() const;
 };
 
 #endif // SETTINGS_H

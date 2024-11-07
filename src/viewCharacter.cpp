@@ -370,10 +370,10 @@ ViewCharacter::ViewCharacter(QWidget *parent, QString nameIn) :
     QGridLayout *skillsLayout = new QGridLayout(skillsWidget);
 
     // Add all of the skill widgets to the skills widget
-    QLabel *skillsLabel = new QLabel("Skills");
-    skillsLabel->setAlignment(Qt::AlignCenter);
+    QLabel *skillsLabel = new QLabel("Skills\n");
+    skillsLabel->setAlignment(Qt::AlignLeft);
     QLabel *proficiencyBonusLabel = new QLabel("Proficiency Bonus:\n" + QString::number(characterProficiencyBonus));
-    proficiencyBonusLabel->setAlignment(Qt::AlignCenter);
+    proficiencyBonusLabel->setAlignment(Qt::AlignRight);
     skillsLayout->addWidget(skillsLabel, 0, 0);
     skillsLayout->addWidget(proficiencyBonusLabel, 0, 1, 1, 2);
     for(int i = 0; i < skillMap.count(); i++)
