@@ -4,7 +4,7 @@ Description: Main entry point for the application, initializes the GUI and sets 
 Authors: Carson Treece, Zachary Craig, Josh Park
 Other Sources: ...
 Date Created: 10/20/2024
-Last Modified: 10/24/2024
+Last Modified: 11/06/2024
 */
 
 
@@ -16,7 +16,6 @@ Last Modified: 10/24/2024
 
 #include "characterSelect.h"
 #include "addCharacter.h"
-#include "viewCharacter.h"
 #include "settings.h"
 
 // QLineEdit for textbox
@@ -25,9 +24,43 @@ Last Modified: 10/24/2024
 
 // QPushButton for buttons
 
+// Function to load saved color theme
+void loadTheme(QApplication &app) {
+	QString theme;
+
+	// Read from selectedTheme.txt
+	QFile themeFile("src/themes/selectedTheme.txt");
+	if (themeFile.open(QFile::ReadOnly | QFile::Text)) {
+		QTextStream in(&themeFile);
+		theme = in.readLine();
+		themeFile.close();
+	}
+
+	// Set the theme
+	QString qssFile;
+	if (theme == "Light Mode") {
+		qssFile = "src/themes/lightMode.qss";
+	} else if (theme == "Dark Mode") {
+		qssFile = "src/themes/darkMode.qss";
+	}
+
+	// Apply the theme
+	QFile file(qssFile);
+	if (file.open(QFile::ReadOnly)) {
+        QString styleSheet = QLatin1String(file.readAll());
+        app.setStyleSheet(styleSheet);
+        file.close();
+    } else {
+        qDebug() << "Failed to open QSS file:" << qssFile;
+    }
+}
+
 int main(int argc, char ** argv) {
 	QApplication app (argc, argv);
 	// Window Object
+
+	// Load the theme
+	loadTheme(app);
 
 	// Creating a stacked widget to hold multiple pages
 	QStackedWidget * stackedWidget = new QStackedWidget();
