@@ -125,7 +125,6 @@ void ViewCharacter::loadCharacter(QString name)
             {
                 if(spellInfo[j] != "" && spellInfo[j] != " " && j == 0) characterPreppedSpells.append(spellInfo[j]); // Add prepped spells to the list
             }
-            // if(line3[i] != "" && line3[i] != " ") characterPreppedSpells.append(line3[i]); // Add prepped spells to the list
         }
 
 
@@ -137,9 +136,8 @@ void ViewCharacter::loadCharacter(QString name)
             QStringList spellInfo = line4[i].split(":");
             for(int j = 0; j < spellInfo.size(); j++)
             {
-                if(spellInfo[j] != "" && spellInfo[j] != " " && j == 0) characterKnownSpells.append(spellInfo[j]); // Add prepped spells to the list
+                if(spellInfo[j] != "" && spellInfo[j] != " " && j == 0) characterKnownSpells.append(spellInfo[j]); // Add known spells to the list
             }
-            // if(line4[i] != "" && line4[i] != " ") characterKnownSpells.append(line4[i]); // Add known spells to the list
         }
 
 
