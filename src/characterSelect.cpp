@@ -379,7 +379,7 @@ void CharacterSelect::gotoSettings()
 	QStackedWidget *stackedWidget = qobject_cast<QStackedWidget *>(this->parentWidget());
 	if (stackedWidget)
 	{
-		stackedWidget->setCurrentIndex(2); // settings is the fourth page so index 3
+		stackedWidget->setCurrentIndex(3); // settings is the fourth page so index 3
 	}
 }
 
