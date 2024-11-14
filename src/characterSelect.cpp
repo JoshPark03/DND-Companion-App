@@ -225,88 +225,17 @@ CharacterSelect::CharacterSelect(QWidget *parent)
 		THE AREA BELOW SHOULD BE USED FOR THE CONNECT FUNCTIONS IE. EVENT HANDLERS
 	*/
 
-	// // delete character button click event
-	// connect(this->deleteChar, &QPushButton::clicked, [=](){
-	// 	// call the delete character function
-	// 	deleteCharacter();
-
-	// 	// if there are no characters left, add a message to the list
-	// 	if(characters->count() == 0)
-	// 	{
-	// 		QListWidgetItem * nochars = new QListWidgetItem("No Characters Have been created");
-	// 		this->characters->addItem(nochars);
-	// 	}
-
-	// 	// disable delete button after character deletion
-	// 	this->deleteChar->setEnabled(false);
-	// });
-
 	// delete character button click event
 	connect(this->deleteChar, SIGNAL(clicked()), SLOT(deleteCharSlot()));
-
-	// // enable the delete button when a character is clicked
-	// connect(characters, &QListWidget::itemClicked, [=](){
-	// 	// enable delete button
-	// 	this->deleteChar->setEnabled(true);
-	// });
 
 	// enable the delete button when a character is clicked
 	connect(characters, SIGNAL(itemClicked(QListWidgetItem *)), SLOT(selectChar()));
 
-	// // double click event to view character
-	// connect(characters, &QListWidget::itemDoubleClicked, [=](){
-	// 	// get the name of the character
-	// 	QString name = characters->currentItem()->text();
-
-	// 	QStackedWidget * stackedWidget = qobject_cast<QStackedWidget *>(this->parentWidget());
-	// 	if (stackedWidget) {
-	// 		// get the viewCharacter page
-	// 		QWidget * viewCharacter = stackedWidget->widget(2); // viewCharacter is the third page so index 2
-
-	// 		// delete the current viewCharacter page
-	// 		delete viewCharacter;
-
-	// 		// create a new viewCharacter page with new character
-	// 		ViewCharacter * newViewCharacter = new ViewCharacter(0, name);
-
-	// 		stackedWidget->insertWidget(2, newViewCharacter); // insert the new viewCharacter page
-	// 		stackedWidget->setCurrentIndex(2); // viewCharacter is the third page so index 2
-	// 	}
-
-	// 	// disable delete button since itemClicked collides with itemDoubleClicked
-	// 	deleteChar->setEnabled(false);
-	// });
-
 	// double click event to view character
 	connect(characters, SIGNAL(itemDoubleClicked(QListWidgetItem *)), SLOT(openChar()));
 
-	// // create character button click event
-	// connect(createChar, &QPushButton::clicked, [=](){
-	// 	// addCharacter(*characters);
-	// 	QStackedWidget *stackedWidget = qobject_cast<QStackedWidget *>(this->parentWidget());
-	// 	if (stackedWidget) {
-	//         stackedWidget->setCurrentIndex(1); // character select is the first page so index 0
-	//     }
-	// 	// // remove the message since a character has been created
-	// 	// if (characters->count() > 1 && characters->item(0)->text() == "No Characters Have been created")
-	// 	// {
-	// 	// 	// QListWidgetItem * item = characters->item(0)
-	// 	// 	delete characters->item(0); // removes the item
-	// 	// }
-	// });
-
 	// create character button click event
 	connect(createChar, SIGNAL(clicked()), SLOT(gotoAddCharacter()));
-
-	// // settings button click event
-	// connect(settings, &QPushButton::clicked, [=](){
-	// 	// find the parent stacked widget and switch to settings page
-	// 	QStackedWidget * stackedWidget = qobject_cast<QStackedWidget *>(this->parentWidget());
-	// 	if (stackedWidget) {
-	// 		stackedWidget->setCurrentIndex(3); // settings is the fourth page so index 3
-	// 	}
-
-	// });
 
 	// settings button click event
 	connect(settings, SIGNAL(clicked()), SLOT(gotoSettings()));
@@ -382,11 +311,3 @@ void CharacterSelect::gotoSettings()
 		stackedWidget->setCurrentIndex(3); // settings is the fourth page so index 3
 	}
 }
-
-// CharacterSelect::~CharacterSelect() {
-// 	delete this->layout;
-// 	delete this->createChar;
-// 	delete this->characters;
-// 	delete this->settings;
-// 	delete this->deleteChar;
-// }
