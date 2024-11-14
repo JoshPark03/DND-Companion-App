@@ -17,12 +17,20 @@ Last Modified: 10/31/2024
 #include <QSpinBox>
 #include <QWidget>
 
+class MyComboBox;
 class StartWidget;
 class BaseStatsWidget;
 class ClassWidget;
 class RaceWidget;
 class BackgroundWidget;
 class InventoryWidget;
+
+class MyComboBox : public QComboBox
+{
+	Q_OBJECT
+public:
+	virtual void showPopup() override;
+};
 
 class AddCharacter : public QStackedWidget
 {

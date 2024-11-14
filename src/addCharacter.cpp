@@ -19,6 +19,22 @@ Last Modified: 10/31/2024
 #include <QFormLayout>
 #include <QLabel>
 
+void MyComboBox::showPopup()
+{
+	QComboBox::showPopup();
+
+	QWidget *popup = this->findChild<QFrame *>();
+	if (popup)
+	{
+		// Get global position of the QComboBox and adjust for the popup's height
+		QPoint globalPos = this->mapToGlobal(QPoint(0, 0));
+		int popupHeight = popup->height();
+
+		// Move the popup above the combobox
+		popup->move(globalPos.x(), globalPos.y() - popupHeight);
+	}
+}
+
 AddCharacter::AddCharacter(QWidget *parent) : QStackedWidget(parent)
 {
 	startWidget = new StartWidget();
@@ -195,7 +211,7 @@ ClassWidget::ClassWidget(QWidget *parent) : QWidget(parent)
 	navbar->setFixedHeight(40);
 
 	// Create the class combo box
-	QComboBox *classComboBox = new QComboBox;
+	MyComboBox *classComboBox = new MyComboBox;
 	classComboBox->addItem("Barbarian");
 	classComboBox->addItem("Bard");
 	classComboBox->addItem("Cleric");
@@ -260,7 +276,7 @@ RaceWidget::RaceWidget(QWidget *parent) : QWidget(parent)
 	navbar->setFixedHeight(40);
 
 	// Create the race combo box
-	QComboBox *raceComboBox = new QComboBox;
+	MyComboBox *raceComboBox = new MyComboBox;
 	raceComboBox->addItem("Dwarf");
 	raceComboBox->addItem("Elf");
 	raceComboBox->addItem("Halfling");
@@ -322,7 +338,7 @@ BackgroundWidget::BackgroundWidget(QWidget *parent) : QWidget(parent)
 	navbar->setFixedHeight(40);
 
 	// Create combo box for the background
-	QComboBox *backgroundComboBox = new QComboBox;
+	MyComboBox *backgroundComboBox = new MyComboBox;
 	backgroundComboBox->addItem("Acolyte");
 	backgroundComboBox->addItem("Charlatan");
 	backgroundComboBox->addItem("Criminal");
