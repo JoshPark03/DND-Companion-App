@@ -45,7 +45,7 @@ Portrait::Portrait(const QString& type, const QString& selection, QWidget *paren
 void Portrait::getImage(const QString& selection)
 {
 	// Attempt to retrieve a picture file from the assets folder based on the widget type and combo box selection
-	QPixmap image(QDir::currentPath() + "/src/assets/" + *(this->typeWidget) + "/" + selection + ".png");
+	QPixmap image(QDir::currentPath() + "/src/assets/" + *(this->typeWidget) + "/" + selection + ".png", "-d");
 	if (image.isNull())
 	{
 		this->setText("Image not available");
