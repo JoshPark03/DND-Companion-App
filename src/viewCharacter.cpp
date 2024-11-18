@@ -341,55 +341,65 @@ ViewCharacter::ViewCharacter(QWidget *parent, QString nameIn) :
     // Create a stats widget for the second column
     QWidget *statsWidget = new QWidget();
     QGridLayout *statsLayout = new QGridLayout(statsWidget);
-    statsWidget->setFixedHeight(100);
+    statsWidget->setFixedHeight(120);
 
     // Define all of the stat widgets
     QStringList abilitiesNames;
-    abilitiesNames << "Str" << "Dex" << "Con" << "Int" << "Wis" << "Cha";
-    QLabel *statsLabel = new QLabel("Stats");
-    
-    QLabel *savingThrowsLabel = new QLabel("Saving Throws");
+    abilitiesNames << "Str" << "Dex" << "Con" << "Int" << "Wis" << "Cha"; // Adds the names of the abilities to the list
 
     // Add all of the stat widgets to the stats widget
-    statsLayout->addWidget(statsLabel, 1, 0);
+    statsLayout->addWidget(new QLabel("Ability"), 0, 0); // Creates a label for the ability names section header
+    statsLayout->addWidget(new QLabel("Score"), 1, 0); // Creates a label for the ability scores section header
+    statsLayout->addWidget(new QLabel("Modifier"), 2, 0); // Creates a label for the ability modifiers section header
+    statsLayout->addWidget(new QLabel("Saving Throws"), 3, 0); // Creates a label for the saving throws section header
+    
+    // Add the ability names and values to the stats widget
     for(int i = 0; i < abilitiesNames.length(); i++)
     {
-        statsLayout->addWidget(new QLabel(abilitiesNames[i]), 0, i+1);
-        statsLayout->addWidget(new QLabel(QString::number(characterAbilities[i])), 1, i+1);
+        statsLayout->addWidget(new QLabel(abilitiesNames[i]), 0, i+1); // Adds the ability names to the list
+        statsLayout->addWidget(new QLabel(QString::number(characterAbilities[i])), 1, i+1); // Adds the ability scores to the list
     }
-    statsLayout->addWidget(savingThrowsLabel, 2, 0);
+
+    // Add ability modifiers below ability scores
+    for(int i = 0; i < characterAbilityBonuses.length(); i++)
+    {
+        QString prefix = ""; // Creates a prefix for the modifier
+        if(characterSavingThrows[i] >= 0) prefix = "+"; // Adds a plus sign to the front of the modifier if it is positive or zero
+        statsLayout->addWidget(new QLabel(prefix + QString::number(characterAbilityBonuses[i])), 2, i+1); // Adds the ability modifiers to the list
+    }
+
+
+    // Add the saving throws to the stats widget
     for(int i = 0; i < abilitiesNames.length(); i++)
     {
-        QString prefix = "";
-        if(characterSavingThrows[i] >= 0) prefix = "+";
-        statsLayout->addWidget(new QLabel(prefix + QString::number(characterSavingThrows[i])), 2, i+1);
+        QString prefix = ""; // Creates a prefix for the saving throw
+        if(characterSavingThrows[i] >= 0) prefix = "+"; // Adds a plus sign to the front of the saving throw if it is positive or zero
+        statsLayout->addWidget(new QLabel(prefix + QString::number(characterSavingThrows[i])), 3, i+1); // Adds the saving throws to the list
     }
 
     // Create a skills widget for the second column
-    QWidget *skillsWidget = new QWidget();
-    QGridLayout *skillsLayout = new QGridLayout(skillsWidget);
+    QWidget *skillsWidget = new QWidget(); // Creates a widget for the skills section
+    QGridLayout *skillsLayout = new QGridLayout(skillsWidget); // Creates a grid layout for the skills section
 
     // Add all of the skill widgets to the skills widget
-    QLabel *skillsLabel = new QLabel("Skills\n");
-    skillsLabel->setAlignment(Qt::AlignLeft);
-    QLabel *proficiencyBonusLabel = new QLabel("Proficiency Bonus:\n" + QString::number(characterProficiencyBonus));
-    proficiencyBonusLabel->setAlignment(Qt::AlignRight);
-    skillsLayout->addWidget(skillsLabel, 0, 0);
-    skillsLayout->addWidget(proficiencyBonusLabel, 0, 1, 1, 2);
+    QLabel *skillsLabel = new QLabel("Skills\n"); // Creates a label for the skills section header
+    skillsLabel->setAlignment(Qt::AlignLeft); // Aligns the skills label to the left
+    QLabel *proficiencyBonusLabel = new QLabel("Proficiency Bonus:\n+" + QString::number(characterProficiencyBonus)); // Adds the proficiency bonus to the label
+    proficiencyBonusLabel->setAlignment(Qt::AlignRight); // Aligns the proficiency bonus label to the right
+    skillsLayout->addWidget(skillsLabel, 0, 0); // Adds the skills label to the list
+    skillsLayout->addWidget(proficiencyBonusLabel, 0, 1, 1, 2); // Adds the proficiency bonus label to the list
     for(int i = 0; i < skillMap.count(); i++)
     {
         QString prefix = "";
-        if(characterSkillBonuses[i] >= 0) prefix = "+";
-
-        QLabel *skillLabel = new QLabel(skillMap.keys().at(i) + "\n" + prefix + QString::number(characterSkillBonuses[i]));
-        skillLabel->setAlignment(Qt::AlignCenter);
-
-        skillsLayout->addWidget(skillLabel, (i/3)+1, i%3);
+        if(characterSkillBonuses[i] >= 0) prefix = "+"; // Adds a plus sign to the front of the skill bonus if it is positive or zero
+        QLabel *skillLabel = new QLabel(skillMap.keys().at(i) + "\n" + prefix + QString::number(characterSkillBonuses[i])); // Uses the skill map to get the skill name and adds the skill bonus to the label
+        skillLabel->setAlignment(Qt::AlignCenter); // Aligns the skill label to the center
+        skillsLayout->addWidget(skillLabel, (i/3)+1, i%3); // Adds the skill label to the list
     }
 
     // Add the stats widget to column 2
-    column2Layout->addWidget(statsWidget);
-    column2Layout->addWidget(skillsWidget);
+    column2Layout->addWidget(statsWidget); // Adds the stats widget to the list
+    column2Layout->addWidget(skillsWidget); // Adds the skills widget to the list
 
 
     // Create the third column
@@ -397,13 +407,87 @@ ViewCharacter::ViewCharacter(QWidget *parent, QString nameIn) :
     QVBoxLayout *column3Layout = new QVBoxLayout(column3);
 
     // Define all of the column 3 widgets
-    QWidget *combatStatsWidget = new QWidget();
-    QGridLayout *combatStatsLayout = new QGridLayout(combatStatsWidget);
-    combatStatsWidget->setFixedHeight(100);
-    QString initiativePrefix = (characterInitiative < 0) ? "-" : "+";
-    QLabel *initiativeLabel = new QLabel("Initiative:\n" + initiativePrefix + QString::number(characterInitiative));
-    QLabel *armorClassLabel = new QLabel("Armor Class:\n" + QString::number(characterArmorClass));
-    QLabel *hitPointsLabel = new QLabel("Hit Points:\n" + QString::number(characterHitPoints) + "/" + QString::number(characterMaxHitPoints));
+    QWidget *combatStatsWidget = new QWidget(); // Creates a widget for the combat stats section
+    QGridLayout *combatStatsLayout = new QGridLayout(combatStatsWidget); // Creates a grid layout for the combat stats section
+    combatStatsWidget->setFixedHeight(100); // Sets the height of the combat stats widget to 100px
+    QString initiativePrefix = (characterInitiative < 0) ? "-" : "+"; // Uses a ternary operator to determine if the initiative is negative or positive
+    QLabel *initiativeLabel = new QLabel("Initiative:\n" + initiativePrefix + QString::number(characterInitiative)); // Creates a label with the prefix and initiative as the text
+    QLabel *armorClassLabel = new QLabel("Armor Class:\n" + QString::number(characterArmorClass)); // Creates a label with the armor class as the text
+    QLabel *hitPointsLabel = new QLabel("Hit Points:\n" + QString::number(characterHitPoints) + "/" + QString::number(characterMaxHitPoints)); // Creates a label with the hit points as the text
+
+    // Defining the area for the death saving throws
+    QWidget *deathSavingThrows = new QWidget(); // Creates a widget for the death saving throws section
+    QWidget *deathSuccesses = new QWidget(); // Creates a widget for the death successes section
+    QWidget *deathFails = new QWidget(); // Creates a widget for the death fails section
+
+    // Setting the layouts for each saving throw area
+    QVBoxLayout *deathSavingThrowsLayout = new QVBoxLayout(deathSavingThrows); // Creates a vertical layout for the death saving throws section
+    QHBoxLayout *deathSuccessesLayout = new QHBoxLayout(deathSuccesses); // Creates a horizontal layout for the death successes section
+    QHBoxLayout *deathFailsLayout = new QHBoxLayout(deathFails); // Creates a horizontal layout for the death fails section
+
+    // Creating the death saving throw widgets
+    QLabel *deathSavingThrowsLabel = new QLabel("Death Saving Throws"); // Creates a label for the death saving throws section
+    QLabel *deathSuccessesLabel = new QLabel("Successes:"); // Creates a label for the death successes section
+    QLabel *deathFailsLabel = new QLabel("Fails:"); // Creates a label for the death fails section
+
+    // Creating the death saving throw radio buttons
+    QRadioButton *deathSuccess1 = new QRadioButton(); // Creates a radio button for the first death success
+    QRadioButton *deathSuccess2 = new QRadioButton(); // Creates a radio button for the second death success
+    QRadioButton *deathSuccess3 = new QRadioButton(); // Creates a radio button for the third death success
+    QRadioButton *deathFail1 = new QRadioButton(); // Creates a radio button for the first death fail
+    QRadioButton *deathFail2 = new QRadioButton(); // Creates a radio button for the second death fail
+    QRadioButton *deathFail3 = new QRadioButton(); // Creates a radio button for the third death fail
+
+    // The radio buttons should be disabled unless the character is at 0 hit points
+    // Also, the only radio buttons that should be enabled when the character is at 0 hp are the first ones that aren't already selected
+    // So the if the character has 1 success and 0 fails, the enabled radio buttons should be the second success and the first fail
+    if(characterHitPoints == 0)
+    {
+        // Logic for death successes
+        if(deathThrows[0] == 0)
+        {
+            deathSuccess1->setEnabled(true);
+        }
+        else if(deathThrows[0] == 1)
+        {
+            deathSuccess2->setEnabled(true);
+        }
+        else if(deathThrows[0] == 2)
+        {
+            deathSuccess3->setEnabled(true);
+        }
+
+        // Logic for death fails
+        if(deathThrows[1] == 0)
+        {
+            deathFail1->setEnabled(true);
+        }
+        else if(deathThrows[1] == 1)
+        {
+            deathFail2->setEnabled(true);
+        }
+        else if(deathThrows[1] == 2)
+        {
+            deathFail3->setEnabled(true);
+        }
+    }
+
+    // Add the death successes and fails to their respective layouts
+    deathSuccessesLayout->addWidget(deathSuccessesLabel); // Adds the death successes label to the list
+    deathSuccessesLayout->addWidget(deathSuccess1); // Adds the first death success radio button to the list
+    deathSuccessesLayout->addWidget(deathSuccess2); // Adds the second death success radio button to the list
+    deathSuccessesLayout->addWidget(deathSuccess3); // Adds the third death success radio button to the list
+    deathFailsLayout->addWidget(deathFailsLabel); // Adds the death fails label to the list
+    deathFailsLayout->addWidget(deathFail1); // Adds the first death fail radio button to the list
+    deathFailsLayout->addWidget(deathFail2); // Adds the second death fail radio button to the list
+    deathFailsLayout->addWidget(deathFail3); // Adds the third death fail radio button to the list
+
+    // Add the death successes and fails to the death saving throws layout
+    deathSavingThrowsLayout->addWidget(deathSavingThrowsLabel); // Adds the death saving throws label to the list
+    deathSavingThrowsLayout->addWidget(deathSuccesses); // Adds the death successes section to the list
+    deathSavingThrowsLayout->addWidget(deathFails); // Adds the death fails section to the list
+
+
 
     // Allign the labels to the center
     initiativeLabel->setAlignment(Qt::AlignCenter);
@@ -414,6 +498,7 @@ ViewCharacter::ViewCharacter(QWidget *parent, QString nameIn) :
     combatStatsLayout->addWidget(initiativeLabel, 0, 0);
     combatStatsLayout->addWidget(armorClassLabel, 0, 1);
     combatStatsLayout->addWidget(hitPointsLabel, 0, 2);
+    combatStatsLayout->addWidget(deathSavingThrows, 1, 2, 1, 2);
 
     // Add the column 3 widgets to column 3
     column3Layout->addWidget(combatStatsWidget);
