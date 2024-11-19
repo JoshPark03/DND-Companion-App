@@ -19,6 +19,44 @@ Last Modified: 10/31/2024
 #include <QFormLayout>
 #include <QLabel>
 
+void MyComboBox::showPopup()
+{
+	QComboBox::showPopup();
+
+	QWidget *popup = this->findChild<QFrame *>();
+	if (popup)
+	{
+		// Get global position of the QComboBox and adjust for the popup's height
+		QPoint globalPos = this->mapToGlobal(QPoint(0, 0));
+		int popupHeight = popup->height();
+
+		// Move the popup above the combobox
+		popup->move(globalPos.x(), globalPos.y() - popupHeight);
+	}
+}
+
+Portrait::Portrait(const QString& type, const QString& selection, QWidget *parent) : QLabel(parent)
+{
+	// Determine the widget type and fetch a picture according to the combo box selection
+	this->typeWidget = new QString(type);
+	this->getImage(selection);
+}
+
+void Portrait::getImage(const QString& selection)
+{
+	// Attempt to retrieve a picture file from the assets folder based on the widget type and combo box selection
+	QPixmap image(QDir::currentPath() + "/src/assets/" + *(this->typeWidget) + "/" + selection + ".png");
+	if (image.isNull())
+	{
+		this->setText("Image not available");
+	}
+	else
+	{
+		image = image.scaled(450, 600, Qt::KeepAspectRatio, Qt::SmoothTransformation);
+		this->setPixmap(image);
+	}
+}
+
 AddCharacter::AddCharacter(QWidget *parent) : QStackedWidget(parent)
 {
 	startWidget = new StartWidget();
@@ -195,7 +233,7 @@ ClassWidget::ClassWidget(QWidget *parent) : QWidget(parent)
 	navbar->setFixedHeight(40);
 
 	// Create the class combo box
-	QComboBox *classComboBox = new QComboBox;
+	MyComboBox *classComboBox = new MyComboBox;
 	classComboBox->addItem("Barbarian");
 	classComboBox->addItem("Bard");
 	classComboBox->addItem("Cleric");
@@ -260,7 +298,7 @@ RaceWidget::RaceWidget(QWidget *parent) : QWidget(parent)
 	navbar->setFixedHeight(40);
 
 	// Create the race combo box
-	QComboBox *raceComboBox = new QComboBox;
+	MyComboBox *raceComboBox = new MyComboBox;
 	raceComboBox->addItem("Dwarf");
 	raceComboBox->addItem("Elf");
 	raceComboBox->addItem("Halfling");
@@ -271,6 +309,14 @@ RaceWidget::RaceWidget(QWidget *parent) : QWidget(parent)
 	raceComboBox->addItem("Half Orc");
 	raceComboBox->addItem("Tiefling");
 
+	// Create the race header
+	QLabel *header = new QLabel("<h1>" + raceComboBox->currentText() + "</h1>");
+	header->setFixedHeight(50);
+	header->setAlignment(Qt::AlignCenter);
+
+	// Create the race portrait
+	Portrait *racePortrait = new Portrait("races", raceComboBox->currentText());
+
 	// Create navigation buttons
 	QPushButton *backButton = new QPushButton("Back");
 	QPushButton *nextButton = new QPushButton("Next");
@@ -280,13 +326,24 @@ RaceWidget::RaceWidget(QWidget *parent) : QWidget(parent)
 	navbarLayout->addWidget(raceComboBox);
 	navbarLayout->addWidget(nextButton);
 
-	// Add the navbar to the main layout
+	// Add the portrait to the horizontal layer
+	bodyLayout->addSpacing(100);
+	bodyLayout->addWidget(racePortrait);
+
+	// Add the header, body, and navbar to the main layout
+	layout->addWidget(header);
 	layout->addWidget(body);
 	layout->addWidget(navbar);
 
 	// When back button is clicked it calls the public SLOT function backPage()
 	connect(backButton, SIGNAL(clicked()), SLOT(backPage()));
 	connect(nextButton, SIGNAL(clicked()), SLOT(nextPage()));
+
+	// When the current selection in the combo box changes, the header and portrait must also change
+	connect(raceComboBox, &QComboBox::currentTextChanged, [header](const QString& text) {
+		header->setText("<h1>" + text + "</h1>");
+	});
+	connect(raceComboBox, &QComboBox::currentTextChanged, racePortrait, &Portrait::getImage);
 }
 
 void RaceWidget::backPage()
@@ -322,7 +379,7 @@ BackgroundWidget::BackgroundWidget(QWidget *parent) : QWidget(parent)
 	navbar->setFixedHeight(40);
 
 	// Create combo box for the background
-	QComboBox *backgroundComboBox = new QComboBox;
+	MyComboBox *backgroundComboBox = new MyComboBox;
 	backgroundComboBox->addItem("Acolyte");
 	backgroundComboBox->addItem("Charlatan");
 	backgroundComboBox->addItem("Criminal");
