@@ -17,43 +17,8 @@ Last Modified: 11/06/2024
 #include "characterSelect.h"
 #include "addCharacter.h"
 #include "settings.h"
+#include "themeUtils.h"
 
-// QLineEdit for textbox
-
-// QTextEdit for textareas
-
-// QPushButton for buttons
-
-// Function to load saved color theme
-void loadTheme(QApplication &app) {
-	QString theme;
-
-	// Read from selectedTheme.txt
-	QFile themeFile("src/themes/selectedTheme.txt");
-	if (themeFile.open(QFile::ReadOnly | QFile::Text)) {
-		QTextStream in(&themeFile);
-		theme = in.readLine();
-		themeFile.close();
-	}
-
-	// Set the theme
-	QString qssFile;
-	if (theme == "Light Mode") {
-		qssFile = "src/themes/lightMode.qss";
-	} else if (theme == "Dark Mode") {
-		qssFile = "src/themes/darkMode.qss";
-	}
-
-	// Apply the theme
-	QFile file(qssFile);
-	if (file.open(QFile::ReadOnly)) {
-        QString styleSheet = QLatin1String(file.readAll());
-        app.setStyleSheet(styleSheet);
-        file.close();
-    } else {
-        qDebug() << "Failed to open QSS file:" << qssFile;
-    }
-}
 
 int main(int argc, char ** argv) {
 	QApplication app (argc, argv);
@@ -66,14 +31,25 @@ int main(int argc, char ** argv) {
 	// Create the different pages
 	CharacterSelect * characterSelect = new CharacterSelect();
 	AddCharacter * addCharacter = new AddCharacter();
+	QStackedWidget * characterInformation = new QStackedWidget();
 	Settings * settings = new Settings();
 	
 
 	// Add pages to the stacked widget
 	stackedWidget->addWidget(characterSelect);
 	stackedWidget->addWidget(addCharacter);
-	stackedWidget->addWidget(new QWidget()); // ViewCharacter will be added later
+	stackedWidget->addWidget(characterInformation);
 	stackedWidget->addWidget(settings);
+
+	qDebug() << "Widgets in QStackedWidget:";
+    for (int i = 0; i < stackedWidget->count(); ++i) {
+        QWidget *widget = stackedWidget->widget(i);
+        if (widget) {
+            qDebug() << "Index:" << i << ", Widget:" << widget->metaObject()->className();
+        } else {
+            qDebug() << "Index:" << i << ", Widget: nullptr";
+        }
+    }
 
 	// Set the screen to start with the character select page
 	stackedWidget->setCurrentWidget(characterSelect);
@@ -82,19 +58,8 @@ int main(int argc, char ** argv) {
 	stackedWidget->resize(app.primaryScreen()->availableGeometry().size()*.7);
 	stackedWidget->show();
 
-
-	// characterSelect.chi
-	// AddCharacter * addCharacter = new AddCharacter();
-	// addCharacter->resize(app.primaryScreen()->availableGeometry().size()*.7);
-	// addCharacter->show();
-
-
-	// Displays window in maximized state
-	// characterSelect->showMaximized();
-	// characterSelect->show();
-
 	// Load the theme
-	loadTheme(app);
+	reloadTheme();
 
 	// Runs the app
 	return app.exec();

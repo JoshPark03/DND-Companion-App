@@ -1,13 +1,13 @@
 /*
-Name: viewInventory.cpp
-Description: Page to view a character's inventory.
+Name: viewNotes.cpp
+Description: Page to view a character's notes.
 Authors: Zachary Craig
 Other Sources: ...
-Date Created: 11/5/2024
-Last Modified: 11/5/2024
+Date Created: 11/18/2024
+Last Modified: 11/18/2024
 */
 
-#include "viewInventory.h"
+#include "viewNotes.h"
 #include "themeUtils.h"
 
 #include <QVBoxLayout>
@@ -21,13 +21,13 @@ Last Modified: 11/5/2024
 #include <QStringList>
 #include <QLabel>
 
-void ViewInventory::loadInventory()
+void ViewNotes::loadNotes()
 {
 
 }
 
 
-ViewInventory::ViewInventory(QWidget *parent, QString name) :
+ViewNotes::ViewNotes(QWidget *parent, QString name) :
     QWidget(parent)
 {
     // Create a row for the navbar
@@ -38,11 +38,11 @@ ViewInventory::ViewInventory(QWidget *parent, QString name) :
     // Create buttons to go back to the character page
     QPushButton *backToCharacter = new QPushButton("Return to Character");
     // Create header label with character's name
-    QLabel *inventoryLabel = new QLabel(name + "'s Inventory");
+    QLabel *notesLabel = new QLabel(name + "'s Notes");
 
     // Add buttons to navbar
     navbarLayout->addWidget(backToCharacter);
-    navbarLayout->addWidget(inventoryLabel, 1, Qt::AlignCenter);
+    navbarLayout->addWidget(notesLabel, 1, Qt::AlignCenter);
 
     
     // Create the layout for the inventory page
@@ -62,9 +62,10 @@ ViewInventory::ViewInventory(QWidget *parent, QString name) :
 
 
     reloadTheme(); // Reload the theme after everything is placed
+
 }
 
-void ViewInventory::goBack()
+void ViewNotes::goBack()
 {
     QStackedWidget *mainStackedWidget = qobject_cast<QStackedWidget *>(this->parentWidget());
     
@@ -74,6 +75,6 @@ void ViewInventory::goBack()
     }
 }
 
-ViewInventory::~ViewInventory()
+ViewNotes::~ViewNotes()
 {
 }

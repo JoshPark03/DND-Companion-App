@@ -10,6 +10,8 @@ Last Modified: 11/6/2024
 
 #include "characterSelect.h"
 #include "viewCharacter.h"
+#include "viewInventory.h"
+#include "viewNotes.h"
 
 #include <iostream>
 #include <string>
@@ -239,8 +241,6 @@ CharacterSelect::CharacterSelect(QWidget *parent)
 
 	// settings button click event
 	connect(settings, SIGNAL(clicked()), SLOT(gotoSettings()));
-
-	// std::cout << layout->rowCount() << ", " << layout->columnCount() << std::endl;
 }
 
 void CharacterSelect::deleteCharSlot()
@@ -270,27 +270,80 @@ void CharacterSelect::openChar()
 	QString name = characters->currentItem()->text();
 
 	QStackedWidget * stackedWidget = qobject_cast<QStackedWidget *>(this->parentWidget());
-	if (stackedWidget) {
-
-		if(stackedWidget->widget(2))
+	if (stackedWidget)
+	{
+		if(!stackedWidget->widget(2))
 		{
-			// get the viewCharacter page
-			QWidget * viewCharacter = stackedWidget->widget(2); // viewCharacter is the third page so index 2
-
-			// delete the current viewCharacter page
-			delete viewCharacter;
+			qDebug() << "No characterInformation stack found";
+			return;
 		}
+		// get the characterInformation stack
+		QStackedWidget * characterInformation = qobject_cast<QStackedWidget *>(stackedWidget->widget(2));
+
+		// Loop through all widgets and delete them
+    	while (characterInformation->count() > 0) 
+		{
+			QWidget *widget = characterInformation->widget(0); // Always get the first widget
+			characterInformation->removeWidget(widget); // Remove it from the stack
+			delete widget; // Delete the widget
+    	}
 		
 
-		// create a new viewCharacter page with new character
-		ViewCharacter *newViewCharacter = new ViewCharacter(0, name);
+		// Create the viewCharacter page, viewInventory page, and viewNotes page
+		ViewCharacter *newViewCharacter = new ViewCharacter(nullptr, name);
+		ViewInventory *newViewInventory = new ViewInventory(nullptr, name);
+		ViewNotes *newViewNotes = new ViewNotes(nullptr, name);
 
-		stackedWidget->insertWidget(2, newViewCharacter); // insert the new viewCharacter page
-		stackedWidget->setCurrentIndex(2);				  // viewCharacter is the third page so index 2
+		// Add the viewCharacter page, viewInventory page, and viewNotes page to the stacked widget
+		characterInformation->addWidget(newViewCharacter);
+		characterInformation->addWidget(newViewInventory);
+		characterInformation->addWidget(newViewNotes);
+
+
+		stackedWidget->setCurrentIndex(2); // viewCharacter in the characterInformation stack which is on index 2
 	}
 
 	// disable delete button since itemClicked collides with itemDoubleClicked
 	deleteChar->setEnabled(false);
+
+
+
+
+
+
+
+
+
+
+
+
+
+	
+	// // get the name of the character
+	// QString name = characters->currentItem()->text();
+
+	// QStackedWidget * stackedWidget = qobject_cast<QStackedWidget *>(this->parentWidget());
+	// if (stackedWidget) {
+
+	// 	if(stackedWidget->widget(2))
+	// 	{
+	// 		// get the viewCharacter page
+	// 		QWidget * viewCharacter = stackedWidget->widget(2); // viewCharacter is the third page so index 2
+
+	// 		// delete the current viewCharacter page
+	// 		delete viewCharacter;
+	// 	}
+		
+
+	// 	// create a new viewCharacter page with new character
+	// 	ViewCharacter *newViewCharacter = new ViewCharacter(0, name);
+
+	// 	stackedWidget->insertWidget(2, newViewCharacter); // insert the new viewCharacter page
+	// 	stackedWidget->setCurrentIndex(2);				  // viewCharacter is the third page so index 2
+	// }
+
+	// // disable delete button since itemClicked collides with itemDoubleClicked
+	// deleteChar->setEnabled(false);
 }
 
 void CharacterSelect::gotoAddCharacter()
