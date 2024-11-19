@@ -55,6 +55,8 @@ private:
 
 private slots:
     void goBack();
+    void goToInventory();
+    void goToNotes();
     // void importChar();
 };
 
