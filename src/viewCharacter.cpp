@@ -4,10 +4,8 @@ Description: Page to view a character's information, notes, and stats.
 Authors: Zachary Craig, Josh Park
 Other Sources: ...
 Date Created: 10/25/2024
-Last Modified: 11/6/2024
+Last Modified: 11/18/2024
 */
-
-#include "viewCharacter.h"
 
 #include <QVBoxLayout>
 #include <QPushButton>
@@ -25,10 +23,18 @@ Last Modified: 11/6/2024
 #include <QWidget>
 #include <QProgressBar>
 #include <QMap>
-
+#include <QRadioButton>
+#include <QButtonGroup>
+#include <QListWidget>
+#include <QApplication>
 #include <fstream>
 #include <iostream>
 #include <sstream>
+
+#include "viewCharacter.h"
+#include "viewInventory.h"
+#include "viewNotes.h"
+#include "themeUtils.h" // Include the utility header
 
 QMap<QString, int> skillMap = 
 {
@@ -341,55 +347,65 @@ ViewCharacter::ViewCharacter(QWidget *parent, QString nameIn) :
     // Create a stats widget for the second column
     QWidget *statsWidget = new QWidget();
     QGridLayout *statsLayout = new QGridLayout(statsWidget);
-    statsWidget->setFixedHeight(100);
+    statsWidget->setFixedHeight(120);
 
     // Define all of the stat widgets
     QStringList abilitiesNames;
-    abilitiesNames << "Str" << "Dex" << "Con" << "Int" << "Wis" << "Cha";
-    QLabel *statsLabel = new QLabel("Stats");
-    
-    QLabel *savingThrowsLabel = new QLabel("Saving Throws");
+    abilitiesNames << "Str" << "Dex" << "Con" << "Int" << "Wis" << "Cha"; // Adds the names of the abilities to the list
 
     // Add all of the stat widgets to the stats widget
-    statsLayout->addWidget(statsLabel, 1, 0);
+    statsLayout->addWidget(new QLabel("Ability"), 0, 0); // Creates a label for the ability names section header
+    statsLayout->addWidget(new QLabel("Score"), 1, 0); // Creates a label for the ability scores section header
+    statsLayout->addWidget(new QLabel("Modifier"), 2, 0); // Creates a label for the ability modifiers section header
+    statsLayout->addWidget(new QLabel("Saving Throws"), 3, 0); // Creates a label for the saving throws section header
+    
+    // Add the ability names and values to the stats widget
     for(int i = 0; i < abilitiesNames.length(); i++)
     {
-        statsLayout->addWidget(new QLabel(abilitiesNames[i]), 0, i+1);
-        statsLayout->addWidget(new QLabel(QString::number(characterAbilities[i])), 1, i+1);
+        statsLayout->addWidget(new QLabel(abilitiesNames[i]), 0, i+1); // Adds the ability names to the list
+        statsLayout->addWidget(new QLabel(QString::number(characterAbilities[i])), 1, i+1); // Adds the ability scores to the list
     }
-    statsLayout->addWidget(savingThrowsLabel, 2, 0);
+
+    // Add ability modifiers below ability scores
+    for(int i = 0; i < characterAbilityBonuses.length(); i++)
+    {
+        QString prefix = ""; // Creates a prefix for the modifier
+        if(characterSavingThrows[i] >= 0) prefix = "+"; // Adds a plus sign to the front of the modifier if it is positive or zero
+        statsLayout->addWidget(new QLabel(prefix + QString::number(characterAbilityBonuses[i])), 2, i+1); // Adds the ability modifiers to the list
+    }
+
+
+    // Add the saving throws to the stats widget
     for(int i = 0; i < abilitiesNames.length(); i++)
     {
-        QString prefix = "";
-        if(characterSavingThrows[i] >= 0) prefix = "+";
-        statsLayout->addWidget(new QLabel(prefix + QString::number(characterSavingThrows[i])), 2, i+1);
+        QString prefix = ""; // Creates a prefix for the saving throw
+        if(characterSavingThrows[i] >= 0) prefix = "+"; // Adds a plus sign to the front of the saving throw if it is positive or zero
+        statsLayout->addWidget(new QLabel(prefix + QString::number(characterSavingThrows[i])), 3, i+1); // Adds the saving throws to the list
     }
 
     // Create a skills widget for the second column
-    QWidget *skillsWidget = new QWidget();
-    QGridLayout *skillsLayout = new QGridLayout(skillsWidget);
+    QWidget *skillsWidget = new QWidget(); // Creates a widget for the skills section
+    QGridLayout *skillsLayout = new QGridLayout(skillsWidget); // Creates a grid layout for the skills section
 
     // Add all of the skill widgets to the skills widget
-    QLabel *skillsLabel = new QLabel("Skills\n");
-    skillsLabel->setAlignment(Qt::AlignLeft);
-    QLabel *proficiencyBonusLabel = new QLabel("Proficiency Bonus:\n" + QString::number(characterProficiencyBonus));
-    proficiencyBonusLabel->setAlignment(Qt::AlignRight);
-    skillsLayout->addWidget(skillsLabel, 0, 0);
-    skillsLayout->addWidget(proficiencyBonusLabel, 0, 1, 1, 2);
+    QLabel *skillsLabel = new QLabel("Skills\n"); // Creates a label for the skills section header
+    skillsLabel->setAlignment(Qt::AlignLeft); // Aligns the skills label to the left
+    QLabel *proficiencyBonusLabel = new QLabel("Proficiency Bonus:\n+" + QString::number(characterProficiencyBonus)); // Adds the proficiency bonus to the label
+    proficiencyBonusLabel->setAlignment(Qt::AlignRight); // Aligns the proficiency bonus label to the right
+    skillsLayout->addWidget(skillsLabel, 0, 0); // Adds the skills label to the list
+    skillsLayout->addWidget(proficiencyBonusLabel, 0, 1, 1, 2); // Adds the proficiency bonus label to the list
     for(int i = 0; i < skillMap.count(); i++)
     {
         QString prefix = "";
-        if(characterSkillBonuses[i] >= 0) prefix = "+";
-
-        QLabel *skillLabel = new QLabel(skillMap.keys().at(i) + "\n" + prefix + QString::number(characterSkillBonuses[i]));
-        skillLabel->setAlignment(Qt::AlignCenter);
-
-        skillsLayout->addWidget(skillLabel, (i/3)+1, i%3);
+        if(characterSkillBonuses[i] >= 0) prefix = "+"; // Adds a plus sign to the front of the skill bonus if it is positive or zero
+        QLabel *skillLabel = new QLabel(skillMap.keys().at(i) + "\n" + prefix + QString::number(characterSkillBonuses[i])); // Uses the skill map to get the skill name and adds the skill bonus to the label
+        skillLabel->setAlignment(Qt::AlignCenter); // Aligns the skill label to the center
+        skillsLayout->addWidget(skillLabel, (i/3)+1, i%3); // Adds the skill label to the list
     }
 
     // Add the stats widget to column 2
-    column2Layout->addWidget(statsWidget);
-    column2Layout->addWidget(skillsWidget);
+    column2Layout->addWidget(statsWidget); // Adds the stats widget to the list
+    column2Layout->addWidget(skillsWidget); // Adds the skills widget to the list
 
 
     // Create the third column
@@ -397,30 +413,120 @@ ViewCharacter::ViewCharacter(QWidget *parent, QString nameIn) :
     QVBoxLayout *column3Layout = new QVBoxLayout(column3);
 
     // Define all of the column 3 widgets
-    QWidget *combatStatsWidget = new QWidget();
-    QGridLayout *combatStatsLayout = new QGridLayout(combatStatsWidget);
-    combatStatsWidget->setFixedHeight(100);
-    QString initiativePrefix = (characterInitiative < 0) ? "-" : "+";
-    QLabel *initiativeLabel = new QLabel("Initiative:\n" + initiativePrefix + QString::number(characterInitiative));
-    QLabel *armorClassLabel = new QLabel("Armor Class:\n" + QString::number(characterArmorClass));
-    QLabel *hitPointsLabel = new QLabel("Hit Points:\n" + QString::number(characterHitPoints) + "/" + QString::number(characterMaxHitPoints));
+    QWidget *combatStatsWidget = new QWidget(); // Creates a widget for the combat stats section
+    QGridLayout *combatStatsLayout = new QGridLayout(combatStatsWidget); // Creates a grid layout for the combat stats section
+    // combatStatsWidget->setFixedHeight(100); // Sets the height of the combat stats widget to 100px
+    QString initiativePrefix = (characterInitiative < 0) ? "-" : "+"; // Uses a ternary operator to determine if the initiative is negative or positive
+    QLabel *initiativeLabel = new QLabel("Initiative:\n" + initiativePrefix + QString::number(characterInitiative)); // Creates a label with the prefix and initiative as the text
+    QLabel *armorClassLabel = new QLabel("Armor Class:\n" + QString::number(characterArmorClass)); // Creates a label with the armor class as the text
+    QLabel *hitPointsLabel = new QLabel("Hit Points:\n" + QString::number(characterHitPoints) + "/" + QString::number(characterMaxHitPoints)); // Creates a label with the hit points as the text
+
+    // Defining the area for the death saving throws
+    QWidget *deathSavingThrows = new QWidget(); // Creates a widget for the death saving throws section
+    QWidget *deathSuccesses = new QWidget(); // Creates a widget for the death successes section
+    QWidget *deathFails = new QWidget(); // Creates a widget for the death fails section
+
+    // Setting the layouts for each saving throw area
+    QVBoxLayout *deathSavingThrowsLayout = new QVBoxLayout(deathSavingThrows); // Creates a vertical layout for the death saving throws section
+    deathSavingThrows->setFixedHeight(150);
+    QHBoxLayout *deathSuccessesLayout = new QHBoxLayout(deathSuccesses); // Creates a horizontal layout for the death successes section
+    QHBoxLayout *deathFailsLayout = new QHBoxLayout(deathFails); // Creates a horizontal layout for the death fails section
+
+    // Creating the death saving throw widgets
+    QLabel *deathSavingThrowsLabel = new QLabel("Death Saving Throws"); // Creates a label for the death saving throws section
+    QLabel *deathSuccessesLabel = new QLabel("Successes:"); // Creates a label for the death successes section
+    QLabel *deathFailsLabel = new QLabel("Fails:"); // Creates a label for the death fails section
+
+    // Creating the death saving throw radio buttons
+    QRadioButton *deathSuccess1 = new QRadioButton(); // Creates a radio button for the first death success
+    QRadioButton *deathSuccess2 = new QRadioButton(); // Creates a radio button for the second death success
+    QRadioButton *deathSuccess3 = new QRadioButton(); // Creates a radio button for the third death success
+    QRadioButton *deathFail1 = new QRadioButton(); // Creates a radio button for the first death fail
+    QRadioButton *deathFail2 = new QRadioButton(); // Creates a radio button for the second death fail
+    QRadioButton *deathFail3 = new QRadioButton(); // Creates a radio button for the third death fail
+
+
+
+    
+
+    // Add the death successes and fails to their respective layouts
+    deathSuccessesLayout->addWidget(deathSuccessesLabel); // Adds the death successes label to the list
+    deathSuccessesLayout->addWidget(deathSuccess1); // Adds the first death success radio button to the list
+    deathSuccessesLayout->addWidget(deathSuccess2); // Adds the second death success radio button to the list
+    deathSuccessesLayout->addWidget(deathSuccess3); // Adds the third death success radio button to the list
+    deathFailsLayout->addWidget(deathFailsLabel); // Adds the death fails label to the list
+    deathFailsLayout->addWidget(deathFail1); // Adds the first death fail radio button to the list
+    deathFailsLayout->addWidget(deathFail2); // Adds the second death fail radio button to the list
+    deathFailsLayout->addWidget(deathFail3); // Adds the third death fail radio button to the list
+
+    // Add the death successes and fails to the death saving throws layout
+    deathSavingThrowsLayout->addWidget(deathSavingThrowsLabel); // Adds the death saving throws label to the list
+    deathSavingThrowsLayout->addWidget(deathSuccesses); // Adds the death successes section to the list
+    deathSavingThrowsLayout->addWidget(deathFails); // Adds the death fails section to the list
+
 
     // Allign the labels to the center
     initiativeLabel->setAlignment(Qt::AlignCenter);
     armorClassLabel->setAlignment(Qt::AlignCenter);
     hitPointsLabel->setAlignment(Qt::AlignCenter);
 
+    // Creates the list widget for the equipped items and the prepped spells and a widget for the list widgets
+    QWidget *listsWidget = new QWidget();
+    QGridLayout *listsLayout = new QGridLayout(listsWidget);
+    QListWidget *equippedItemsList = new QListWidget();
+    QListWidget *preppedSpellsList = new QListWidget();
+
+    // Create the labels for the list widgets
+    QLabel *equippedItemsLabel = new QLabel("Equipped Items");
+    QLabel *preppedSpellsLabel = new QLabel("Prepped Spells");
+
+    // Add the attuned items and prepped spells to the list widgets
+    for(int i = 0; i < characterAttunedItems.length(); i++)
+    {
+        equippedItemsList->addItem(characterAttunedItems[i]);
+    }
+    for(int i = 0; i < characterPreppedSpells.length(); i++)
+    {
+        preppedSpellsList->addItem(characterPreppedSpells[i]);
+    }
+
+    // Add the list widgets to the list widget widget
+    listsLayout->addWidget(equippedItemsLabel, 0, 0);
+    listsLayout->addWidget(preppedSpellsLabel, 0, 1);
+    listsLayout->addWidget(equippedItemsList, 1, 0, 4, 1);
+    listsLayout->addWidget(preppedSpellsList, 1, 1, 4, 1);
+
+
+
+    // Creates the inventory and notes buttons and a buttons widget for the buttons
+    QWidget *buttonsWidget = new QWidget();
+    QHBoxLayout *buttonsLayout = new QHBoxLayout(buttonsWidget);
+    QPushButton *inventoryButton = new QPushButton("Inventory");
+    QPushButton *notesButton = new QPushButton("Notes");
+
+    // Add the buttons to the buttons widget
+    buttonsLayout->addWidget(inventoryButton);
+    buttonsLayout->addWidget(notesButton);
+
+
+
     // Add all of the combat stats widgets to the combat stats widget
     combatStatsLayout->addWidget(initiativeLabel, 0, 0);
     combatStatsLayout->addWidget(armorClassLabel, 0, 1);
     combatStatsLayout->addWidget(hitPointsLabel, 0, 2);
+    combatStatsLayout->addWidget(deathSavingThrows, 1, 1, 1, 2);
 
     // Add the column 3 widgets to column 3
     column3Layout->addWidget(combatStatsWidget);
+    column3Layout->setAlignment(combatStatsWidget, Qt::AlignTop);
+    column3Layout->addWidget(listsWidget);
+
+    column3Layout->addWidget(buttonsWidget);
+    column3Layout->setAlignment(buttonsWidget, Qt::AlignBottom);
 
 
 
-    // Create buttons for settings
+    // Create buttons for navbar
     QPushButton *Backbutton = new QPushButton("Return to Character Select");
     QPushButton *importButton = new QPushButton("Import Character");
     QPushButton *exportButton = new QPushButton("Export Character");
@@ -446,14 +552,67 @@ ViewCharacter::ViewCharacter(QWidget *parent, QString nameIn) :
 
     // Make back button return to character select page
     connect(Backbutton, SIGNAL (clicked()), SLOT (goBack()));
+
+    // Make inventory button go to inventory page
+    connect(inventoryButton, SIGNAL (clicked()), SLOT (goToInventory()));
+
+    // Make notes button go to notes page
+    connect(notesButton, SIGNAL (clicked()), SLOT (goToNotes()));
+
+    // QStackedWidget *currentStackedWidget = qobject_cast<QStackedWidget *>(this->parentWidget());
+    // qDebug() << "Widgets in QStackedWidget:";
+    // for (int i = 0; i < currentStackedWidget->count(); ++i) {
+    //     QWidget *widget = currentStackedWidget->widget(i);
+    //     if (widget) {
+    //         qDebug() << "Index:" << i << ", Widget:" << widget->metaObject()->className();
+    //     } else {
+    //         qDebug() << "Index:" << i << ", Widget: nullptr";
+    //     }
+    // }
+    
+
+    reloadTheme(); // Reload the theme after everything is placed
 }
 
 void ViewCharacter::goBack()
 {
-    QStackedWidget *stackedWidget = qobject_cast<QStackedWidget *>(this->parentWidget());
-    if (stackedWidget)
+    // Set the current stacked widget to the parent of viewCharacter
+    QStackedWidget *currentStackedWidget = qobject_cast<QStackedWidget *>(this->parentWidget());
+    // Loop through the parent widgets until the main stacked widget is found
+    while (currentStackedWidget != nullptr)
     {
-        stackedWidget->setCurrentIndex(0); // character select is the first page so index 0
+        // Check if the current stacked widget is the main stacked widget
+        QWidget *parent = currentStackedWidget->parentWidget();
+        // If the parent is the main stacked widget, set the current index to 0
+        QStackedWidget *mainStackedWidget = qobject_cast<QStackedWidget *>(parent);
+        if (mainStackedWidget)
+        {
+            // Set the current index to 0
+            mainStackedWidget->setCurrentIndex(0); // Switch to CharacterSelect (index 0)
+            return;
+        }
+        // If the parent is not the main stacked widget, set the current stacked widget to the parent
+        currentStackedWidget = qobject_cast<QStackedWidget *>(parent);
+    }
+    // In the event that the main stacked widget is not found, print an error message
+    qDebug() << "Main stacked widget not found. Cannot return to Character Select.";
+}
+
+void ViewCharacter::goToInventory()
+{
+    QStackedWidget *currentStackedWidget = qobject_cast<QStackedWidget *>(this->parentWidget());
+    if (currentStackedWidget)
+    {
+        currentStackedWidget->setCurrentIndex(1); // Switch to Inventory (index 1)
+    }
+}
+
+void ViewCharacter::goToNotes()
+{
+    QStackedWidget *currentStackedWidget = qobject_cast<QStackedWidget *>(this->parentWidget());
+    if (currentStackedWidget)
+    {
+        currentStackedWidget->setCurrentIndex(2); // Switch to Notes (index 2)
     }
 }
 
