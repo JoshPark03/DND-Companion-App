@@ -496,19 +496,17 @@ ViewCharacter::ViewCharacter(QWidget *parent, QString nameIn) :
     listsLayout->addWidget(equippedItemsList, 1, 0, 4, 1);
     listsLayout->addWidget(preppedSpellsList, 1, 1, 4, 1);
 
-
-
     // Creates the inventory and notes buttons and a buttons widget for the buttons
     QWidget *buttonsWidget = new QWidget();
-    QHBoxLayout *buttonsLayout = new QHBoxLayout(buttonsWidget);
+    QGridLayout *buttonsLayout = new QGridLayout(buttonsWidget);
     QPushButton *inventoryButton = new QPushButton("Inventory");
+    QPushButton *spellsButton = new QPushButton("Spells");
     QPushButton *notesButton = new QPushButton("Notes");
 
     // Add the buttons to the buttons widget
-    buttonsLayout->addWidget(inventoryButton);
-    buttonsLayout->addWidget(notesButton);
-
-
+    buttonsLayout->addWidget(inventoryButton, 0, 0);
+    buttonsLayout->addWidget(spellsButton, 0, 1); // Add the new Spells button
+    buttonsLayout->addWidget(notesButton, 1, 0, 1, 2);
 
     // Add all of the combat stats widgets to the combat stats widget
     combatStatsLayout->addWidget(initiativeLabel, 0, 0);
@@ -520,11 +518,7 @@ ViewCharacter::ViewCharacter(QWidget *parent, QString nameIn) :
     column3Layout->addWidget(combatStatsWidget);
     column3Layout->setAlignment(combatStatsWidget, Qt::AlignTop);
     column3Layout->addWidget(listsWidget);
-
     column3Layout->addWidget(buttonsWidget);
-    column3Layout->setAlignment(buttonsWidget, Qt::AlignBottom);
-
-
 
     // Create buttons for navbar
     QPushButton *Backbutton = new QPushButton("Return to Character Select");
@@ -555,20 +549,13 @@ ViewCharacter::ViewCharacter(QWidget *parent, QString nameIn) :
 
     // Make inventory button go to inventory page
     connect(inventoryButton, SIGNAL (clicked()), SLOT (goToInventory()));
+    
+    // Make spells button go to inventory page
+    connect(spellsButton, SIGNAL (clicked()), SLOT (goToSpells()));
 
     // Make notes button go to notes page
     connect(notesButton, SIGNAL (clicked()), SLOT (goToNotes()));
 
-    // QStackedWidget *currentStackedWidget = qobject_cast<QStackedWidget *>(this->parentWidget());
-    // qDebug() << "Widgets in QStackedWidget:";
-    // for (int i = 0; i < currentStackedWidget->count(); ++i) {
-    //     QWidget *widget = currentStackedWidget->widget(i);
-    //     if (widget) {
-    //         qDebug() << "Index:" << i << ", Widget:" << widget->metaObject()->className();
-    //     } else {
-    //         qDebug() << "Index:" << i << ", Widget: nullptr";
-    //     }
-    // }
     
 
     reloadTheme(); // Reload the theme after everything is placed
@@ -607,12 +594,21 @@ void ViewCharacter::goToInventory()
     }
 }
 
+void ViewCharacter::goToSpells()
+{
+    QStackedWidget *currentStackedWidget = qobject_cast<QStackedWidget *>(this->parentWidget());
+    if (currentStackedWidget)
+    {
+        currentStackedWidget->setCurrentIndex(2); // Switch to Inventory (index 1)
+    }
+}
+
 void ViewCharacter::goToNotes()
 {
     QStackedWidget *currentStackedWidget = qobject_cast<QStackedWidget *>(this->parentWidget());
     if (currentStackedWidget)
     {
-        currentStackedWidget->setCurrentIndex(2); // Switch to Notes (index 2)
+        currentStackedWidget->setCurrentIndex(3); // Switch to Notes (index 2)
     }
 }
 
