@@ -18,6 +18,7 @@ Last Modified: 10/31/2024
 #include <QLayout>
 #include <QFormLayout>
 #include <QLabel>
+#include <QDir>
 
 void MyComboBox::showPopup()
 {
@@ -95,25 +96,71 @@ StartWidget::StartWidget(QWidget *parent) : QWidget(parent)
 	name = new QLineEdit();
 	name->setFixedWidth(100);
 
+	QWidget *nameContainer = new QWidget();
+	QHBoxLayout *nameLayout = new QHBoxLayout(nameContainer);
+	nameLayout->addWidget(new QLabel("Character Name:"));
+	nameLayout->addWidget(name);
+
+	// Create error message for invalid character name
+	QLabel *errorLabel = new QLabel();
+	errorLabel->setStyleSheet("QLabel { color : red; }");
+
 	// Create navigation buttons
 	QPushButton *backButton = new QPushButton("Back to Character Select");
 	QPushButton *nextButton = new QPushButton("Next");
 
-	// Add character name input to the form
-	formLayout->addRow("Character Name:", name);
+	// Add character name input to the form and also add the error label
+	formLayout->addWidget(nameContainer);
+	formLayout->addWidget(errorLabel);
 
 	// Add buttons to navbar
 	navbarLayout->addWidget(backButton);
 	navbarLayout->addWidget(nextButton);
 
 	// Add the navbar and form to the main layout
-	layout->addWidget(form);
+	layout->addWidget(form, 0, Qt::AlignCenter);
 	layout->addWidget(navbar);
 
 	// When back button is clicked it calls the public SLOT function backPage()
 	connect(backButton, SIGNAL(clicked()), SLOT(backPage()));
 
 	connect(nextButton, SIGNAL(clicked()), SLOT(nextPage()));
+
+	// When the character name is invalid, display an error message
+	connect(name, &QLineEdit::textChanged, this, [this, nextButton, errorLabel](const QString& text)
+	{
+		QString name = text.trimmed(); // Remove leading and trailing whitespace
+
+		QDir characterDir(QDir::currentPath() + "/data/characters"); // Directory for character files
+
+		if(name.isEmpty()) // Check if the character name is empty
+		{
+			errorLabel->setText("Character name cannot be empty");
+		}
+		else // Check if the character name already exists
+		{
+			bool nameExists = false;
+			QStringList existingNames = characterDir.entryList(QDir::Dirs | QDir::NoDotAndDotDot); // Get list of existing character names
+			for(QString existingName : existingNames) // For each existing character name
+			{
+				if(QString::compare(existingName, name, Qt::CaseInsensitive) == 0) // Check if the existing name matches the proposed name (case-insensitive)
+				{
+					nameExists = true; // Set nameExists to true
+					break;
+				}
+			}
+			if(nameExists) // If the name already exists
+			{
+				errorLabel->setText("Character name already exists"); // Display an error message
+			}
+			else
+			{
+				errorLabel->clear(); // Clear the error message if there are no errors
+			}
+		}
+		
+		nextButton->setEnabled(errorLabel->text().isEmpty()); // Enable the next button if there are no errors
+	});
 }
 
 void StartWidget::backPage()
@@ -127,10 +174,14 @@ void StartWidget::backPage()
 
 void StartWidget::nextPage()
 {
-	QStackedWidget *stackedWidget = qobject_cast<QStackedWidget *>(this->parentWidget());
-	if (stackedWidget)
+	QString updatedName = name->text().trimmed(); // Remove leading and trailing whitespace
+	updatedName[0] = updatedName[0].toUpper(); // Capitalize the first letter of the name
+	name->setText(updatedName); // Update the name in the text box
+	
+	QStackedWidget *stackedWidget = qobject_cast<QStackedWidget *>(this->parentWidget()); // Get the parent stacked widget
+	if (stackedWidget) // If the parent widget is a stacked widget
 	{
-		stackedWidget->setCurrentIndex(1);
+		stackedWidget->setCurrentIndex(1); // Move to the next page
 	}
 }
 
