@@ -117,6 +117,9 @@ StartWidget::StartWidget(QWidget *parent) : QWidget(parent)
 	navbarLayout->addWidget(backButton);
 	navbarLayout->addWidget(nextButton);
 
+	// Disable the next button by default
+	nextButton->setEnabled(false);
+
 	// Add the navbar and form to the main layout
 	layout->addWidget(form, 0, Qt::AlignCenter);
 	layout->addWidget(navbar);
