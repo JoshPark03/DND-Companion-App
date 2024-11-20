@@ -317,45 +317,6 @@ void CharacterSelect::openChar()
 
 	// disable delete button since itemClicked collides with itemDoubleClicked
 	deleteChar->setEnabled(false);
-
-
-
-
-
-
-
-
-
-
-
-
-
-	
-	// // get the name of the character
-	// QString name = characters->currentItem()->text();
-
-	// QStackedWidget * stackedWidget = qobject_cast<QStackedWidget *>(this->parentWidget());
-	// if (stackedWidget) {
-
-	// 	if(stackedWidget->widget(2))
-	// 	{
-	// 		// get the viewCharacter page
-	// 		QWidget * viewCharacter = stackedWidget->widget(2); // viewCharacter is the third page so index 2
-
-	// 		// delete the current viewCharacter page
-	// 		delete viewCharacter;
-	// 	}
-		
-
-	// 	// create a new viewCharacter page with new character
-	// 	ViewCharacter *newViewCharacter = new ViewCharacter(0, name);
-
-	// 	stackedWidget->insertWidget(2, newViewCharacter); // insert the new viewCharacter page
-	// 	stackedWidget->setCurrentIndex(2);				  // viewCharacter is the third page so index 2
-	// }
-
-	// // disable delete button since itemClicked collides with itemDoubleClicked
-	// deleteChar->setEnabled(false);
 }
 
 void CharacterSelect::gotoAddCharacter()
