@@ -13,6 +13,7 @@ Last Modified: 11/6/2024
 #include "viewInventory.h"
 #include "viewSpells.h"
 #include "viewNotes.h"
+#include "themeUtils.h"
 
 #include <iostream>
 #include <string>
@@ -270,6 +271,14 @@ void CharacterSelect::openChar()
 	// get the name of the character
 	QString name = characters->currentItem()->text();
 
+	// clear the selection and focus after getting character name
+	this->characters->selectionModel()->clear();
+	this->characters->clearFocus();
+
+	// reload the theme
+	reloadTheme();
+
+	// Start the process of creating the viewCharacter page and switching to it
 	QStackedWidget * stackedWidget = qobject_cast<QStackedWidget *>(this->parentWidget());
 	if (stackedWidget)
 	{
