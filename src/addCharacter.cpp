@@ -36,17 +36,17 @@ void MyComboBox::showPopup()
 	}
 }
 
-Portrait::Portrait(const QString& type, const QString& selection, QWidget *parent) : QLabel(parent)
+Portrait::Portrait(const QString &type, const QString &selection, QWidget *parent) : QLabel(parent)
 {
 	// Determine the widget type and fetch a picture according to the combo box selection
 	this->typeWidget = new QString(type);
 	this->getImage(selection);
 }
 
-void Portrait::getImage(const QString& selection)
+void Portrait::getImage(const QString &selection)
 {
 	// Attempt to retrieve a picture file from the assets folder based on the widget type and combo box selection
-	QPixmap image(QDir::currentPath() + "/src/assets/" + *(this->typeWidget) + "/" + selection + ".png");
+	QPixmap image(QDir::currentPath() + "/src/assets/" + *(this->typeWidget) + "/" + selection.toLower() + ".png");
 	if (image.isNull())
 	{
 		this->setText("Image not available");
@@ -127,40 +127,40 @@ StartWidget::StartWidget(QWidget *parent) : QWidget(parent)
 	connect(nextButton, SIGNAL(clicked()), SLOT(nextPage()));
 
 	// When the character name is invalid, display an error message
-	connect(name, &QLineEdit::textChanged, this, [this, nextButton, errorLabel](const QString& text)
-	{
-		QString name = text.trimmed(); // Remove leading and trailing whitespace
-
-		QDir characterDir(QDir::currentPath() + "/data/characters"); // Directory for character files
-
-		if(name.isEmpty()) // Check if the character name is empty
-		{
-			errorLabel->setText("Character name cannot be empty");
-		}
-		else // Check if the character name already exists
-		{
-			bool nameExists = false;
-			QStringList existingNames = characterDir.entryList(QDir::Dirs | QDir::NoDotAndDotDot); // Get list of existing character names
-			for(QString existingName : existingNames) // For each existing character name
+	connect(name, &QLineEdit::textChanged, this, [this, nextButton, errorLabel](const QString &text)
 			{
-				if(QString::compare(existingName, name, Qt::CaseInsensitive) == 0) // Check if the existing name matches the proposed name (case-insensitive)
+				QString name = text.trimmed(); // Remove leading and trailing whitespace
+
+				QDir characterDir(QDir::currentPath() + "/data/characters"); // Directory for character files
+
+				if (name.isEmpty()) // Check if the character name is empty
 				{
-					nameExists = true; // Set nameExists to true
-					break;
+					errorLabel->setText("Character name cannot be empty");
 				}
-			}
-			if(nameExists) // If the name already exists
-			{
-				errorLabel->setText("Character name already exists"); // Display an error message
-			}
-			else
-			{
-				errorLabel->clear(); // Clear the error message if there are no errors
-			}
-		}
-		
-		nextButton->setEnabled(errorLabel->text().isEmpty()); // Enable the next button if there are no errors
-	});
+				else // Check if the character name already exists
+				{
+					bool nameExists = false;
+					QStringList existingNames = characterDir.entryList(QDir::Dirs | QDir::NoDotAndDotDot); // Get list of existing character names
+					for (QString existingName : existingNames)											   // For each existing character name
+					{
+						if (QString::compare(existingName, name, Qt::CaseInsensitive) == 0) // Check if the existing name matches the proposed name (case-insensitive)
+						{
+							nameExists = true; // Set nameExists to true
+							break;
+						}
+					}
+					if (nameExists) // If the name already exists
+					{
+						errorLabel->setText("Character name already exists"); // Display an error message
+					}
+					else
+					{
+						errorLabel->clear(); // Clear the error message if there are no errors
+					}
+				}
+
+				nextButton->setEnabled(errorLabel->text().isEmpty()); // Enable the next button if there are no errors
+			});
 }
 
 void StartWidget::backPage()
@@ -175,11 +175,11 @@ void StartWidget::backPage()
 void StartWidget::nextPage()
 {
 	QString updatedName = name->text().trimmed(); // Remove leading and trailing whitespace
-	updatedName[0] = updatedName[0].toUpper(); // Capitalize the first letter of the name
-	name->setText(updatedName); // Update the name in the text box
-	
+	updatedName[0] = updatedName[0].toUpper();	  // Capitalize the first letter of the name
+	name->setText(updatedName);					  // Update the name in the text box
+
 	QStackedWidget *stackedWidget = qobject_cast<QStackedWidget *>(this->parentWidget()); // Get the parent stacked widget
-	if (stackedWidget) // If the parent widget is a stacked widget
+	if (stackedWidget)																	  // If the parent widget is a stacked widget
 	{
 		stackedWidget->setCurrentIndex(1); // Move to the next page
 	}
@@ -391,9 +391,8 @@ RaceWidget::RaceWidget(QWidget *parent) : QWidget(parent)
 	connect(nextButton, SIGNAL(clicked()), SLOT(nextPage()));
 
 	// When the current selection in the combo box changes, the header and portrait must also change
-	connect(raceComboBox, &QComboBox::currentTextChanged, [header](const QString& text) {
-		header->setText("<h1>" + text + "</h1>");
-	});
+	connect(raceComboBox, &QComboBox::currentTextChanged, [header](const QString &text)
+			{ header->setText("<h1>" + text + "</h1>"); });
 	connect(raceComboBox, &QComboBox::currentTextChanged, racePortrait, &Portrait::getImage);
 }
 
