@@ -11,6 +11,8 @@ Last Modified: 11/18/2024
 #define VIEWNOTES_H
 
 #include <QWidget>
+#include <QListWidget>
+#include <QTextEdit>
 
 class ViewNotes : public QWidget
 {
@@ -20,7 +22,10 @@ public:
     ~ViewNotes();
 
 private:
+    QString name;
     void loadNotes();
+    QListWidget *notesList = new QListWidget();
+    QTextEdit *noteEdit = new QTextEdit();
 
 private slots:
     void goBack();

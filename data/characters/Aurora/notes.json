@@ -2,11 +2,13 @@
     "notes": [
         {
             "section": "Party",
-            "notes": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam nec purus nec nunc"
+            "notes": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam nec purus nec nunc",
+            "lastUpdated": "01-01-2020|12:00:00"
         },
         {
             "section": "General Notes",
-            "notes": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam nec purus nec nunc"
+            "notes": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam nec purus nec nunc",
+            "lastUpdated": "01-01-2020|12:20:00"
         }
     ]
 }
