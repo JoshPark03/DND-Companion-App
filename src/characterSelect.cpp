@@ -11,6 +11,7 @@ Last Modified: 11/6/2024
 #include "characterSelect.h"
 #include "viewCharacter.h"
 #include "viewInventory.h"
+#include "viewSpells.h"
 #include "viewNotes.h"
 
 #include <iostream>
@@ -292,11 +293,13 @@ void CharacterSelect::openChar()
 		// Create the viewCharacter page, viewInventory page, and viewNotes page
 		ViewCharacter *newViewCharacter = new ViewCharacter(nullptr, name);
 		ViewInventory *newViewInventory = new ViewInventory(nullptr, name);
+		ViewSpells *newViewSpells = new ViewSpells(nullptr, name);
 		ViewNotes *newViewNotes = new ViewNotes(nullptr, name);
 
 		// Add the viewCharacter page, viewInventory page, and viewNotes page to the stacked widget
 		characterInformation->addWidget(newViewCharacter);
 		characterInformation->addWidget(newViewInventory);
+		characterInformation->addWidget(newViewSpells);
 		characterInformation->addWidget(newViewNotes);
 
 
