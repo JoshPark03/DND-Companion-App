@@ -4,7 +4,7 @@ Description: Implementation of the AddCharacter class, which allows users to cre
 Authors: Josh Park
 Other Sources: ...
 Date Created: 10/24/2024
-Last Modified: 10/31/2024
+Last Modified: 11/20/2024
 */
 
 #include "addCharacter.h"
@@ -20,7 +20,7 @@ Last Modified: 10/31/2024
 #include <QLabel>
 #include <QDir>
 
-void MyComboBox::showPopup()
+void UpComboBox::showPopup()
 {
 	QComboBox::showPopup();
 
@@ -131,39 +131,39 @@ StartWidget::StartWidget(QWidget *parent) : QWidget(parent)
 
 	// When the character name is invalid, display an error message
 	connect(name, &QLineEdit::textChanged, this, [this, nextButton, errorLabel](const QString &text)
-	{
-		QString name = text.trimmed(); // Remove leading and trailing whitespace
-
-		QDir characterDir(QDir::currentPath() + "/data/characters"); // Directory for character files
-
-		if (name.isEmpty()) // Check if the character name is empty
-		{
-			errorLabel->setText("Character name cannot be empty");
-		}
-		else // Check if the character name already exists
-		{
-			bool nameExists = false;
-			QStringList existingNames = characterDir.entryList(QDir::Dirs | QDir::NoDotAndDotDot); // Get list of existing character names
-			for (QString existingName : existingNames)											   // For each existing character name
 			{
-				if (QString::compare(existingName, name, Qt::CaseInsensitive) == 0) // Check if the existing name matches the proposed name (case-insensitive)
+				QString name = text.trimmed(); // Remove leading and trailing whitespace
+
+				QDir characterDir(QDir::currentPath() + "/data/characters"); // Directory for character files
+
+				if (name.isEmpty()) // Check if the character name is empty
 				{
-					nameExists = true; // Set nameExists to true
-					break;
+					errorLabel->setText("Character name cannot be empty");
 				}
-			}
-			if (nameExists) // If the name already exists
-			{
-				errorLabel->setText("Character name already exists"); // Display an error message
-			}
-			else
-			{
-				errorLabel->clear(); // Clear the error message if there are no errors
-			}
-		}
+				else // Check if the character name already exists
+				{
+					bool nameExists = false;
+					QStringList existingNames = characterDir.entryList(QDir::Dirs | QDir::NoDotAndDotDot); // Get list of existing character names
+					for (QString existingName : existingNames)											   // For each existing character name
+					{
+						if (QString::compare(existingName, name, Qt::CaseInsensitive) == 0) // Check if the existing name matches the proposed name (case-insensitive)
+						{
+							nameExists = true; // Set nameExists to true
+							break;
+						}
+					}
+					if (nameExists) // If the name already exists
+					{
+						errorLabel->setText("Character name already exists"); // Display an error message
+					}
+					else
+					{
+						errorLabel->clear(); // Clear the error message if there are no errors
+					}
+				}
 
-		nextButton->setEnabled(errorLabel->text().isEmpty()); // Enable the next button if there are no errors
-	});
+				nextButton->setEnabled(errorLabel->text().isEmpty()); // Enable the next button if there are no errors
+			});
 }
 
 void StartWidget::backPage()
@@ -287,7 +287,7 @@ ClassWidget::ClassWidget(QWidget *parent) : QWidget(parent)
 	navbar->setFixedHeight(40);
 
 	// Create the class combo box
-	MyComboBox *classComboBox = new MyComboBox;
+	UpComboBox *classComboBox = new UpComboBox;
 	classComboBox->addItem("Barbarian");
 	classComboBox->addItem("Bard");
 	classComboBox->addItem("Cleric");
@@ -352,7 +352,7 @@ RaceWidget::RaceWidget(QWidget *parent) : QWidget(parent)
 	navbar->setFixedHeight(40);
 
 	// Create the race combo box
-	MyComboBox *raceComboBox = new MyComboBox;
+	UpComboBox *raceComboBox = new UpComboBox;
 	raceComboBox->addItem("Dwarf");
 	raceComboBox->addItem("Elf");
 	raceComboBox->addItem("Halfling");
@@ -432,7 +432,7 @@ BackgroundWidget::BackgroundWidget(QWidget *parent) : QWidget(parent)
 	navbar->setFixedHeight(40);
 
 	// Create combo box for the background
-	MyComboBox *backgroundComboBox = new MyComboBox;
+	UpComboBox *backgroundComboBox = new UpComboBox;
 	backgroundComboBox->addItem("Acolyte");
 	backgroundComboBox->addItem("Charlatan");
 	backgroundComboBox->addItem("Criminal");
