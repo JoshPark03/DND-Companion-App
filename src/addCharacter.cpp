@@ -340,7 +340,7 @@ void ClassWidget::nextPage()
 RaceWidget::RaceWidget(QWidget *parent) : QWidget(parent)
 {
 	// Create the main vertical layout
-	QVBoxLayout *layout = new QVBoxLayout(this);
+	QVBoxLayout *mainLayout = new QVBoxLayout(this);
 
 	// Create horizontal layer for the columns
 	QWidget *body = new QWidget();
@@ -350,6 +350,30 @@ RaceWidget::RaceWidget(QWidget *parent) : QWidget(parent)
 	QWidget *navbar = new QWidget();
 	QHBoxLayout *navbarLayout = new QHBoxLayout(navbar);
 	navbar->setFixedHeight(40);
+
+	// Create column headers
+	QLabel *statsHeader = new QLabel("Stats");
+	statsHeader->setAlignment(Qt::AlignCenter);
+	statsHeader->setStyleSheet("font-weight: bold; font-size: 14px;");
+
+	QLabel *detailsHeader = new QLabel("Details");
+	detailsHeader->setAlignment(Qt::AlignCenter);
+	detailsHeader->setStyleSheet("font-weight: bold; font-size: 14px;");
+
+	// Create a layout for the columns
+	QHBoxLayout *columnsLayout = new QHBoxLayout();
+
+	// Proficiencies Column
+	QVBoxLayout *statsLayout = new QVBoxLayout();
+	statsLayout->addWidget(statsHeader);
+
+	// Equipment Column
+	QVBoxLayout *detailsLayout = new QVBoxLayout();
+	detailsLayout->addWidget(detailsHeader);
+
+	// Add the columns to the horizontal layout
+	columnsLayout->addLayout(statsLayout);
+	columnsLayout->addLayout(detailsLayout);
 
 	// Create the race combo box
 	UpComboBox *raceComboBox = new UpComboBox;
@@ -384,10 +408,13 @@ RaceWidget::RaceWidget(QWidget *parent) : QWidget(parent)
 	bodyLayout->addSpacing(100);
 	bodyLayout->addWidget(racePortrait);
 
+	// Add the columns layout to the main layout
+	bodyLayout->addLayout(columnsLayout);
+
 	// Add the header, body, and navbar to the main layout
-	layout->addWidget(header);
-	layout->addWidget(body);
-	layout->addWidget(navbar);
+	mainLayout->addWidget(header);
+	mainLayout->addWidget(body);
+	mainLayout->addWidget(navbar);
 
 	// When back button is clicked it calls the public SLOT function backPage()
 	connect(backButton, SIGNAL(clicked()), SLOT(backPage()));
@@ -417,11 +444,12 @@ void RaceWidget::nextPage()
 	}
 }
 
-BackgroundWidget::BackgroundWidget(QWidget *parent) : QWidget(parent) {
-    // Create the main vertical layout
-    QVBoxLayout *mainLayout = new QVBoxLayout(this);
+BackgroundWidget::BackgroundWidget(QWidget *parent) : QWidget(parent)
+{
+	// Create the main vertical layout
+	QVBoxLayout *mainLayout = new QVBoxLayout(this);
 	mainLayout->setContentsMargins(10, 10, 10, 10);
-    mainLayout->setSpacing(5);
+	mainLayout->setSpacing(5);
 
 	// Creating out labels, styles, and alignments
 	nameAndPageLabel = new QLabel();
@@ -446,107 +474,111 @@ BackgroundWidget::BackgroundWidget(QWidget *parent) : QWidget(parent) {
 	featureLabel->setWordWrap(true);
 
 	// Create column headers
-    QLabel *proficienciesHeader = new QLabel("Proficiencies");
-    proficienciesHeader->setAlignment(Qt::AlignCenter);
-    proficienciesHeader->setStyleSheet("font-weight: bold; font-size: 14px;");
+	QLabel *proficienciesHeader = new QLabel("Proficiencies");
+	proficienciesHeader->setAlignment(Qt::AlignCenter);
+	proficienciesHeader->setStyleSheet("font-weight: bold; font-size: 14px;");
 
-    QLabel *equipmentHeader = new QLabel("Equipment");
-    equipmentHeader->setAlignment(Qt::AlignCenter);
-    equipmentHeader->setStyleSheet("font-weight: bold; font-size: 14px;");
+	QLabel *equipmentHeader = new QLabel("Equipment");
+	equipmentHeader->setAlignment(Qt::AlignCenter);
+	equipmentHeader->setStyleSheet("font-weight: bold; font-size: 14px;");
 
-    QLabel *featureHeader = new QLabel("Feature");
-    featureHeader->setAlignment(Qt::AlignCenter);
-    featureHeader->setStyleSheet("font-weight: bold; font-size: 14px;");
+	QLabel *featureHeader = new QLabel("Feature");
+	featureHeader->setAlignment(Qt::AlignCenter);
+	featureHeader->setStyleSheet("font-weight: bold; font-size: 14px;");
 
-    // Add Name (Page #) to the top
-    mainLayout->addWidget(nameAndPageLabel, 0, Qt::AlignTop);
+	// Add Name (Page #) to the top
+	mainLayout->addWidget(nameAndPageLabel, 0, Qt::AlignTop);
 
-    // Add Description
-    mainLayout->addWidget(descriptionLabel, 0, Qt::AlignTop);
+	// Add Description
+	mainLayout->addWidget(descriptionLabel, 0, Qt::AlignTop);
 
-    // Create a layout for the three columns
-    QHBoxLayout *columnsLayout = new QHBoxLayout();
-	
+	// Create a layout for the three columns
+	QHBoxLayout *columnsLayout = new QHBoxLayout();
 
-    // Proficiencies Column
-    QVBoxLayout *proficienciesLayout = new QVBoxLayout();
-    proficienciesLayout->addWidget(proficienciesHeader);
-    proficienciesLayout->addWidget(proficienciesLabel);
+	// Proficiencies Column
+	QVBoxLayout *proficienciesLayout = new QVBoxLayout();
+	proficienciesLayout->addWidget(proficienciesHeader);
+	proficienciesLayout->addWidget(proficienciesLabel);
 
-    // Equipment Column
-    QVBoxLayout *equipmentLayout = new QVBoxLayout();
-    equipmentLayout->addWidget(equipmentHeader);
-    equipmentLayout->addWidget(equipmentLabel);
+	// Equipment Column
+	QVBoxLayout *equipmentLayout = new QVBoxLayout();
+	equipmentLayout->addWidget(equipmentHeader);
+	equipmentLayout->addWidget(equipmentLabel);
 
-    // Feature Column
-    QVBoxLayout *featureLayout = new QVBoxLayout();
-    featureLayout->addWidget(featureHeader);
-    featureLayout->addWidget(featureLabel);
+	// Feature Column
+	QVBoxLayout *featureLayout = new QVBoxLayout();
+	featureLayout->addWidget(featureHeader);
+	featureLayout->addWidget(featureLabel);
 
-    // Add the three columns to the horizontal layout
-    columnsLayout->addLayout(proficienciesLayout);
-    columnsLayout->addLayout(equipmentLayout);
-    columnsLayout->addLayout(featureLayout);
+	// Add the three columns to the horizontal layout
+	columnsLayout->addLayout(proficienciesLayout);
+	columnsLayout->addLayout(equipmentLayout);
+	columnsLayout->addLayout(featureLayout);
 
-    // Add the columns layout to the main layout
-    mainLayout->addLayout(columnsLayout);
+	// Add the columns layout to the main layout
+	mainLayout->addLayout(columnsLayout);
 
-    // Navigation bar at the bottom
-    QWidget *navbar = new QWidget();
-    QHBoxLayout *navbarLayout = new QHBoxLayout(navbar);
-    navbar->setFixedHeight(40);
+	// Navigation bar at the bottom
+	QWidget *navbar = new QWidget();
+	QHBoxLayout *navbarLayout = new QHBoxLayout(navbar);
+	navbar->setFixedHeight(40);
 
-    backgroundComboBox = new MyComboBox;
+	backgroundComboBox = new UpComboBox;
 
-    // Create navigation buttons
-    QPushButton *backButton = new QPushButton("Back");
-    QPushButton *nextButton = new QPushButton("Next");
+	// Create navigation buttons
+	QPushButton *backButton = new QPushButton("Back");
+	QPushButton *nextButton = new QPushButton("Next");
 
-    // Add the combo box and navigation buttons to the navbar
-    navbarLayout->addWidget(backButton);
-    navbarLayout->addWidget(backgroundComboBox);
-    navbarLayout->addWidget(nextButton);
+	// Add the combo box and navigation buttons to the navbar
+	navbarLayout->addWidget(backButton);
+	navbarLayout->addWidget(backgroundComboBox);
+	navbarLayout->addWidget(nextButton);
 
-    // Add the navbar to the main layout
-    mainLayout->addWidget(navbar);
+	// Add the navbar to the main layout
+	mainLayout->addWidget(navbar);
 
-    // Load the background data
-    loadBackgrounds();
+	// Load the background data
+	loadBackgrounds();
 
-    // Connect the combo box to update the displayed information
-    connect(backgroundComboBox, &QComboBox::currentTextChanged, this, &BackgroundWidget::updateBackgroundInfo);
+	// Connect the combo box to update the displayed information
+	connect(backgroundComboBox, &QComboBox::currentTextChanged, this, &BackgroundWidget::updateBackgroundInfo);
 
-    // When back button is clicked it calls the public SLOT function backPage()
-    connect(backButton, SIGNAL(clicked()), SLOT(backPage()));
-    connect(nextButton, SIGNAL(clicked()), SLOT(nextPage()));
+	// When back button is clicked it calls the public SLOT function backPage()
+	connect(backButton, SIGNAL(clicked()), SLOT(backPage()));
+	connect(nextButton, SIGNAL(clicked()), SLOT(nextPage()));
 
-    // Initialize with the first background's details
-    if (!backgroundComboBox->currentText().isEmpty()) {
-        updateBackgroundInfo(backgroundComboBox->currentText());
-    }
+	// Initialize with the first background's details
+	if (!backgroundComboBox->currentText().isEmpty())
+	{
+		updateBackgroundInfo(backgroundComboBox->currentText());
+	}
 }
 
-
-void BackgroundWidget::loadBackgrounds() {
+void BackgroundWidget::loadBackgrounds()
+{
 	QFile file("data/databases/Backgrounds.tsv"); // read in the file
 	qDebug() << "Current working directory:" << QDir::currentPath();
-	if (!file.open(QIODevice::ReadOnly | QIODevice::Text)) { // error checking for debugging
+	if (!file.open(QIODevice::ReadOnly | QIODevice::Text))
+	{ // error checking for debugging
 		std::cerr << "Failed to open file" << std::endl;
 		return;
 	}
 
 	QTextStream in(&file); // read in the file
-	bool isHeader = true; // our first line is a header
+	bool isHeader = true;  // our first line is a header
 
-	while (!in.atEnd()) {
+	while (!in.atEnd())
+	{
 		QString line = in.readLine(); // read in the line
-		if (isHeader) {
+		if (isHeader)
+		{
 			isHeader = false; // we are no longer on the header
-			continue; // skip the header
+			continue;		  // skip the header
 		}
 
 		QStringList fields = line.split("\t"); // split the line by \t
-		if (fields.size() < 8) continue; // ensure we get all the fields
+		if (fields.size() < 8)
+			continue; // ensure we get all the fields
 
 		BackgroundInfo info = {
 			fields[1], // page
@@ -559,26 +591,27 @@ void BackgroundWidget::loadBackgrounds() {
 			fields[8]  // feature description
 		};
 
-		QString name = fields[0]; // name of the background
-		backgrounds[name] = info; // add the background to the map
+		QString name = fields[0];		   // name of the background
+		backgrounds[name] = info;		   // add the background to the map
 		backgroundComboBox->addItem(name); // add the background to the combo box
 	}
 }
 
-void BackgroundWidget::updateBackgroundInfo(const QString &backgroundName) {
-    if (!backgrounds.contains(backgroundName)) {
-        qWarning() << "Background not found:" << backgroundName;
-        return;
-    }
+void BackgroundWidget::updateBackgroundInfo(const QString &backgroundName)
+{
+	if (!backgrounds.contains(backgroundName))
+	{
+		qWarning() << "Background not found:" << backgroundName;
+		return;
+	}
 
-    BackgroundInfo info = backgrounds[backgroundName];
-    nameAndPageLabel->setText(backgroundName + " (Page " + info.page + ")");
-    descriptionLabel->setText(info.description);
-    proficienciesLabel->setText(info.skillProficiency + "\n" + info.toolProficiency);
-    equipmentLabel->setText(info.equipment);
-    featureLabel->setText(info.feature + "\n" + info.featureDescription);
+	BackgroundInfo info = backgrounds[backgroundName];
+	nameAndPageLabel->setText(backgroundName + " (Page " + info.page + ")");
+	descriptionLabel->setText(info.description);
+	proficienciesLabel->setText(info.skillProficiency + "\n" + info.toolProficiency);
+	equipmentLabel->setText(info.equipment);
+	featureLabel->setText(info.feature + "\n" + info.featureDescription);
 }
-
 
 void BackgroundWidget::backPage()
 {
