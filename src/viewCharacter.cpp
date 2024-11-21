@@ -522,12 +522,12 @@ ViewCharacter::ViewCharacter(QWidget *parent, QString nameIn) :
 
     // Create buttons for navbar
     QPushButton *Backbutton = new QPushButton("Return to Character Select");
-    QPushButton *importButton = new QPushButton("Import Character");
+    QPushButton *characterSheetButton = new QPushButton("View Character Sheet");
     QPushButton *exportButton = new QPushButton("Export Character");
 
     // Add buttons to navbar
     navbarLayout->addWidget(Backbutton);
-    navbarLayout->addWidget(importButton);
+    navbarLayout->addWidget(characterSheetButton);
     navbarLayout->addWidget(exportButton);
 
     // Add columns to body
