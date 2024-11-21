@@ -10,6 +10,10 @@ Last Modified: 11/6/2024
 
 #include "characterSelect.h"
 #include "viewCharacter.h"
+#include "viewInventory.h"
+#include "viewSpells.h"
+#include "viewNotes.h"
+#include "themeUtils.h"
 
 #include <iostream>
 #include <string>
@@ -94,7 +98,7 @@ void CharacterSelect::deleteCharacter()
 		popup.setWindowModality(Qt::ApplicationModal); // stios the user from interacting with the main window while the popup is open
 		popup.setWindowTitle("Delete Character?");	   // set the title of the popup
 
-		popup.setFixedSize(200, 100); // set the size of the popup
+		popup.setFixedSize(200, 150); // set the size of the popup
 
 		QLabel *popupText = new QLabel("Are you sure you want to delete " + name + "?", &popup); // creates the text for the popup
 		popupText->setWordWrap(true);															 // allows the text to wrap around if it is too long
@@ -102,6 +106,10 @@ void CharacterSelect::deleteCharacter()
 		// create the buttons for the popup
 		QPushButton *popupConfirm = new QPushButton("Confirm", &popup); // creates the confirm button
 		QPushButton *popupCancel = new QPushButton("Cancel", &popup);	// creates the cancel button
+
+		// Gets rid of the padding around the text of the buttons
+		popupConfirm->setStyleSheet("padding: 5px 0px; margin: 0px;");
+		popupCancel->setStyleSheet("padding: 5px 0px; margin: 0px;");
 
 		// Connect the confirm button to accept the dialog (e.g., confirming the deletion)
 		QObject::connect(popupConfirm, &QPushButton::clicked, &popup, &QDialog::accept);
@@ -112,10 +120,20 @@ void CharacterSelect::deleteCharacter()
 		// create the layout for the popup
 		QVBoxLayout popupLayout(&popup);
 
+		// Create button widget
+		QWidget *popupButtonWidget = new QWidget(&popup);
+		QHBoxLayout popupButtonLayout(popupButtonWidget); // Makes the buttons horizontal
+
+		// adds the buttons to the button widget
+		popupButtonLayout.addWidget(popupConfirm);
+		popupButtonLayout.addWidget(popupCancel);
+
 		// adds the components to the popup
 		popupLayout.addWidget(popupText);
-		popupLayout.addWidget(popupConfirm);
-		popupLayout.addWidget(popupCancel);
+		popupLayout.addWidget(popupButtonWidget);
+
+		// makes the popup text take up more horizontal space
+		popupLayout.setStretch(0, 1);
 
 		// show the popup
 		popup.exec();
@@ -239,8 +257,6 @@ CharacterSelect::CharacterSelect(QWidget *parent)
 
 	// settings button click event
 	connect(settings, SIGNAL(clicked()), SLOT(gotoSettings()));
-
-	// std::cout << layout->rowCount() << ", " << layout->columnCount() << std::endl;
 }
 
 void CharacterSelect::deleteCharSlot()
@@ -269,24 +285,48 @@ void CharacterSelect::openChar()
 	// get the name of the character
 	QString name = characters->currentItem()->text();
 
+	// clear the selection and focus after getting character name
+	this->characters->selectionModel()->clear();
+	this->characters->clearFocus();
+
+	// reload the theme
+	reloadTheme();
+
+	// Start the process of creating the viewCharacter page and switching to it
 	QStackedWidget * stackedWidget = qobject_cast<QStackedWidget *>(this->parentWidget());
-	if (stackedWidget) {
-
-		if(stackedWidget->widget(2))
+	if (stackedWidget)
+	{
+		if(!stackedWidget->widget(2))
 		{
-			// get the viewCharacter page
-			QWidget * viewCharacter = stackedWidget->widget(2); // viewCharacter is the third page so index 2
-
-			// delete the current viewCharacter page
-			delete viewCharacter;
+			qDebug() << "No characterInformation stack found";
+			return;
 		}
+		// get the characterInformation stack
+		QStackedWidget * characterInformation = qobject_cast<QStackedWidget *>(stackedWidget->widget(2));
+
+		// Loop through all widgets and delete them
+    	while (characterInformation->count() > 0) 
+		{
+			QWidget *widget = characterInformation->widget(0); // Always get the first widget
+			characterInformation->removeWidget(widget); // Remove it from the stack
+			delete widget; // Delete the widget
+    	}
 		
 
-		// create a new viewCharacter page with new character
-		ViewCharacter *newViewCharacter = new ViewCharacter(0, name);
+		// Create the viewCharacter page, viewInventory page, and viewNotes page
+		ViewCharacter *newViewCharacter = new ViewCharacter(nullptr, name);
+		ViewInventory *newViewInventory = new ViewInventory(nullptr, name);
+		ViewSpells *newViewSpells = new ViewSpells(nullptr, name);
+		ViewNotes *newViewNotes = new ViewNotes(nullptr, name);
 
-		stackedWidget->insertWidget(2, newViewCharacter); // insert the new viewCharacter page
-		stackedWidget->setCurrentIndex(2);				  // viewCharacter is the third page so index 2
+		// Add the viewCharacter page, viewInventory page, and viewNotes page to the stacked widget
+		characterInformation->addWidget(newViewCharacter);
+		characterInformation->addWidget(newViewInventory);
+		characterInformation->addWidget(newViewSpells);
+		characterInformation->addWidget(newViewNotes);
+
+
+		stackedWidget->setCurrentIndex(2); // viewCharacter in the characterInformation stack which is on index 2
 	}
 
 	// disable delete button since itemClicked collides with itemDoubleClicked

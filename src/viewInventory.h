@@ -14,12 +14,16 @@ Last Modified: 11/5/2024
 
 class ViewInventory : public QWidget
 {
+Q_OBJECT
 public:
-    explicit ViewInventory(QWidget *parent = 0);
+    explicit ViewInventory(QWidget *parent = 0, QString name = "");
     ~ViewInventory();
 
 private:
     void loadInventory();
+
+private slots:
+    void goBack();
 };
 
 #endif

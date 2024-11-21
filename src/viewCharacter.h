@@ -42,6 +42,7 @@ private:
     QList<int> characterSavingThrows;
     QList<int> characterSkillBonuses;
     QList<int> characterCoins;
+    QList<int> deathThrows;
     int characterHitPoints;
     int characterMaxHitPoints;
     int characterArmorClass;
@@ -54,6 +55,9 @@ private:
 
 private slots:
     void goBack();
+    void goToInventory();
+    void goToSpells();
+    void goToNotes();
     // void importChar();
 };
 
