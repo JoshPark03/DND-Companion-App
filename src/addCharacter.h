@@ -18,7 +18,7 @@ Last Modified: 10/31/2024
 #include <QSpinBox>
 #include <QWidget>
 
-class MyComboBox;
+class UpComboBox;
 class Portrait;
 class StartWidget;
 class BaseStatsWidget;
@@ -27,7 +27,7 @@ class RaceWidget;
 class BackgroundWidget;
 class InventoryWidget;
 
-class MyComboBox : public QComboBox
+class UpComboBox : public QComboBox
 {
 	Q_OBJECT
 public:
@@ -38,11 +38,12 @@ class Portrait : public QLabel
 {
 	Q_OBJECT
 public:
-	explicit Portrait(const QString& type, const QString& selection, QWidget *parent = 0);
+	explicit Portrait(const QString &type, const QString &selection, QWidget *parent = 0);
+
 private:
 	QString *typeWidget;
 public slots:
-	void getImage(const QString& type);
+	void getImage(const QString &type);
 };
 
 class AddCharacter : public QStackedWidget
@@ -136,20 +137,49 @@ private slots:
 	void nextPage();
 };
 
+struct BackgroundInfo {
+    QString page;
+    QString description;
+    QString skillProficiency;
+    QString toolProficiency;
+    QString languages;
+    QString equipment;
+    QString feature;
+    QString featureDescription;
+};
+
+
 class BackgroundWidget : public QWidget
 {
-	Q_OBJECT
+    Q_OBJECT
 public:
-	explicit BackgroundWidget(QWidget *parent = 0);
-	// ~BackgroundWidget();
-	QComboBox *getSelected();
+    explicit BackgroundWidget(QWidget *parent = 0);
+    // ~BackgroundWidget();
+    QComboBox *getSelected();
 
 private:
-	QComboBox *backgroundComboBox;
+    QComboBox *backgroundComboBox;
+
+    // Add new private members for displaying background info
+    QLabel *pageLabel;
+    QLabel *descriptionLabel;
+    QLabel *proficienciesLabel;
+    QLabel *equipmentLabel;
+    QLabel *featureLabel;
+	QLabel *nameAndPageLabel;
+
+    // Add a map to store background data
+    QMap<QString, BackgroundInfo> backgrounds;
+
+    // Add declarations for new methods
+    void loadBackgrounds();
+    void updateBackgroundInfo(const QString &backgroundName);
+
 private slots:
-	void backPage();
-	void nextPage();
+    void backPage();
+    void nextPage();
 };
+
 
 class InventoryWidget : public QWidget
 {
