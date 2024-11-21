@@ -301,71 +301,6 @@ void BaseStatsWidget::nextPage()
 /**
  * Constructor for the class
  */
-ClassWidget::ClassWidget(QWidget *parent) : QWidget(parent)
-{
-	// Create the main vertical layout
-	QVBoxLayout *layout = new QVBoxLayout(this);
-
-	// Create horizontal layer for the columns
-	QWidget *body = new QWidget();
-	QHBoxLayout *bodyLayout = new QHBoxLayout(body);
-
-	// Create and configure layout for the navbar
-	QWidget *navbar = new QWidget();
-	QHBoxLayout *navbarLayout = new QHBoxLayout(navbar);
-	navbar->setFixedHeight(40);
-
-	// Create the class combo box
-	UpComboBox *classComboBox = new UpComboBox;
-	classComboBox->addItem("Barbarian");
-	classComboBox->addItem("Bard");
-	classComboBox->addItem("Cleric");
-	classComboBox->addItem("Druid");
-	classComboBox->addItem("Fighter");
-	classComboBox->addItem("Monk");
-	classComboBox->addItem("Paladin");
-	classComboBox->addItem("Ranger");
-	classComboBox->addItem("Rogue");
-	classComboBox->addItem("Sorcerer");
-	classComboBox->addItem("Warlock");
-	classComboBox->addItem("Wizard");
-
-	// Create navigation buttons
-	QPushButton *backButton = new QPushButton("Back");
-	QPushButton *nextButton = new QPushButton("Next");
-
-	// Add the combo box and navigation buttons to the navbar
-	navbarLayout->addWidget(backButton);
-	navbarLayout->addWidget(classComboBox);
-	navbarLayout->addWidget(nextButton);
-
-	// Add the navbar to the main layout
-	layout->addWidget(body);
-	layout->addWidget(navbar);
-
-	// When back button is clicked it calls the public SLOT function backPage()
-	connect(backButton, SIGNAL(clicked()), SLOT(backPage()));
-	connect(nextButton, SIGNAL(clicked()), SLOT(nextPage()));
-}
-
-void ClassWidget::backPage()
-{
-	QStackedWidget *stackedWidget = qobject_cast<QStackedWidget *>(this->parentWidget());
-	if (stackedWidget)
-	{
-		stackedWidget->setCurrentIndex(1);
-	}
-}
-
-void ClassWidget::nextPage()
-{
-	QStackedWidget *stackedWidget = qobject_cast<QStackedWidget *>(this->parentWidget());
-	if (stackedWidget)
-	{
-		stackedWidget->setCurrentIndex(3);
-	}
-}
-
 RaceWidget::RaceWidget(QWidget *parent) : QWidget(parent)
 {
 	// Create the main vertical layout
@@ -452,7 +387,7 @@ RaceWidget::RaceWidget(QWidget *parent) : QWidget(parent)
 	// When the current selection in the combo box changes, the header and portrait must also change
 	connect(raceComboBox, &QComboBox::currentTextChanged, [header](const QString &text)
 			{ header->setText("<h1>" + text + "</h1>"); });
-	connect(raceComboBox, &QComboBox::currentTextChanged, racePortrait, &Portrait::getImage);
+	connect(raceComboBox, SIGNAL(currentTextChanged(const QString &)), racePortrait, SLOT(getImage(const QString &)));
 }
 
 /**

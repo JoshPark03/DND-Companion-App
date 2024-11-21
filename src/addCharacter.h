@@ -17,6 +17,8 @@ Last Modified: 11/5/2024
 #include <QLineEdit>
 #include <QSpinBox>
 #include <QWidget>
+#include <QList>
+#include <QLayout>
 
 class UpComboBox;
 class Portrait;
@@ -111,21 +113,48 @@ private slots:
 	void nextPage();
 };
 
+struct ClassInfo {
+    QString book;
+    QString page;
+    QList<QString> * armorProficiencies;
+	QList<QString> * weaponProficiencies;
+    QList<QString> * toolProficiencies;
+    QList<QString> * savingThrows;
+	int numSkills;
+    QList<QString> * skillProficiencies;
+    QList<QList<QString> *> * equipmentChoices;
+    QList<QString> * givenEquipment;
+	QString summary;
+};
+
 class ClassWidget : public QWidget
 {
 	Q_OBJECT
 public:
 	explicit ClassWidget(QWidget *parent = 0);
-	// function for getting which radio button is selected
+	// function for getting which class is selected
 	QComboBox * getSelected();
 
 private:
-	QComboBox * classComboBox;
+	QMap<QString, ClassInfo *> classes;
 	QLabel * header;
+	Portrait * portrait;
+	QLabel * summary;
+	QLabel * armor;
+	QLabel * weapons;
+	QLabel * tools;
+	QLabel * savingThrows;
+	QVBoxLayout * skillsLayout;
+	QList<QComboBox *> * skillsList;
+	QVBoxLayout * choicesLayout;
+	QList<QComboBox *> * choicesList;
+	QLabel * givenEquipment;
+	UpComboBox * classComboBox;
+	void loadClasses();
 private slots:
 	void backPage();
 	void nextPage();
-	void headerUpdate(const QString &text);
+	void updateClassInfo(const QString & name);
 };
 
 class RaceWidget : public QWidget
@@ -133,7 +162,7 @@ class RaceWidget : public QWidget
 	Q_OBJECT
 public:
 	explicit RaceWidget(QWidget *parent = 0);
-	// function for getting which radio button is selected
+	// function for getting which race is selected
 	QComboBox *getSelected();
 
 private:
@@ -160,7 +189,7 @@ class BackgroundWidget : public QWidget
     Q_OBJECT
 public:
 	explicit BackgroundWidget(QWidget *parent = 0);
-	// function for getting which radio button is selected
+	// function for getting which background is selected
 	QComboBox *getSelected();
 
 private:
