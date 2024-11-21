@@ -433,27 +433,9 @@ BackgroundWidget::BackgroundWidget(QWidget *parent) : QWidget(parent) {
 	descriptionLabel->setAlignment(Qt::AlignCenter);
 	descriptionLabel->setWordWrap(true);
 
-<<<<<<< HEAD
-	// Create combo box for the background
-	UpComboBox *backgroundComboBox = new UpComboBox;
-	backgroundComboBox->addItem("Acolyte");
-	backgroundComboBox->addItem("Charlatan");
-	backgroundComboBox->addItem("Criminal");
-	backgroundComboBox->addItem("Entertainer");
-	backgroundComboBox->addItem("Folk Hero");
-	backgroundComboBox->addItem("Guild Artisan");
-	backgroundComboBox->addItem("Hermit");
-	backgroundComboBox->addItem("Noble");
-	backgroundComboBox->addItem("Outlander");
-	backgroundComboBox->addItem("Sage");
-	backgroundComboBox->addItem("Sailor");
-	backgroundComboBox->addItem("Soldier");
-	backgroundComboBox->addItem("Urchin");
-=======
 	proficienciesLabel = new QLabel();
 	proficienciesLabel->setAlignment(Qt::AlignCenter);
 	proficienciesLabel->setWordWrap(true);
->>>>>>> main
 
 	equipmentLabel = new QLabel();
 	equipmentLabel->setAlignment(Qt::AlignCenter);
