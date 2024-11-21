@@ -13,6 +13,7 @@ Last Modified: 11/18/2024
 #include <QWidget>
 #include <QListWidget>
 #include <QTextEdit>
+#include <QTimer>
 
 class ViewNotes : public QWidget
 {
@@ -23,7 +24,13 @@ public:
 
 private:
     QString name;
+    QString currentSection;
+    QTimer *saveTimer;
     void loadNotes();
+    void onNoteSelected(QListWidgetItem *item);
+    void saveCurrentNote();
+    void createNewNote(const QString &newNoteName);
+    void deleteNoteSection(const QString &sectionName);
     QListWidget *notesList = new QListWidget();
     QTextEdit *noteEdit = new QTextEdit();
 
