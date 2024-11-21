@@ -18,7 +18,7 @@ Last Modified: 10/31/2024
 #include <QSpinBox>
 #include <QWidget>
 
-class MyComboBox;
+class UpComboBox;
 class Portrait;
 class StartWidget;
 class BaseStatsWidget;
@@ -27,7 +27,7 @@ class RaceWidget;
 class BackgroundWidget;
 class InventoryWidget;
 
-class MyComboBox : public QComboBox
+class UpComboBox : public QComboBox
 {
 	Q_OBJECT
 public:
@@ -38,11 +38,12 @@ class Portrait : public QLabel
 {
 	Q_OBJECT
 public:
-	explicit Portrait(const QString& type, const QString& selection, QWidget *parent = 0);
+	explicit Portrait(const QString &type, const QString &selection, QWidget *parent = 0);
+
 private:
 	QString *typeWidget;
 public slots:
-	void getImage(const QString& type);
+	void getImage(const QString &type);
 };
 
 class AddCharacter : public QStackedWidget
