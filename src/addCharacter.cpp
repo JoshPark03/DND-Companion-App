@@ -46,7 +46,7 @@ Portrait::Portrait(const QString &type, const QString &selection, QWidget *paren
 void Portrait::getImage(const QString &selection)
 {
 	// Attempt to retrieve a picture file from the assets folder based on the widget type and combo box selection
-	QPixmap image(QDir::currentPath() + "/src/assets/" + *(this->typeWidget) + "/" + selection + ".png", "-d");
+	QPixmap image(QDir::currentPath() + "/src/assets/" + *this->typeWidget + "/" + selection.toLower() + ".png", "-d");
 	if (image.isNull())
 	{
 		this->setText("Image not available");
@@ -295,80 +295,6 @@ void BaseStatsWidget::nextPage()
 	if (stackedWidget)
 	{
 		stackedWidget->setCurrentIndex(2);
-	}
-}
-
-/**
- * Constructor for the class
- */
-ClassWidget::ClassWidget(QWidget * parent) :
-	QWidget(parent) {
-	// Create the main vertical layout
-	QVBoxLayout *layout = new QVBoxLayout(this);
-
-	// Create horizontal layer for the columns
-	QWidget *body = new QWidget();
-	QHBoxLayout *bodyLayout = new QHBoxLayout(body);
-
-	// Create and configure layout for the navbar
-	QWidget *navbar = new QWidget();
-	QHBoxLayout *navbarLayout = new QHBoxLayout(navbar);
-	navbar->setFixedHeight(40);
-
-	// Create the class combo box
-	MyComboBox *classComboBox = new MyComboBox;
-	classComboBox->addItem("Barbarian");
-	classComboBox->addItem("Bard");
-	classComboBox->addItem("Cleric");
-	classComboBox->addItem("Druid");
-	classComboBox->addItem("Fighter");
-	classComboBox->addItem("Monk");
-	classComboBox->addItem("Paladin");
-	classComboBox->addItem("Ranger");
-	classComboBox->addItem("Rogue");
-	classComboBox->addItem("Sorcerer");
-	classComboBox->addItem("Warlock");
-	classComboBox->addItem("Wizard");
-
-	// Create navigation buttons
-	QPushButton *backButton = new QPushButton("Back");
-	QPushButton *nextButton = new QPushButton("Next");
-
-	// Add the combo box and navigation buttons to the navbar
-	navbarLayout->addWidget(backButton);
-	navbarLayout->addWidget(classComboBox);
-	navbarLayout->addWidget(nextButton);
-
-	// Add the navbar to the main layout
-	layout->addWidget(body);
-	layout->addWidget(navbar);
-
-	// When back button is clicked it calls the public SLOT function backPage()
-	connect(backButton, SIGNAL(clicked()), SLOT(backPage()));
-	connect(nextButton, SIGNAL(clicked()), SLOT(nextPage()));
-}
-
-/**
- * This function changes AddCharacter's StackedWidget to BaseStatsWidget
- */
-void ClassWidget::backPage()
-{
-	QStackedWidget *stackedWidget = qobject_cast<QStackedWidget *>(this->parentWidget());
-	if (stackedWidget)
-	{
-		stackedWidget->setCurrentIndex(1);
-	}
-}
-
-/**
- * This function changes AddCharacter's StackedWidget to RaceWidget
- */
-void ClassWidget::nextPage()
-{
-	QStackedWidget *stackedWidget = qobject_cast<QStackedWidget *>(this->parentWidget());
-	if (stackedWidget)
-	{
-		stackedWidget->setCurrentIndex(3);
 	}
 }
 

@@ -116,13 +116,15 @@ class ClassWidget : public QWidget
 public:
 	explicit ClassWidget(QWidget *parent = 0);
 	// function for getting which radio button is selected
-	QComboBox *getSelected();
+	QComboBox * getSelected();
 
 private:
-	QComboBox *classComboBox;
+	QComboBox * classComboBox;
+	QLabel * header;
 private slots:
 	void backPage();
 	void nextPage();
+	void headerUpdate(const QString &text);
 };
 
 class RaceWidget : public QWidget
