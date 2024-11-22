@@ -193,10 +193,10 @@ void ClassWidget::loadClasses() {
 		// qDebug() << "matching " << fields[9];
 		QList<QList<QString> *> * choices = new QList<QList<QString> *>;
 		QRegularExpression re("\\([^)]+\\)");
-		QRegularExpressionMatch match = re.match(fields[9]);
-		QStringList choiceList = match.capturedTexts();
+		QRegularExpressionMatchIterator match = re.globalMatch(fields[9]);
 		// qDebug() << choiceList;
-		for (QString itemsStr : choiceList) {
+		while (match.hasNext()) {
+			QString itemsStr = match.next().captured();
 			itemsStr = itemsStr.mid(1, itemsStr.size()-2);
 			// qDebug() << itemsStr;
 			QList<QString> items = itemsStr.split(",");
