@@ -113,6 +113,14 @@ private slots:
 	void nextPage();
 };
 
+// This is a very hastily put together solution for replacing values
+// replace this with a tsv file later
+inline QList<QString> simpleMelee = {"Club", "Dagger", "Greatclub", "Handaxe", "Javelin", "Light Hammer", "Mace", "Quarterstaff", "Sickle", "Spear"};
+inline QList<QString> simpleRanged = {"Light Crossbow", "Dart", "Shortbow", "Sling"};
+inline QList<QString> martialMelee = {"Battleaxe", "Flail", "Glaive", "Greataxe", "Greatsword", "Halberd" "Lance", "Longsword", "Maul", "Moerningstar", "Pike", "Rapier", "Scimitar", "Shortsword", "Trident", "War pick", "Warhammer", "Whip"};
+inline QList<QString> martialRanged = {"Blowgun", "Hand Crossbow", "Heavy Crossbow", "Longbow", "Net"};
+inline QList<QString> allSkills = {"Acrobatics", "Animal Handling", "Arcana", "Athletics", "Deception", "History", "Intimidation", "Investigation", "Medicine", "Nature", "Perception", "Performance", "Persuasion", "Religion", "Sleight of Hand", "Stealth", "Survival"};
+
 struct ClassInfo {
     QString book;
     QString page;
@@ -145,9 +153,9 @@ private:
 	QLabel * tools;
 	QLabel * savingThrows;
 	QVBoxLayout * skillsLayout;
-	QList<QComboBox *> * skillsList;
+	QList<UpComboBox *> * skillsList;
 	QVBoxLayout * choicesLayout;
-	QList<QComboBox *> * choicesList;
+	QList<UpComboBox *> * choicesList;
 	QLabel * givenEquipment;
 	UpComboBox * classComboBox;
 	void loadClasses();

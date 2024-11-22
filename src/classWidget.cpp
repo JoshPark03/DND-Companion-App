@@ -57,7 +57,6 @@ ClassWidget::ClassWidget(QWidget * parent) :
 	// Create header
 	header = new QLabel("<h1>" + this->classComboBox->currentText() + "</h1>");
 	header->setFixedHeight(50);
-	header->setAlignment(Qt::AlignCenter);
 
 	// Create portrait
 	this->portrait = new Portrait("classes", this->classComboBox->currentText());
@@ -67,10 +66,11 @@ ClassWidget::ClassWidget(QWidget * parent) :
 
 	// Create the summary textbox
 	this->summary = new QLabel("summary");
+	summary->setWordWrap(true);
 
 	// Create the proficiencies layout
-	QGridLayout * proficienciesLayout = new QGridLayout();
-	QLabel * proficiencies = new QLabel("Proficiencies:");
+	QVBoxLayout * proficienciesLayout = new QVBoxLayout();
+	QLabel * proficiencies = new QLabel("<h3>Proficiencies:</h3>");
 	this->armor = new QLabel("armor");
 	this->weapons = new QLabel("weapons");
 	this->tools = new QLabel("tools");
@@ -78,22 +78,22 @@ ClassWidget::ClassWidget(QWidget * parent) :
 
 	// Create the skills layout
 	this->skillsLayout = new QVBoxLayout();
-	QLabel * skills = new QLabel("Skills:");
+	QLabel * skills = new QLabel("<h4>Skills:</h4>");
 	this->skillsList = nullptr;
 
-	skillsLayout->addWidget(skills, {Qt::AlignCenter});
+	skillsLayout->addWidget(skills, {Qt::AlignTop});
 
 	// Setting the proficiencies layout
-	proficienciesLayout->addWidget(proficiencies, 0, 0, {Qt::AlignCenter});
-	proficienciesLayout->addWidget(armor, 1, 0, {Qt::AlignCenter});
-	proficienciesLayout->addWidget(weapons, 2, 0, {Qt::AlignCenter});
-	proficienciesLayout->addWidget(tools, 3, 0, {Qt::AlignCenter});
-	proficienciesLayout->addWidget(savingThrows, 4, 0, {Qt::AlignCenter});
-	proficienciesLayout->addLayout(skillsLayout, 5, 0, {Qt::AlignCenter});
+	proficienciesLayout->addWidget(proficiencies, Qt::Alignment{Qt::AlignLeft, Qt::AlignTop});
+	proficienciesLayout->addWidget(armor, Qt::Alignment{Qt::AlignLeft, Qt::AlignTop});
+	proficienciesLayout->addWidget(weapons, Qt::Alignment{Qt::AlignLeft, Qt::AlignTop});
+	proficienciesLayout->addWidget(tools, Qt::Alignment{Qt::AlignLeft, Qt::AlignTop});
+	proficienciesLayout->addWidget(savingThrows, Qt::Alignment{Qt::AlignLeft, Qt::AlignTop});
+	proficienciesLayout->addLayout(skillsLayout, Qt::Alignment{Qt::AlignLeft, Qt::AlignTop});
 
 	// Create the equipment layout
 	QVBoxLayout * equipmentLayout = new QVBoxLayout();
-	QLabel * equipment = new QLabel("Equipment:");
+	QLabel * equipment = new QLabel("<h3>Equipment:</h3>");
 	this->choicesList = nullptr;
 	this->givenEquipment = new QLabel("given equipment");
 
@@ -101,19 +101,19 @@ ClassWidget::ClassWidget(QWidget * parent) :
 	this->choicesLayout = new QVBoxLayout();
 
 	// Setting the equipment layout
-	equipmentLayout->addWidget(equipment, {Qt::AlignCenter});
-	equipmentLayout->addLayout(this->choicesLayout, {Qt::AlignCenter});
-	equipmentLayout->addWidget(givenEquipment, {Qt::AlignCenter});
+	equipmentLayout->addWidget(equipment,  {Qt::AlignTop});
+	equipmentLayout->addLayout(this->choicesLayout,  {Qt::AlignTop});
+	equipmentLayout->addWidget(givenEquipment,  {Qt::AlignTop});
 
 	// Setting the description layout
-	description->addWidget(summary, 0, 0, 1, -1, {Qt::AlignCenter});
-	description->addLayout(proficienciesLayout, 1, 0, 2, 1);
-	description->addLayout(equipmentLayout, 1, 1, 2, 1);
+	description->addWidget(summary, 0, 0, -1, 1, {Qt::AlignTop});
+	description->addLayout(proficienciesLayout, 0, 1, 2, 1, {Qt::AlignTop});
+	description->addLayout(equipmentLayout, 0, 2, 1, 1, {Qt::AlignTop});
 
 	// Add the all pieces to the main layout
 	mainLayout->addWidget(header, 0, 0, 1, -1, {Qt::AlignCenter});
 	mainLayout->addWidget(portrait, 1, 0, 1, 1, {Qt::AlignCenter});
-	mainLayout->addLayout(description, 1, 1, 1, 1);
+	mainLayout->addLayout(description, 1, 1, 1, 4);
 	mainLayout->addWidget(navbar, 2, 0, 1, -1, {Qt::AlignBottom});
 
 	//loading the classes from the tsv file
@@ -181,15 +181,15 @@ void ClassWidget::loadClasses() {
 			continue; // ensure we get all the fields
 		}
 
-		QList<QString> * armors = new QList<QString>(fields[3].split(","));
+		QList<QString> * armors = new QList<QString>(fields[3].split(", "));
 
-		QList<QString> * weapons = new QList<QString>(fields[4].split(","));
+		QList<QString> * weapons = new QList<QString>(fields[4].split(", "));
 
-		QList<QString> * tools = new QList<QString>(fields[5].split(","));
+		QList<QString> * tools = new QList<QString>(fields[5].split(", "));
 
-		QList<QString> * savingThrows = new QList<QString>(fields[6].split(","));
+		QList<QString> * savingThrows = new QList<QString>(fields[6].split(", "));
 
-		QList<QString> * skills = new QList<QString>(fields[8].split(","));
+		QList<QString> * skills = new QList<QString>(fields[8].split(", "));
 		// qDebug() << "matching " << fields[9];
 		QList<QList<QString> *> * choices = new QList<QList<QString> *>;
 		QRegularExpression re("\\([^)]+\\)");
@@ -199,7 +199,7 @@ void ClassWidget::loadClasses() {
 			QString itemsStr = match.next().captured();
 			itemsStr = itemsStr.mid(1, itemsStr.size()-2);
 			// qDebug() << itemsStr;
-			QList<QString> items = itemsStr.split(",");
+			QList<QString> items = itemsStr.split(", ");
 			QList<QString> * choice = new QList<QString>;
 			for (QString item : items) {
 				choice->append(item);
@@ -208,7 +208,7 @@ void ClassWidget::loadClasses() {
 			// qDebug() << *choice << Qt::endl;
 		}
 
-		QList<QString> * given = new QList<QString>(fields[10].split(","));
+		QList<QString> * given = new QList<QString>(fields[10].split(", "));
 
 		ClassInfo * info = new ClassInfo {
 			fields[1],
@@ -246,24 +246,25 @@ void ClassWidget::updateClassInfo(const QString &name) {
 
 	this->portrait->getImage(name);
 
+	// this->summary->setText("<h3>Summary:</h3><br>");
 	this->summary->setText("<h3>Summary:</h3><br>" + info->summary);
 
-	this->armor->setText("<h3>Armor:</h3>");
+	this->armor->setText("<h4>Armor:</h4>");
 	for (QString prof : *info->armorProficiencies) {
 		this->armor->setText(this->armor->text() + "<br>" + prof);
 	}
 
-	this->weapons->setText("<h3>Weapons:</h3>");
+	this->weapons->setText("<h4>Weapons:</h4>");
 	for (QString prof : *info->weaponProficiencies) {
 		this->weapons->setText(this->weapons->text() + "<br>" + prof);
 	}
 
-	this->tools->setText("<h3>Tools:</h3>");
+	this->tools->setText("<h4>Tools:</h4>");
 	for (QString prof : *info->toolProficiencies) {
 		this->tools->setText(this->tools->text() + "<br>" + prof);
 	}
 
-	this->savingThrows->setText("<h3>Saving Throws:</h3>");
+	this->savingThrows->setText("<h4>Saving Throws:</h4>");
 	for (QString prof : *info->savingThrows) {
 		this->savingThrows->setText(this->savingThrows->text() + "<br>" + prof);
 	}
@@ -275,13 +276,17 @@ void ClassWidget::updateClassInfo(const QString &name) {
 		}
 		delete this->skillsList;
 	}
-	this->skillsList = new QList<QComboBox *>();
+	this->skillsList = new QList<UpComboBox *>();
 	for (int i = 0; i < info->numSkills; i++) {
-		QComboBox * skillBox = new QComboBox();
+		UpComboBox * skillBox = new UpComboBox();
 		for (QString skill : *info->skillProficiencies) {
+			if (skill == "All") {
+				skillBox->addItems(allSkills);
+				continue;
+			}
 			skillBox->addItem(skill);
 		}
-		this->skillsLayout->addWidget(skillBox, {Qt::AlignCenter});
+		this->skillsLayout->addWidget(skillBox, {Qt::AlignTop});
 		this->skillsList->append(skillBox);
 	}
 	// add connect function for the each skillbox here to prevent them from being the same skill
@@ -293,13 +298,31 @@ void ClassWidget::updateClassInfo(const QString &name) {
 		}
 		delete this->choicesList;
 	}
-	this->choicesList = new QList<QComboBox *>();
+	this->choicesList = new QList<UpComboBox *>();
 	for (auto choice : *info->equipmentChoices) {
-		QComboBox * choiceBox = new QComboBox();
+		UpComboBox * choiceBox = new UpComboBox();
 		for (QString item : *choice) {
+			if (item == "Simple") {
+				choiceBox->addItems(simpleMelee);
+				choiceBox->addItems(simpleRanged);
+				continue;
+			}
+			if (item == "Simple Melee") {
+				choiceBox->addItems(simpleMelee);
+				continue;
+			}
+			if (item == "Martial") {
+				choiceBox->addItems(martialMelee);
+				choiceBox->addItems(martialRanged);
+				continue;
+			}
+			if (item == "Martial Melee") {
+				choiceBox->addItems(martialMelee);
+				continue;
+			}
 			choiceBox->addItem(item);
 		}
-		this->choicesLayout->addWidget(choiceBox, {Qt::AlignCenter});
+		this->choicesLayout->addWidget(choiceBox, {Qt::AlignTop});
 		this->choicesList->append(choiceBox);
 	}
 
