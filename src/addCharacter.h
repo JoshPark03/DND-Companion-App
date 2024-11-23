@@ -172,6 +172,7 @@ private slots:
 	void nextPage();
 	void updateClassInfo(const QString & name);
 	void updateChoice();
+	void proficiencyDisableSkills();
 };
 
 class RaceWidget : public QWidget

@@ -16,6 +16,7 @@ Last Modified: 11/20/2024
 #include <QLayout>
 #include <QPushButton>
 #include <QRegularExpression>
+#include <QStandardItemModel>
 
 /**
  * Constructor for the class
@@ -243,7 +244,6 @@ void ClassWidget::updateClassInfo(const QString &name) {
 
 	this->portrait->getImage(name);
 
-	// this->summary->setText("<h3>Summary:</h3><br>");
 	this->summary->setText("<h3>Summary:</h3><br>" + info->summary);
 
 	this->armor->setText("<h4>Armor:</h4>");
@@ -255,7 +255,6 @@ void ClassWidget::updateClassInfo(const QString &name) {
 	for (QString prof : *info->weaponProficiencies) {
 		this->weapons->setText(this->weapons->text() + "<br>" + prof);
 	}
-
 	this->tools->setText("<h4>Tools:</h4>");
 	for (QString prof : *info->toolProficiencies) {
 		this->tools->setText(this->tools->text() + "<br>" + prof);
@@ -283,11 +282,15 @@ void ClassWidget::updateClassInfo(const QString &name) {
 			}
 			skillBox->addItem(skill);
 		}
+		// add connect function for the each skillbox here to prevent them from being the same skill
+		connect(skillBox, SIGNAL(currentIndexChanged(int)), SLOT(proficiencyDisableSkills()));
 		this->skillsLayout->addWidget(skillBox, {Qt::AlignTop});
 		this->skillsList->append(skillBox);
 	}
-	// add connect function for the each skillbox here to prevent them from being the same skill
-
+	for (auto skill : *this->skillsList) {
+		skill->setCurrentIndex(this->skillsList->indexOf(skill));
+	}
+	
 	if (this->choicesList) {
 		for (auto choice : *this->choicesList) {
 			this->choicesLayout->removeWidget(choice);
@@ -359,6 +362,27 @@ void ClassWidget::updateClassInfo(const QString &name) {
 	}
 }
 
+/**
+ * This function removes the selected options from each multipleChoice UpComboBox
+ */
+void ClassWidget::proficiencyDisableSkills() {
+	for (auto skill : *this->skillsList) {
+		QStandardItemModel * model = qobject_cast<QStandardItemModel *>(skill->model());
+		for (int i = 0; i < skill->count(); i++) {
+			model->item(i)->setEnabled(true);
+		}
+	}
+
+	for (auto skill1 : *this->skillsList) {
+		for (auto skill2 : *this->skillsList) {
+			QStandardItemModel * model = qobject_cast<QStandardItemModel *>(skill1->model());
+			if (skill1 != skill2) {
+				model->item(skill2->currentIndex())->setEnabled(false);
+			}
+		}
+	}
+}
+
 void ClassWidget::updateChoice() {
 	QString option = this->multipleChoiceBox->currentText();
 	int index = this->choicesLayout->indexOf(this->multipleChoiceBox);
@@ -407,6 +431,7 @@ void ClassWidget::updateChoice() {
 		this->choicesLayout->insertWidget(index+2, item2);
 		this->multipleChoice->append(item1);
 		this->multipleChoice->append(item2);
+		return;
 	}
 }
 
