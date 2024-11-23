@@ -573,20 +573,26 @@ void BackgroundWidget::loadBackgrounds()
 	}
 }
 
-void BackgroundWidget::updateBackgroundInfo(const QString &backgroundName)
-{
-	if (!backgrounds.contains(backgroundName))
-	{
-		qWarning() << "Background not found:" << backgroundName;
-		return;
-	}
+void BackgroundWidget::updateBackgroundInfo(const QString &backgroundName) {
+    if (!backgrounds.contains(backgroundName)) {
+        qWarning() << "Background not found:" << backgroundName;
+        return;
+    }
 
-	BackgroundInfo info = backgrounds[backgroundName];
-	nameAndPageLabel->setText(backgroundName + " (Page " + info.page + ")");
-	descriptionLabel->setText(info.description);
-	proficienciesLabel->setText(info.skillProficiency + "\n" + info.toolProficiency);
-	equipmentLabel->setText(info.equipment);
-	featureLabel->setText(info.feature + "\n" + info.featureDescription);
+    // get info
+    BackgroundInfo info = backgrounds[backgroundName];
+
+    // make labels
+    nameAndPageLabel->setText(backgroundName + " (Page " + info.page + ")");
+    descriptionLabel->setText(info.description);
+    proficienciesLabel->setText(info.skillProficiency + "\n" + info.toolProficiency);
+    equipmentLabel->setText(info.equipment);
+    featureLabel->setText(info.feature + "\n" + info.featureDescription);
+
+    // make lists to put into the character
+    QList<QString> skillProficiencies = info.skillProficiency.split(":", Qt::SkipEmptyParts);
+    QList<QString> toolProficiencies = info.toolProficiency.split(":", Qt::SkipEmptyParts);
+    QList<QString> items = info.equipment.split(":", Qt::SkipEmptyParts);
 }
 
 void BackgroundWidget::backPage()

@@ -11,6 +11,9 @@ Last Modified: 11/18/2024
 #define VIEWNOTES_H
 
 #include <QWidget>
+#include <QListWidget>
+#include <QTextEdit>
+#include <QTimer>
 
 class ViewNotes : public QWidget
 {
@@ -20,7 +23,16 @@ public:
     ~ViewNotes();
 
 private:
+    QString name;
+    QString currentSection;
+    QTimer *saveTimer;
     void loadNotes();
+    void onNoteSelected(QListWidgetItem *item);
+    void saveCurrentNote();
+    void createNewNote(const QString &newNoteName);
+    void deleteNoteSection(const QString &sectionName);
+    QListWidget *notesList = new QListWidget();
+    QTextEdit *noteEdit = new QTextEdit();
 
 private slots:
     void goBack();
