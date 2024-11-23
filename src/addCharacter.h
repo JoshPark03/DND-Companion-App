@@ -168,6 +168,12 @@ private:
     QLabel *featureLabel;
 	QLabel *nameAndPageLabel;
 
+	// These should be the private Qlists that will be used to make our character csv file
+	// Not sure about how to implement the rest, out of time for tongiht
+	QList<QString> skillProficiencies;
+	QList<QString> toolProficiencies;
+	QList<QString> items;
+	
     // Add a map to store background data
     QMap<QString, BackgroundInfo> backgrounds;
 
