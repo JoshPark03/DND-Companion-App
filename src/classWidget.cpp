@@ -36,18 +36,6 @@ ClassWidget::ClassWidget(QWidget * parent) :
 
 	// Create the class combo box
 	this->classComboBox = new UpComboBox;
-	// this->classComboBox->addItem("Barbarian");
-	// this->classComboBox->addItem("Bard");
-	// this->classComboBox->addItem("Cleric");
-	// this->classComboBox->addItem("Druid");
-	// this->classComboBox->addItem("Fighter");
-	// this->classComboBox->addItem("Monk");
-	// this->classComboBox->addItem("Paladin");
-	// this->classComboBox->addItem("Ranger");
-	// this->classComboBox->addItem("Rogue");
-	// this->classComboBox->addItem("Sorcerer");
-	// this->classComboBox->addItem("Warlock");
-	// this->classComboBox->addItem("Wizard");
 
 	// Add the combo box and navigation buttons to the navbar
 	navbarLayout->addWidget(backButton);
@@ -95,6 +83,8 @@ ClassWidget::ClassWidget(QWidget * parent) :
 	QVBoxLayout * equipmentLayout = new QVBoxLayout();
 	QLabel * equipment = new QLabel("<h3>Equipment:</h3>");
 	this->choicesList = nullptr;
+	this->multipleChoiceBox = nullptr;
+	this->multipleChoice = nullptr;
 	this->givenEquipment = new QLabel("given equipment");
 
 	// Create the equipment choices layout
@@ -155,6 +145,13 @@ void ClassWidget::nextPage()
 	{
 		stackedWidget->setCurrentIndex(3);
 	}
+	qDebug() << "Class: " << this->getClass();
+	qDebug() << "Armors: " << *this->getArmorProficincies();
+	qDebug() << "Weapons: " << *this->getWeaponProficincies();
+	qDebug() << "Tools: " << *this->getToolProficincies();
+	qDebug() << "Saving Throws: " << *this->getSavingThrows();
+	qDebug() << "Skills: " << *this->getSkillProficincies();
+	qDebug() << "Items: " << *this->getItems() << Qt::endl;
 }
 
 void ClassWidget::loadClasses() {
@@ -299,8 +296,22 @@ void ClassWidget::updateClassInfo(const QString &name) {
 		delete this->choicesList;
 	}
 	this->choicesList = new QList<UpComboBox *>();
+	if (this->multipleChoice) {
+		for (auto item : *this->multipleChoice) {
+			this->choicesLayout->removeWidget(item);
+			delete item;
+		}
+		delete this->multipleChoice;
+	}
+	multipleChoice = nullptr;
+	if (this->multipleChoiceBox) {
+		this->choicesLayout->removeWidget(this->multipleChoiceBox);
+		delete this->multipleChoiceBox;
+	}
+	multipleChoiceBox = nullptr;
 	for (auto choice : *info->equipmentChoices) {
 		UpComboBox * choiceBox = new UpComboBox();
+		bool multipleItems = false;
 		for (QString item : *choice) {
 			if (item == "Simple") {
 				choiceBox->addItems(simpleMelee);
@@ -320,7 +331,17 @@ void ClassWidget::updateClassInfo(const QString &name) {
 				choiceBox->addItems(martialMelee);
 				continue;
 			}
+			if (QList<QString>{"2 Martial", "Martial and Shield", "2 Simple Melee"}.contains(item)) {
+				multipleItems = true;
+			}
 			choiceBox->addItem(item);
+		}
+		if (multipleItems) {
+			this->multipleChoiceBox = choiceBox;
+			connect(this->multipleChoiceBox, SIGNAL(currentTextChanged(const QString &)), SLOT(updateChoice()));
+			choicesLayout->addWidget(this->multipleChoiceBox);
+			this->updateChoice();
+			continue;
 		}
 		this->choicesLayout->addWidget(choiceBox, {Qt::AlignTop});
 		this->choicesList->append(choiceBox);
@@ -336,4 +357,137 @@ void ClassWidget::updateClassInfo(const QString &name) {
 			this->givenEquipment->setText(this->givenEquipment->text() + "<br>" + prof);
 		}
 	}
+}
+
+void ClassWidget::updateChoice() {
+	QString option = this->multipleChoiceBox->currentText();
+	int index = this->choicesLayout->indexOf(this->multipleChoiceBox);
+	
+	if (this->multipleChoice) {
+		for (auto item : *this->multipleChoice) {
+			this->choicesLayout->removeWidget(item);
+			delete item;
+		}
+		delete this->multipleChoice;
+	}
+	this->multipleChoice = new QList<QWidget *>();
+
+	if (option == "2 Simple Melee") {
+		UpComboBox * item1 = new UpComboBox();
+		UpComboBox * item2 = new UpComboBox();
+		item1->addItems(simpleMelee);
+		item1->addItems(simpleRanged);
+		item2->addItems(simpleMelee);
+		item2->addItems(simpleRanged);
+		this->choicesLayout->insertWidget(index+1, item1);
+		this->choicesLayout->insertWidget(index+2, item2);
+		this->multipleChoice->append(item1);
+		this->multipleChoice->append(item2);
+		return;
+	}
+	if (option == "2 Martial") {
+		UpComboBox * item1 = new UpComboBox();
+		UpComboBox * item2 = new UpComboBox();
+		item1->addItems(martialMelee);
+		item1->addItems(martialRanged);
+		item2->addItems(martialMelee);
+		item2->addItems(martialRanged);
+		this->choicesLayout->insertWidget(index+1, item1);
+		this->choicesLayout->insertWidget(index+2, item2);
+		this->multipleChoice->append(item1);
+		this->multipleChoice->append(item2);
+		return;
+	}
+	if (option == "Martial and Shield") {
+		UpComboBox * item1 = new UpComboBox();
+		QLabel * item2 = new QLabel("Shield");
+		item1->addItems(martialMelee);
+		item1->addItems(martialRanged);
+		this->choicesLayout->insertWidget(index+1, item1);
+		this->choicesLayout->insertWidget(index+2, item2);
+		this->multipleChoice->append(item1);
+		this->multipleChoice->append(item2);
+	}
+}
+
+/**
+ * This function returns a list of all items generated by the class
+ */
+QList<QString> * ClassWidget::getItems() {
+	QList<QString> * items = new QList<QString>();
+
+	for (auto widget : *this->choicesList) {
+		items->append(widget->currentText());
+	}
+
+	if (this->multipleChoice) {
+		UpComboBox * box1 = (UpComboBox *)this->multipleChoice->at(0);
+		items->append(box1->currentText());
+		if (this->multipleChoiceBox->currentText() == "Martial and Shield") {
+			QLabel * box2 = (QLabel *)this->multipleChoice->at(1);
+			items->append(box2->text());
+		} else {
+			UpComboBox * box2 = (UpComboBox *)this->multipleChoice->at(1);
+			items->append(box2->currentText());
+		}
+	}
+
+	ClassInfo * info = this->classes[this->classComboBox->currentText()];
+	if ((*info->givenEquipment)[0] != "None") {
+		items->append(*info->givenEquipment);
+	}
+	return items;
+}
+
+/**
+ * This function returns all proficiencies chosen
+ */
+QList<QString> * ClassWidget::getSkillProficincies() {
+	QList<QString> * skills = new QList<QString>();
+
+	for (auto widget : *this->skillsList) {
+		skills->append(widget->currentText());
+	}
+
+	return skills;
+}
+
+/**
+ * This function returns all proficiencies chosen
+ */
+QList<QString> * ClassWidget::getSavingThrows() {
+	ClassInfo * info = this->classes[this->classComboBox->currentText()];
+
+	return info->savingThrows;
+}
+
+/**
+ * This function returns all tool proficiencies from chosen class
+ */
+QList<QString> * ClassWidget::getToolProficincies() {
+	ClassInfo * info = this->classes[this->classComboBox->currentText()];
+
+	return info->toolProficiencies;
+}
+
+/**
+ * This function returns all weapon proficiencies from chosen class
+ */
+QList<QString> * ClassWidget::getWeaponProficincies() {
+	ClassInfo * info = this->classes[this->classComboBox->currentText()];
+
+	return info->weaponProficiencies;
+}
+
+/**
+ * This function returns all armor proficiencies from chosen class
+ */
+QList<QString> * ClassWidget::getArmorProficincies() {
+	ClassInfo * info = this->classes[this->classComboBox->currentText()];
+
+	return info->armorProficiencies;
+}
+
+QString ClassWidget::getClass() {
+	return this->classComboBox->currentText();
 }

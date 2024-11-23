@@ -141,7 +141,13 @@ class ClassWidget : public QWidget
 public:
 	explicit ClassWidget(QWidget *parent = 0);
 	// function for getting which class is selected
-	QComboBox * getSelected();
+	QString getClass();
+	QList<QString> * getArmorProficincies();
+	QList<QString> * getWeaponProficincies();
+	QList<QString> * getToolProficincies();
+	QList<QString> * getSavingThrows();
+	QList<QString> * getSkillProficincies();
+	QList<QString> * getItems();
 
 private:
 	QMap<QString, ClassInfo *> classes;
@@ -156,6 +162,8 @@ private:
 	QList<UpComboBox *> * skillsList;
 	QVBoxLayout * choicesLayout;
 	QList<UpComboBox *> * choicesList;
+	UpComboBox * multipleChoiceBox;
+	QList<QWidget *> * multipleChoice;
 	QLabel * givenEquipment;
 	UpComboBox * classComboBox;
 	void loadClasses();
@@ -163,6 +171,7 @@ private slots:
 	void backPage();
 	void nextPage();
 	void updateClassInfo(const QString & name);
+	void updateChoice();
 };
 
 class RaceWidget : public QWidget
