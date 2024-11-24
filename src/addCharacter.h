@@ -53,14 +53,15 @@ class AddCharacter : public QStackedWidget
 	Q_OBJECT
 private:
 	// Declaration of all custom widget class variables
-	StartWidget * startWidget;
-	BaseStatsWidget * baseStatsWidget;
-	ClassWidget * classWidget;
-	RaceWidget * raceWidget;
-	BackgroundWidget * backgroundWidget;
-	InventoryWidget * inventoryWidget;
+	StartWidget *startWidget;
+	BaseStatsWidget *baseStatsWidget;
+	ClassWidget *classWidget;
+	RaceWidget *raceWidget;
+	BackgroundWidget *backgroundWidget;
+	InventoryWidget *inventoryWidget;
+
 public:
-	explicit AddCharacter(QWidget * parent = 0);
+	explicit AddCharacter(QWidget *parent = 0);
 
 	// get functions for each widget variable
 	StartWidget * getStartWidget() { return this->startWidget; }
@@ -77,10 +78,11 @@ class StartWidget : public QWidget
 {
 	Q_OBJECT
 public:
-	explicit StartWidget(QWidget * parent = 0);
+	explicit StartWidget(QWidget *parent = 0);
 
 	// get function for name widget
-	QLineEdit * getName() { return this->name; }
+	QLineEdit *getName() { return this->name; }
+
 private:
 	QLineEdit *name;
 private slots:
@@ -92,7 +94,7 @@ class BaseStatsWidget : public QWidget
 {
 	Q_OBJECT
 public:
-	explicit BaseStatsWidget(QWidget * parent = 0);
+	explicit BaseStatsWidget(QWidget *parent = 0);
 
 	// get funcions for each stat val widget
 	int getStrength() { return this->strengthVal->value(); }
@@ -103,13 +105,13 @@ public:
 	int getCharisma() { return this->charismaVal->value(); }
 
 private:
-	// Declarations for each stat val widget 
-	QSpinBox * strengthVal;
-	QSpinBox * dexterityVal;
-	QSpinBox * constitutionVal;
-	QSpinBox * intelligenceVal;
-	QSpinBox * wisdomVal;
-	QSpinBox * charismaVal;
+	// Declarations for each stat val widget
+	QSpinBox *strengthVal;
+	QSpinBox *dexterityVal;
+	QSpinBox *constitutionVal;
+	QSpinBox *intelligenceVal;
+	QSpinBox *wisdomVal;
+	QSpinBox *charismaVal;
 private slots:
 	void backPage();
 	void nextPage();
@@ -119,21 +121,24 @@ private slots:
 // replace this with a tsv file later
 inline QList<QString> simpleMelee = {"Club", "Dagger", "Greatclub", "Handaxe", "Javelin", "Light Hammer", "Mace", "Quarterstaff", "Sickle", "Spear"};
 inline QList<QString> simpleRanged = {"Light Crossbow", "Dart", "Shortbow", "Sling"};
-inline QList<QString> martialMelee = {"Battleaxe", "Flail", "Glaive", "Greataxe", "Greatsword", "Halberd" "Lance", "Longsword", "Maul", "Moerningstar", "Pike", "Rapier", "Scimitar", "Shortsword", "Trident", "War pick", "Warhammer", "Whip"};
+inline QList<QString> martialMelee = {"Battleaxe", "Flail", "Glaive", "Greataxe", "Greatsword", "Halberd"
+																								"Lance",
+									  "Longsword", "Maul", "Moerningstar", "Pike", "Rapier", "Scimitar", "Shortsword", "Trident", "War pick", "Warhammer", "Whip"};
 inline QList<QString> martialRanged = {"Blowgun", "Hand Crossbow", "Heavy Crossbow", "Longbow", "Net"};
 inline QList<QString> allSkills = {"Acrobatics", "Animal Handling", "Arcana", "Athletics", "Deception", "History", "Intimidation", "Investigation", "Medicine", "Nature", "Perception", "Performance", "Persuasion", "Religion", "Sleight of Hand", "Stealth", "Survival"};
 
-struct ClassInfo {
-    QString book;
-    QString page;
-    QList<QString> * armorProficiencies;
-	QList<QString> * weaponProficiencies;
-    QList<QString> * toolProficiencies;
-    QList<QString> * savingThrows;
+struct ClassInfo
+{
+	QString book;
+	QString page;
+	QList<QString> *armorProficiencies;
+	QList<QString> *weaponProficiencies;
+	QList<QString> *toolProficiencies;
+	QList<QString> *savingThrows;
 	int numSkills;
-    QList<QString> * skillProficiencies;
-    QList<QList<QString> *> * equipmentChoices;
-    QList<QString> * givenEquipment;
+	QList<QString> *skillProficiencies;
+	QList<QList<QString> *> *equipmentChoices;
+	QList<QString> *givenEquipment;
 	QString summary;
 };
 
@@ -144,37 +149,55 @@ public:
 	explicit ClassWidget(QWidget *parent = 0);
 	// function for getting which class is selected
 	QString getClass();
-	QList<QString> * getArmorProficincies();
-	QList<QString> * getWeaponProficincies();
-	QList<QString> * getToolProficincies();
-	QList<QString> * getSavingThrows();
-	QList<QString> * getSkillProficincies();
-	QList<QString> * getItems();
+	QList<QString> *getArmorProficincies();
+	QList<QString> *getWeaponProficincies();
+	QList<QString> *getToolProficincies();
+	QList<QString> *getSavingThrows();
+	QList<QString> *getSkillProficincies();
+	QList<QString> *getItems();
 
 private:
 	QMap<QString, ClassInfo *> classes;
-	QLabel * header;
-	Portrait * portrait;
-	QLabel * summary;
-	QLabel * armor;
-	QLabel * weapons;
-	QLabel * tools;
-	QLabel * savingThrows;
-	QVBoxLayout * skillsLayout;
-	QList<UpComboBox *> * skillsList;
-	QVBoxLayout * choicesLayout;
-	QList<UpComboBox *> * choicesList;
-	UpComboBox * multipleChoiceBox;
-	QList<QWidget *> * multipleChoice;
-	QLabel * givenEquipment;
-	UpComboBox * classComboBox;
+	QLabel *header;
+	Portrait *portrait;
+	QLabel *summary;
+	QLabel *armor;
+	QLabel *weapons;
+	QLabel *tools;
+	QLabel *savingThrows;
+	QVBoxLayout *skillsLayout;
+	QList<UpComboBox *> *skillsList;
+	QVBoxLayout *choicesLayout;
+	QList<UpComboBox *> *choicesList;
+	UpComboBox *multipleChoiceBox;
+	QList<QWidget *> *multipleChoice;
+	QLabel *givenEquipment;
+	UpComboBox *classComboBox;
 	void loadClasses();
 private slots:
 	void backPage();
 	void nextPage();
-	void updateClassInfo(const QString & name);
+	void updateClassInfo(const QString &name);
 	void updateChoice();
 	void proficiencyDisableSkills();
+};
+
+struct SubRaceInfo
+{
+	QString abilityScoreIncrease;
+	QString size;
+	QString speed;
+	QString languages;
+	QList<QString> *abilities;
+};
+
+struct RaceInfo
+{
+	QString book;
+	QString page;
+	QString summary;
+	bool subRacesExist;
+	QMap<QString, SubRaceInfo *> subRaces;
 };
 
 class RaceWidget : public QWidget
@@ -183,44 +206,71 @@ class RaceWidget : public QWidget
 public:
 	explicit RaceWidget(QWidget *parent = 0);
 	// function for getting which race is selected
-	QComboBox *getSelected();
+	QString getRace();
+	QString getSubRace();
+	QString getAbilityScoreIncrease();
+	QString getSize();
+	QString getSpeed();
+	QString getLanguages();
+	QList<QString> *getAbilities();
 
 private:
-	QComboBox *raceComboBox;
+	// Add a map to store background data
+	QMap<QString, RaceInfo *> races;
+
+	// Add new private members for displaying race info
+	QLabel *header;
+	Portrait *portrait;
+	UpComboBox *raceComboBox;
+	UpComboBox *subRaceComboBox;
+	QVBoxLayout *subRaceLayout;
+	QLabel *summary;
+	QLabel *subRace;
+	QLabel *abilityScoreIncrease;
+	QLabel *size;
+	QLabel *speed;
+	QLabel *languages;
+	QLabel *abilities;
+
+	// Add declarations for new methods
+	void loadRaces();
+
 private slots:
 	void backPage();
 	void nextPage();
+	void updateRaceInfo(const QString &raceName);
+	void updateSubRaceInfo(const QString &subRaceName);
 };
 
-struct BackgroundInfo {
-    QString page;
-    QString description;
-    QString skillProficiency;
-    QString toolProficiency;
-    QString languages;
-    QString equipment;
-    QString feature;
-    QString featureDescription;
+struct BackgroundInfo
+{
+	QString page;
+	QString description;
+	QString skillProficiency;
+	QString toolProficiency;
+	QString languages;
+	QString equipment;
+	QString feature;
+	QString featureDescription;
 };
-
 
 class BackgroundWidget : public QWidget
 {
-    Q_OBJECT
+	Q_OBJECT
 public:
 	explicit BackgroundWidget(QWidget *parent = 0);
 	// function for getting which background is selected
 	QComboBox *getSelected();
 
 private:
-    QComboBox *backgroundComboBox;
+	QComboBox *backgroundComboBox;
 
-    // Add new private members for displaying background info
-    QLabel *pageLabel;
-    QLabel *descriptionLabel;
-    QLabel *proficienciesLabel;
-    QLabel *equipmentLabel;
-    QLabel *featureLabel;
+	// Add new private members for displaying background info
+	QLabel *pageLabel;
+	QLabel *descriptionLabel;
+	QLabel *proficienciesLabel;
+	QLabel *equipmentLabel;
+	QLabel *featureLabel;
 	QLabel *nameAndPageLabel;
 
 	// These should be the private Qlists that will be used to make our character csv file
@@ -228,19 +278,18 @@ private:
 	QList<QString> skillProficiencies;
 	QList<QString> toolProficiencies;
 	QList<QString> items;
-	
-    // Add a map to store background data
-    QMap<QString, BackgroundInfo> backgrounds;
 
-    // Add declarations for new methods
-    void loadBackgrounds();
-    void updateBackgroundInfo(const QString &backgroundName);
+	// Add a map to store background data
+	QMap<QString, BackgroundInfo> backgrounds;
+
+	// Add declarations for new methods
+	void loadBackgrounds();
+	void updateBackgroundInfo(const QString &backgroundName);
 
 private slots:
-    void backPage();
-    void nextPage();
+	void backPage();
+	void nextPage();
 };
-
 
 class InventoryWidget : public QWidget
 {
@@ -250,7 +299,7 @@ public:
 
 private:
 	// Declaration for the items list widget
-	QListWidget * items;
+	QListWidget *items;
 private slots:
 	void backPage();
 	void nextPage();

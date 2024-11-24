@@ -93,8 +93,7 @@ void AddCharacter::createCharacter() {
 /**
  * Constructor for the class
  */
-StartWidget::StartWidget(QWidget * parent) :
-	QWidget(parent)
+StartWidget::StartWidget(QWidget *parent) : QWidget(parent)
 {
 	// Create the main vertical layout
 	QVBoxLayout *layout = new QVBoxLayout(this);
@@ -214,8 +213,7 @@ void StartWidget::nextPage()
 /**
  * Constructor for the class
  */
-BaseStatsWidget::BaseStatsWidget(QWidget * parent) :
-	QWidget(parent)
+BaseStatsWidget::BaseStatsWidget(QWidget *parent) : QWidget(parent)
 {
 	// Create the main vertical layout
 	QVBoxLayout *layout = new QVBoxLayout(this);
@@ -302,122 +300,6 @@ void BaseStatsWidget::nextPage()
 	if (stackedWidget)
 	{
 		stackedWidget->setCurrentIndex(2);
-	}
-}
-
-/**
- * Constructor for the class
- */
-RaceWidget::RaceWidget(QWidget *parent) : QWidget(parent)
-{
-	// Create the main vertical layout
-	QVBoxLayout *mainLayout = new QVBoxLayout(this);
-
-	// Create horizontal layer for the columns
-	QWidget *body = new QWidget();
-	QHBoxLayout *bodyLayout = new QHBoxLayout(body);
-
-	// Create and configure layout for the navbar
-	QWidget *navbar = new QWidget();
-	QHBoxLayout *navbarLayout = new QHBoxLayout(navbar);
-	navbar->setFixedHeight(40);
-
-	// Create column headers
-	QLabel *statsHeader = new QLabel("Stats");
-	statsHeader->setAlignment(Qt::AlignCenter);
-	statsHeader->setStyleSheet("font-weight: bold; font-size: 14px;");
-
-	QLabel *detailsHeader = new QLabel("Details");
-	detailsHeader->setAlignment(Qt::AlignCenter);
-	detailsHeader->setStyleSheet("font-weight: bold; font-size: 14px;");
-
-	// Create a layout for the columns
-	QHBoxLayout *columnsLayout = new QHBoxLayout();
-
-	// Proficiencies Column
-	QVBoxLayout *statsLayout = new QVBoxLayout();
-	statsLayout->addWidget(statsHeader);
-
-	// Equipment Column
-	QVBoxLayout *detailsLayout = new QVBoxLayout();
-	detailsLayout->addWidget(detailsHeader);
-
-	// Add the columns to the horizontal layout
-	columnsLayout->addLayout(statsLayout);
-	columnsLayout->addLayout(detailsLayout);
-
-	// Create the race combo box
-	UpComboBox *raceComboBox = new UpComboBox;
-	raceComboBox->addItem("Dwarf");
-	raceComboBox->addItem("Elf");
-	raceComboBox->addItem("Halfling");
-	raceComboBox->addItem("Human");
-	raceComboBox->addItem("Dragonborn");
-	raceComboBox->addItem("Gnome");
-	raceComboBox->addItem("Half Elf");
-	raceComboBox->addItem("Half Orc");
-	raceComboBox->addItem("Tiefling");
-
-	// Create the race header
-	QLabel *header = new QLabel("<h1>" + raceComboBox->currentText() + "</h1>");
-	header->setFixedHeight(50);
-	header->setAlignment(Qt::AlignCenter);
-
-	// Create the race portrait
-	Portrait *racePortrait = new Portrait("races", raceComboBox->currentText());
-
-	// Create navigation buttons
-	QPushButton *backButton = new QPushButton("Back");
-	QPushButton *nextButton = new QPushButton("Next");
-
-	// Add the combo box and navigation buttons to the navbar
-	navbarLayout->addWidget(backButton);
-	navbarLayout->addWidget(raceComboBox);
-	navbarLayout->addWidget(nextButton);
-
-	// Add the portrait to the horizontal layer
-	bodyLayout->addSpacing(100);
-	bodyLayout->addWidget(racePortrait);
-
-	// Add the columns layout to the main layout
-	bodyLayout->addLayout(columnsLayout);
-
-	// Add the header, body, and navbar to the main layout
-	mainLayout->addWidget(header);
-	mainLayout->addWidget(body);
-	mainLayout->addWidget(navbar);
-
-	// When back button is clicked it calls the public SLOT function backPage()
-	connect(backButton, SIGNAL(clicked()), SLOT(backPage()));
-	connect(nextButton, SIGNAL(clicked()), SLOT(nextPage()));
-
-	// When the current selection in the combo box changes, the header and portrait must also change
-	connect(raceComboBox, &QComboBox::currentTextChanged, [header](const QString &text)
-			{ header->setText("<h1>" + text + "</h1>"); });
-	connect(raceComboBox, SIGNAL(currentTextChanged(const QString &)), racePortrait, SLOT(getImage(const QString &)));
-}
-
-/**
- * This function changes AddCharacter's StackedWidget to ClassWidget
- */
-void RaceWidget::backPage()
-{
-	QStackedWidget *stackedWidget = qobject_cast<QStackedWidget *>(this->parentWidget());
-	if (stackedWidget)
-	{
-		stackedWidget->setCurrentIndex(2);
-	}
-}
-
-/**
- * This function changes AddCharacter's StackedWidget to BackgroundWidget
- */
-void RaceWidget::nextPage()
-{
-	QStackedWidget *stackedWidget = qobject_cast<QStackedWidget *>(this->parentWidget());
-	if (stackedWidget)
-	{
-		stackedWidget->setCurrentIndex(4);
 	}
 }
 
@@ -580,26 +462,28 @@ void BackgroundWidget::loadBackgrounds()
 	}
 }
 
-void BackgroundWidget::updateBackgroundInfo(const QString &backgroundName) {
-    if (!backgrounds.contains(backgroundName)) {
-        qWarning() << "Background not found:" << backgroundName;
-        return;
-    }
+void BackgroundWidget::updateBackgroundInfo(const QString &backgroundName)
+{
+	if (!backgrounds.contains(backgroundName))
+	{
+		qWarning() << "Background not found:" << backgroundName;
+		return;
+	}
 
-    // get info
-    BackgroundInfo info = backgrounds[backgroundName];
+	// get info
+	BackgroundInfo info = backgrounds[backgroundName];
 
-    // make labels
-    nameAndPageLabel->setText(backgroundName + " (Page " + info.page + ")");
-    descriptionLabel->setText(info.description);
-    proficienciesLabel->setText(info.skillProficiency + "\n" + info.toolProficiency);
-    equipmentLabel->setText(info.equipment);
-    featureLabel->setText(info.feature + "\n" + info.featureDescription);
+	// make labels
+	nameAndPageLabel->setText(backgroundName + " (Page " + info.page + ")");
+	descriptionLabel->setText(info.description);
+	proficienciesLabel->setText(info.skillProficiency + "\n" + info.toolProficiency);
+	equipmentLabel->setText(info.equipment);
+	featureLabel->setText(info.feature + "\n" + info.featureDescription);
 
-    // make lists to put into the character
-    QList<QString> skillProficiencies = info.skillProficiency.split(":", Qt::SkipEmptyParts);
-    QList<QString> toolProficiencies = info.toolProficiency.split(":", Qt::SkipEmptyParts);
-    QList<QString> items = info.equipment.split(":", Qt::SkipEmptyParts);
+	// make lists to put into the character
+	QList<QString> skillProficiencies = info.skillProficiency.split(":", Qt::SkipEmptyParts);
+	QList<QString> toolProficiencies = info.toolProficiency.split(":", Qt::SkipEmptyParts);
+	QList<QString> items = info.equipment.split(":", Qt::SkipEmptyParts);
 }
 
 void BackgroundWidget::backPage()
@@ -626,8 +510,7 @@ void BackgroundWidget::nextPage()
 /**
  * Constructor for the class
  */
-InventoryWidget::InventoryWidget(QWidget * parent) :
-	QWidget(parent)
+InventoryWidget::InventoryWidget(QWidget *parent) : QWidget(parent)
 {
 	// Create the main vertical layout
 	QVBoxLayout *layout = new QVBoxLayout(this);
