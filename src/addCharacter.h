@@ -296,7 +296,7 @@ class InventoryWidget : public QWidget
 	Q_OBJECT
 public:
 	explicit InventoryWidget(QWidget *parent = 0);
-
+	QList<QString> getItems();
 private:
 	// Declaration for the items list widget
 	QListWidget *items;
