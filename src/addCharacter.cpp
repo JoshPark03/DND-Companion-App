@@ -81,6 +81,9 @@ AddCharacter::AddCharacter(QWidget *parent) : QStackedWidget(parent)
 
 	// seting the current widget to the startWidget
 	this->setCurrentWidget(startWidget);
+
+	// connect function to create the character's csv when finished
+	connect(inventoryWidget, SIGNAL(finished()), SLOT(createCharacter()));
 }
 
 /**
@@ -572,6 +575,7 @@ void InventoryWidget::backPage()
  */
 void InventoryWidget::nextPage()
 {
+	emit this->finished();
 	AddCharacter *addCharacterWidget = qobject_cast<AddCharacter *>(this->parentWidget());
 	if (addCharacterWidget)
 	{

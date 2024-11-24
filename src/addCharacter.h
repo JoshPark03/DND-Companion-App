@@ -300,6 +300,8 @@ public:
 private:
 	// Declaration for the items list widget
 	QListWidget *items;
+signals:
+	void finished();
 private slots:
 	void backPage();
 	void nextPage();
