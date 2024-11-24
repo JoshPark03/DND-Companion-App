@@ -69,6 +69,8 @@ public:
 	RaceWidget * getRaceWidget() { return this->raceWidget; }
 	BackgroundWidget * getBackgroundWidget() { return this->backgroundWidget; }
 	InventoryWidget * getInventoryWidget() { return this->inventoryWidget; }
+public slots:
+	void createCharacter();
 };
 
 class StartWidget : public QWidget

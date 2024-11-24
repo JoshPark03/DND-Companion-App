@@ -4,7 +4,7 @@ Description: Implementation of the AddCharacter class, which allows users to cre
 Authors: Josh Park
 Other Sources: ...
 Date Created: 10/24/2024
-Last Modified: 11/20/2024
+Last Modified: 11/24/2024
 */
 
 #include "addCharacter.h"
@@ -81,6 +81,13 @@ AddCharacter::AddCharacter(QWidget *parent) : QStackedWidget(parent)
 
 	// seting the current widget to the startWidget
 	this->setCurrentWidget(startWidget);
+}
+
+/**
+ * This function is a public slot that when triggered by going past the inventory screen creates the character's csv file
+ */
+void AddCharacter::createCharacter() {
+
 }
 
 /**
