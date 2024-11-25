@@ -82,7 +82,7 @@ public:
 	explicit StartWidget(QWidget *parent = 0);
 
 	// get function for name widget
-	QLineEdit *getName() { return this->name; }
+	QString getName() { return this->name->text(); }
 
 private:
 	QLineEdit *name;
@@ -261,8 +261,9 @@ class BackgroundWidget : public QWidget
 public:
 	explicit BackgroundWidget(QWidget *parent = 0);
 	// function for getting which background is selected
+	QList<QString> getSkillProficincies() { return this->skillProficiencies; }
+	QList<QString> getToolProficincies() { return this->toolProficiencies; }
 	QList<QString> getItems() { return this->items; }
-	QComboBox *getSelected();
 
 private:
 	QComboBox *backgroundComboBox;
