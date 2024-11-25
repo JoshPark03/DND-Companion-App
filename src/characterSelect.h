@@ -5,7 +5,7 @@ Description: Main landing page for the application, allowing users to create, de
 Authors: Carson Treece, Zachary Craig, Josh Park
 Other Sources: ...
 Date Created: 10/22/2024
-Last Modified: 10/25/2024
+Last Modified: 11/24/2024
 */
 
 #ifndef CHARACTER_SELECT
@@ -32,7 +32,6 @@ public:
 
 	void addCharacter(QString charName = 0);
 	void deleteCharacter();
-	void loadCharacterList();
 
 private:
 	QGridLayout * layout;
@@ -40,6 +39,8 @@ private:
 	QPushButton * settings;
 	QListWidget * characters;
 	QPushButton * deleteChar;
+public slots:
+	void loadCharacterList();
 private slots:
 	void deleteCharSlot();
 	void selectChar();

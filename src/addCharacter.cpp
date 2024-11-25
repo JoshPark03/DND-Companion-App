@@ -64,7 +64,7 @@ QString listToCommaString(const QList<QString> strings)
 	QString result;
 
 	// Iterate through the list, joining strings with commas
-	for (size_t i = 0; i < strings.size(); ++i)
+	for (qsizetype i = 0; i < strings.size(); ++i)
 	{
 		result += strings[i];
 		if (i != strings.size() - 1)
@@ -111,52 +111,93 @@ AddCharacter::AddCharacter(QWidget *parent) : QStackedWidget(parent)
  */
 void AddCharacter::createCharacter()
 {
-	QString characterName = "Bob";
+	QString characterName = this->startWidget->getName();
 
 	qDebug() << "in createCharacter()";
 
 	// Path to the characters directory
 	QString charPath = QDir::currentPath() + "/data/characters/" + characterName;
 	qDebug() << charPath;
-	QFile characterFile(charPath + "/" + characterName + ".csv");
+
+	// creates the character directory
+	QDir dir;
+	if (dir.exists(charPath)) {
+		QMessageBox::warning(this, "Character Exists",
+								"A character with this name already exists!"); // This is a warning message if the character already exists
+		return;
+	} else {
+		if (dir.mkpath(charPath)) {
+			// Create the notes and databases files inside the folder
+			QFile notesFile(charPath + "/notes.json"); // Create a notes file
+			if (notesFile.open(QIODevice::WriteOnly | QIODevice::Text)) {
+				QTextStream out(&notesFile);
+				out << "Character Notes"; // Add default content to notes.txt
+				notesFile.close();		  // Close the file
+			}
+		} else {
+			QMessageBox::warning(this, "Error", "Failed to create character directory."); // This is a warning message if the directory creation fails
+		}
+	}
+
+	QFile characterFile(charPath + "/character.csv");
 
 	if (characterFile.open(QIODevice::WriteOnly | QIODevice::Text))
 	{
 		QTextStream out(&characterFile);
 		// Stats
-		QString strength = QString::number(1);
-		QString dexterity = QString::number(1);
-		QString constitution = QString::number(1);
-		QString intelligence = QString::number(1);
-		QString wisdom = QString::number(1);
-		QString charisma = QString::number(1);
+		QString strength = QString::number(this->baseStatsWidget->getStrength());
+		QString dexterity = QString::number(this->baseStatsWidget->getDexterity());
+		QString constitution = QString::number(this->baseStatsWidget->getConstitution());
+		QString intelligence = QString::number(this->baseStatsWidget->getIntelligence());
+		QString wisdom = QString::number(this->baseStatsWidget->getWisdom());
+		QString charisma = QString::number(this->baseStatsWidget->getCharisma());
 		QString level = QString::number(1);
-		QString experience = QString::number(1);
-		QString maxHp = QString::number(100);
-		QString currentHp = QString::number(100);
-		QString tempHp = QString::number(100);
-		QString characterClass = "Barbarian";
-		QString characterSubClass = "Something";
-		QString characterRace = "Dwarf";
-		QString characterSubRace = "Hill";
+		QString experience = QString::number(0);
+		QString maxHp;
+		QString characterClass = this->classWidget->getClass();
+		int conMod = (this->baseStatsWidget->getConstitution() / 2) - 5;
+		if (characterClass == "Barbarian") {
+			maxHp = QString::number(12 + conMod);
+		} else if (characterClass == "Fighter"
+					|| characterClass == "Paladin"
+					|| characterClass == "Ranger") {
+			maxHp = QString::number(10 + conMod);
+		} else if (characterClass == "Bard"
+					|| characterClass == "Cleric"
+					|| characterClass == "Druid"
+					|| characterClass == "Monk"
+					|| characterClass == "Ranger"
+					|| characterClass == "Warlock") {
+			maxHp = QString::number(8 + conMod);
+		} else if (characterClass == "Sorcerer"
+					|| characterClass == "Wizard") {
+			maxHp = QString::number(6 + conMod);
+		}
+		QString currentHp = maxHp;
+		QString tempHp = QString::number(0);
+		QString characterSubClass = "None";
+		QString characterRace = this->raceWidget->getRace();
+		QString characterSubRace = this->raceWidget->getSubRace();
 
 		// Proficiencies
-		QList<QString> proficiencies = {"Prof 1", "Prof 2", "Prof 3"};
+		QList<QString> proficiencies = *this->classWidget->getSkillProficincies();
+		proficiencies.append(this->backgroundWidget->getSkillProficincies());
 
 		// Feats
-		QList<QString> feats = {"Feat 1", "Feat 2", "Feat 3"};
+		QList<QString> feats = {};
 
 		// Languages
-		QList<QString> languages = {"Lang 1", "Lang 2", "Lang 3"};
+		QList<QString> languages = {this->raceWidget->getLanguages()};
 
 		// Armor/Weapon Proficiencies
-		QList<QString> armorWeaponProficiencies = {"Armor 1", "Weapon 2", "Armor 3"};
+		QList<QString> armorWeaponProficiencies = *this->classWidget->getArmorProficincies();
+		armorWeaponProficiencies.append(*this->classWidget->getWeaponProficincies());
 
 		// Coins
-		QString numPlatCoins = QString::number(1);
-		QString numGoldCoins = QString::number(1);
-		QString numSilverCoins = QString::number(1);
-		QString numCopperCoins = QString::number(1);
+		QString numPlatCoins = QString::number(0);
+		QString numGoldCoins = QString::number(100);
+		QString numSilverCoins = QString::number(0);
+		QString numCopperCoins = QString::number(0);
 
 		out << characterName + "," + strength + "," + dexterity + "," + constitution + "," + intelligence + "," + wisdom + "," + charisma + "," + level + ":" + experience + "," + maxHp + ":" + currentHp + ":" + tempHp + "," + characterClass + "," + characterSubClass + "," + characterRace + "," + characterSubRace + "\n";
 		out << listToCommaString(proficiencies) + "\n";
@@ -165,6 +206,7 @@ void AddCharacter::createCharacter()
 		out << listToCommaString(armorWeaponProficiencies) + "\n";
 		out << numPlatCoins + "," + numGoldCoins + "," + numSilverCoins + "," + numCopperCoins + "\n";
 		characterFile.close();
+		emit this->createdCharacter();
 	}
 }
 

@@ -4,7 +4,7 @@ Description: Implementation of the AddCharacter class, which allows users to cre
 Authors: Josh Park
 Other Sources: ...
 Date Created: 10/24/2024
-Last Modified: 11/5/2024
+Last Modified: 11/24/2024
 */
 
 #ifndef ADD_CHARACTER_H
@@ -71,6 +71,8 @@ public:
 	RaceWidget *getRaceWidget() { return this->raceWidget; }
 	BackgroundWidget *getBackgroundWidget() { return this->backgroundWidget; }
 	InventoryWidget *getInventoryWidget() { return this->inventoryWidget; }
+signals:
+	void createdCharacter();
 public slots:
 	void createCharacter();
 };

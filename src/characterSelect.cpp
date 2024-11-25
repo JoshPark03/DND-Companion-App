@@ -5,7 +5,7 @@ Description: Main landing page for the application, allowing users to create, de
 Authors: Carson Treece, Zachary Craig, Josh Park
 Other Sources: ...
 Date Created: 10/22/2024
-Last Modified: 11/6/2024
+Last Modified: 11/24/2024
 */
 
 #include "characterSelect.h"
@@ -31,6 +31,7 @@ Last Modified: 11/6/2024
 #include <QDir>
 
 // Add a new character to the list
+// deprecated/not used
 void CharacterSelect::addCharacter(QString charName)
 {
 	// Get character name from the user
@@ -171,6 +172,7 @@ void CharacterSelect::deleteCharacter()
 // Load the list of characters from the characters directory
 void CharacterSelect::loadCharacterList()
 {
+	this->characters->clear();
 
 	// Path to the characters directory
 	QString charDirPath = QDir::currentPath() + "/data/characters";

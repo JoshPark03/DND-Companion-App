@@ -75,14 +75,14 @@ void ViewCharacter::loadCharacter(QString name)
             Character File Format:
             1|    Name,Str,Dex,Con,Int,Wis,Cha,Level:Experience,CurrentHealth:MaxHealth,Class,Sub,Race
             2|    Stat Proficiencies (comma separated)(entire line)
-            3|    Prepped Spells (comma separated)(entire line)
+            3|    Prepped Spells (comma separated)(entire line) // removed
                     SpellName:SpellLevel:Book:Page
-            4|    Known Spells (comma separated)(entire line)
+            4|    Known Spells (comma separated)(entire line) // removed
                     SpellName:SpellLevel:Book:Page
             5|    Feats (comma separated)(entire line)
             6|    Languages (comma separated)(entire line)
             7|    Equipment Proficiencies (comma separated)(entire line)
-            8|    Attuned Items (comma separated)(entire line)(max 3)
+            8|    Attuned Items (comma separated)(entire line)(max 3) // removed
             9|    Coins (platinum,gold,silver,copper)
         */
 
@@ -120,7 +120,7 @@ void ViewCharacter::loadCharacter(QString name)
             if(line2[i] != "" && line2[i] != " ") characterSkillProficiencies.append(line2[i]); // Add stat proficiencies to the list
         }
 
-
+    /* this portion of the csv has been removed
         // Get the third line of character information
         line = in.readLine();
         QStringList line3 = line.split(",");
@@ -132,7 +132,9 @@ void ViewCharacter::loadCharacter(QString name)
                 if(spellInfo[j] != "" && spellInfo[j] != " " && j == 0) characterPreppedSpells.append(spellInfo[j]); // Add prepped spells to the list
             }
         }
+    */
 
+    /* this portion of the csv has been removed
 
         // Get the fourth line of character information
         line = in.readLine();
@@ -145,7 +147,7 @@ void ViewCharacter::loadCharacter(QString name)
                 if(spellInfo[j] != "" && spellInfo[j] != " " && j == 0) characterKnownSpells.append(spellInfo[j]); // Add known spells to the list
             }
         }
-
+    */
 
         // Get the fifth line of character information
         line = in.readLine();
@@ -174,6 +176,7 @@ void ViewCharacter::loadCharacter(QString name)
         }
 
 
+    /* this portion of the csv has been removed
         // Get the eighth line of character information
         line = in.readLine();
         QStringList line8 = line.split(",");
@@ -181,7 +184,7 @@ void ViewCharacter::loadCharacter(QString name)
         {
             if(line8[i] != "" && line8[i] != " ") characterAttunedItems.append(line8[i]); // Add attuned items to the list
         }
-
+    */
 
         // Get the ninth line of character information
         line = in.readLine();
@@ -271,10 +274,14 @@ ViewCharacter::ViewCharacter(QWidget *parent, QString nameIn) :
         return;
     }
 
+    qDebug() << "before loadCharacter()";
+
     loadCharacter(nameIn);
+    qDebug() << "after loadCharacter()";
     printCharacterToConsole();
     evaluateCharacterModifiers();
 
+    qDebug() << "past modifiers evaluation";
 
     this->name = nameIn;
     // Create the verticle layout for buttons
@@ -322,6 +329,7 @@ ViewCharacter::ViewCharacter(QWidget *parent, QString nameIn) :
         pictureLabel->setPixmap(scaledCharacterPicture);
     }
 
+    qDebug() << "before class race level labels";
 
     QLabel *classAndSubclassLabel = new QLabel(characterClass + " | " + characterSubclass);
     QLabel *raceLabel = new QLabel(characterRace);

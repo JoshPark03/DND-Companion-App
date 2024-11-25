@@ -4,7 +4,7 @@ Description: Main entry point for the application, initializes the GUI and sets 
 Authors: Carson Treece, Zachary Craig, Josh Park
 Other Sources: ...
 Date Created: 10/20/2024
-Last Modified: 11/06/2024
+Last Modified: 11/24/2024
 */
 
 
@@ -60,6 +60,8 @@ int main(int argc, char ** argv) {
 
 	// Load the theme
 	reloadTheme();
+
+	addCharacter->connect(addCharacter, SIGNAL(createdCharacter()), characterSelect, SLOT(loadCharacterList()));
 
 	// Runs the app
 	return app.exec();
