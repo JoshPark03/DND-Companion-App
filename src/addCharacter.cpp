@@ -82,7 +82,9 @@ AddCharacter::AddCharacter(QWidget *parent) : QStackedWidget(parent)
 	// seting the current widget to the startWidget
 	this->setCurrentWidget(startWidget);
 
-	// connect function to create the character's csv when finished
+	// connect function to autofill inventory when background widget is finished
+	connect(backgroundWidget, SIGNAL(finished()), inventoryWidget, SLOT(autofillInventory()));
+	// connect function to create the character's csv when finished with character creation
 	connect(inventoryWidget, SIGNAL(finished()), SLOT(createCharacter()));
 }
 
@@ -90,7 +92,7 @@ AddCharacter::AddCharacter(QWidget *parent) : QStackedWidget(parent)
  * This function is a public slot that when triggered by going past the inventory screen creates the character's csv file
  */
 void AddCharacter::createCharacter() {
-
+	qDebug() << "in createCharacter()";
 }
 
 /**
@@ -503,6 +505,7 @@ void BackgroundWidget::backPage()
  */
 void BackgroundWidget::nextPage()
 {
+	emit this->finished();
 	QStackedWidget *stackedWidget = qobject_cast<QStackedWidget *>(this->parentWidget());
 	if (stackedWidget)
 	{
@@ -529,9 +532,10 @@ InventoryWidget::InventoryWidget(QWidget *parent) : QWidget(parent)
 
 	// Create inventory elements
 	QSpacerItem *spacer = new QSpacerItem(100, 100);
-	QListWidget *items = new QListWidget();
-	QPushButton *addItem = new QPushButton("Add Item");
-	QPushButton *removeItem = new QPushButton("Remove Selected Item");
+	this->items = new QListWidget();
+	QPushButton *addItemButton = new QPushButton("Add Item");
+	this->removeItemButton = new QPushButton("Remove Selected Item");
+	removeItemButton->setEnabled(false);
 
 	// Create navigation buttons
 	QPushButton *backButton = new QPushButton("Back");
@@ -541,8 +545,8 @@ InventoryWidget::InventoryWidget(QWidget *parent) : QWidget(parent)
 	inventoryLayout->addItem(spacer, 0, 3);
 	inventoryLayout->addItem(spacer, 3, 3);
 	inventoryLayout->addWidget(items, 2, 2, 1, 3);
-	inventoryLayout->addWidget(addItem, 1, 1, 1, 3, Qt::AlignCenter);
-	inventoryLayout->addWidget(removeItem, 1, 3, 1, 3, Qt::AlignCenter);
+	inventoryLayout->addWidget(addItemButton, 1, 1, 1, 3, Qt::AlignCenter);
+	inventoryLayout->addWidget(removeItemButton, 1, 3, 1, 3, Qt::AlignCenter);
 
 	// Add the combo box and navigation buttons to the navbar
 	navbarLayout->addWidget(backButton);
@@ -555,13 +559,15 @@ InventoryWidget::InventoryWidget(QWidget *parent) : QWidget(parent)
 	// When back button is clicked it calls the public SLOT function backPage()
 	connect(backButton, SIGNAL(clicked()), SLOT(backPage()));
 	connect(finishButton, SIGNAL(clicked()), SLOT(nextPage()));
+	connect(this->removeItemButton, SIGNAL(clicked()), SLOT(deleteItem()));
+	connect(addItemButton, SIGNAL(clicked()), SLOT(addItem()));
+	connect(this->items, SIGNAL(itemClicked(QListWidgetItem *)), SLOT(selectItem()));
 }
 
 /**
  * This function changes AddCharacter's StackedWidget to BackgroundWidget
  */
-void InventoryWidget::backPage()
-{
+void InventoryWidget::backPage() {
 	QStackedWidget *stackedWidget = qobject_cast<QStackedWidget *>(this->parentWidget());
 	if (stackedWidget)
 	{
@@ -573,8 +579,7 @@ void InventoryWidget::backPage()
  * This function resets AddCharacter's StackedWidget to StartWidget
  * It also changes mainStackedWidget to SelectCharacter
  */
-void InventoryWidget::nextPage()
-{
+void InventoryWidget::nextPage() {
 	emit this->finished();
 	AddCharacter *addCharacterWidget = qobject_cast<AddCharacter *>(this->parentWidget());
 	if (addCharacterWidget)
@@ -586,6 +591,135 @@ void InventoryWidget::nextPage()
 	{
 		mainStackedWidget->setCurrentIndex(0);
 	}
-	// Need to somehow get access to the SelectCharacterWidget to call addCharacter(QString name)
-	// Alternatively we could move addCharacter to this file and have the QListWidget characters auto-upadte
+}
+
+void InventoryWidget::autofillInventory() {
+	AddCharacter * parent = qobject_cast<AddCharacter *>(this->parent());
+
+	QList<QString> classItems = *parent->getClassWidget()->getItems();
+	QList<QString> backgroundItems = parent->getBackgroundWidget()->getItems();
+
+	this->items->clear();
+
+	this->items->addItems(classItems);
+	this->items->addItems(backgroundItems);
+}
+
+void InventoryWidget::addItem() {
+	QDialog popup;
+
+	popup.setWindowModality(Qt::ApplicationModal); // stios the user from interacting with the main window while the popup is open
+	popup.setWindowTitle("Add Item");	   // set the title of the popup
+
+	popup.setFixedSize(200, 150); // set the size of the popup
+
+	QLabel * popupText = new QLabel("Add Item", &popup); // creates the text for the popup
+	QLabel * textboxLabel = new QLabel("Name:", &popup); // label for textbox
+	QLineEdit * itemName = new QLineEdit(&popup);
+
+	// create the buttons for the popup
+	QPushButton * popupConfirm = new QPushButton("Confirm", &popup); // creates the confirm button
+	QPushButton * popupCancel = new QPushButton("Cancel", &popup);	// creates the cancel button
+
+	// Gets rid of the padding around the text of the buttons
+	popupConfirm->setStyleSheet("padding: 5px 0px; margin: 0px;");
+	popupCancel->setStyleSheet("padding: 5px 0px; margin: 0px;");
+
+	// Connect the confirm button to accept the dialog (e.g., confirming the deletion)
+	QObject::connect(popupConfirm, &QPushButton::clicked, &popup, &QDialog::accept);
+
+	// Connect the cancel button to reject the dialog (e.g., canceling the deletion)
+	QObject::connect(popupCancel, &QPushButton::clicked, &popup, &QDialog::reject);
+
+	// create the layout for the popup
+	QVBoxLayout popupLayout(&popup);
+
+	// Create button widget
+	QWidget *popupButtonWidget = new QWidget(&popup);
+	QHBoxLayout popupButtonLayout(popupButtonWidget); // Makes the buttons horizontal
+
+	// adds the buttons to the button widget
+	popupButtonLayout.addWidget(popupConfirm);
+	popupButtonLayout.addWidget(popupCancel);
+
+	// adds the components to the popup
+	popupLayout.addWidget(popupText);
+	popupLayout.addWidget(textboxLabel);
+	popupLayout.addWidget(itemName);
+	popupLayout.addWidget(popupButtonWidget);
+
+	// makes the popup text take up more horizontal space
+	popupLayout.setStretch(0, 1);
+
+	// show the popup
+	popup.exec();
+
+	if (popup.result() == QDialog::Accepted) {
+		this->items->addItem(itemName->text());
+	}
+}
+
+void InventoryWidget::deleteItem() {
+	QListWidgetItem *item = this->items->currentItem();
+	if (item == nullptr) {
+		return;
+	}
+
+	// gets the name of the item
+	QString name = item->text();
+
+	// creates popup for the user to confirm the deletion of the item
+	QDialog popup;
+
+	popup.setWindowModality(Qt::ApplicationModal); // stops the user from interacting with the main window while the popup is open
+	popup.setWindowTitle("Delete Item?");	   // set the title of the popup
+
+	popup.setFixedSize(200, 150); // set the size of the popup
+
+	QLabel *popupText = new QLabel("Delete " + name + "?", &popup); // creates the text for the popup
+	popupText->setWordWrap(true);									// allows the text to wrap around if it is too long
+
+	// create the buttons for the popup
+	QPushButton *popupConfirm = new QPushButton("Yes", &popup); // creates the confirm button
+	QPushButton *popupCancel = new QPushButton("No", &popup);	// creates the cancel button
+
+	// Gets rid of the padding around the text of the buttons
+	popupConfirm->setStyleSheet("padding: 5px 0px; margin: 0px;");
+	popupCancel->setStyleSheet("padding: 5px 0px; margin: 0px;");
+
+	// Connect the confirm button to accept the dialog (e.g., confirming the deletion)
+	QObject::connect(popupConfirm, &QPushButton::clicked, &popup, &QDialog::accept);
+
+	// Connect the cancel button to reject the dialog (e.g., canceling the deletion)
+	QObject::connect(popupCancel, &QPushButton::clicked, &popup, &QDialog::reject);
+
+	// create the layout for the popup
+	QVBoxLayout popupLayout(&popup);
+
+	// Create button widget
+	QWidget *popupButtonWidget = new QWidget(&popup);
+	QHBoxLayout popupButtonLayout(popupButtonWidget); // Makes the buttons horizontal
+
+	// adds the buttons to the button widget
+	popupButtonLayout.addWidget(popupConfirm);
+	popupButtonLayout.addWidget(popupCancel);
+
+	// adds the components to the popup
+	popupLayout.addWidget(popupText);
+	popupLayout.addWidget(popupButtonWidget);
+
+	// makes the popup text take up more horizontal space
+	popupLayout.setStretch(0, 1);
+
+	// show the popup
+	popup.exec();
+
+	if (popup.result() == QDialog::Accepted) {
+		this->items->removeItemWidget(item);
+		delete item;
+	}
+}
+
+void InventoryWidget::selectItem() {
+	this->removeItemButton->setEnabled(true);
 }

@@ -216,11 +216,11 @@ CharacterSelect::CharacterSelect(QWidget *parent)
 
 	// button for character creation
 
-	createChar = new QPushButton("Create Character");
+	this->createChar = new QPushButton("Create Character");
 	layout->addWidget(createChar, 5, 8, 5, 10);
 
 	// button for settings
-	settings = new QPushButton("Settings");
+	this->settings = new QPushButton("Settings");
 	// layout->addWidget(settings, 5, 82, 5, 10);
 	layout->addWidget(settings, 15, 8, 5, 10);
 
@@ -247,16 +247,16 @@ CharacterSelect::CharacterSelect(QWidget *parent)
 	connect(this->deleteChar, SIGNAL(clicked()), SLOT(deleteCharSlot()));
 
 	// enable the delete button when a character is clicked
-	connect(characters, SIGNAL(itemClicked(QListWidgetItem *)), SLOT(selectChar()));
+	connect(this->characters, SIGNAL(itemClicked(QListWidgetItem *)), SLOT(selectChar()));
 
 	// double click event to view character
-	connect(characters, SIGNAL(itemDoubleClicked(QListWidgetItem *)), SLOT(openChar()));
+	connect(this->characters, SIGNAL(itemDoubleClicked(QListWidgetItem *)), SLOT(openChar()));
 
 	// create character button click event
-	connect(createChar, SIGNAL(clicked()), SLOT(gotoAddCharacter()));
+	connect(this->createChar, SIGNAL(clicked()), SLOT(gotoAddCharacter()));
 
 	// settings button click event
-	connect(settings, SIGNAL(clicked()), SLOT(gotoSettings()));
+	connect(this->settings, SIGNAL(clicked()), SLOT(gotoSettings()));
 }
 
 void CharacterSelect::deleteCharSlot()

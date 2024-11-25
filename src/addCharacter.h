@@ -19,6 +19,7 @@ Last Modified: 11/5/2024
 #include <QWidget>
 #include <QList>
 #include <QLayout>
+#include <QPushButton>
 
 class UpComboBox;
 class Portrait;
@@ -260,6 +261,7 @@ class BackgroundWidget : public QWidget
 public:
 	explicit BackgroundWidget(QWidget *parent = 0);
 	// function for getting which background is selected
+	QList<QString> getItems() { return this->items; }
 	QComboBox *getSelected();
 
 private:
@@ -285,7 +287,8 @@ private:
 	// Add declarations for new methods
 	void loadBackgrounds();
 	void updateBackgroundInfo(const QString &backgroundName);
-
+signals:
+	void finished();
 private slots:
 	void backPage();
 	void nextPage();
@@ -299,12 +302,18 @@ public:
 	QList<QString> getItems();
 private:
 	// Declaration for the items list widget
-	QListWidget *items;
+	QListWidget * items;
+	QPushButton * removeItemButton;
 signals:
 	void finished();
+public slots:
+	void autofillInventory();
 private slots:
 	void backPage();
 	void nextPage();
+	void addItem();
+	void deleteItem();
+	void selectItem();
 };
 
 #endif // ADD_CHARACTER_H
