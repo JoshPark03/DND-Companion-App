@@ -131,7 +131,13 @@ void AddCharacter::createCharacter()
 			QFile notesFile(charPath + "/notes.json"); // Create a notes file
 			if (notesFile.open(QIODevice::WriteOnly | QIODevice::Text)) {
 				QTextStream out(&notesFile);
-				out << "Character Notes"; // Add default content to notes.txt
+				// Add default content to notes.txt
+				out << "{" << Qt::endl;
+				out << "\t\"sortPreference\": \"lastUpdated\"," << Qt::endl;
+				out << "\t\"notes\": [" << Qt::endl;
+				out << "\t\t" << Qt::endl;
+				out << "\t]" << Qt::endl;
+				out << "}" << Qt::endl;
 				notesFile.close();		  // Close the file
 			}
 		} else {
@@ -603,7 +609,7 @@ void BackgroundWidget::updateBackgroundInfo(const QString &backgroundName)
 	// make lists to put into the character
 	QList<QString> skillProficiencies = info.skillProficiency.split(":", Qt::SkipEmptyParts);
 	QList<QString> toolProficiencies = info.toolProficiency.split(":", Qt::SkipEmptyParts);
-	QList<QString> items = info.equipment.split(":", Qt::SkipEmptyParts);
+	this->items = info.equipment.split(":", Qt::SkipEmptyParts);
 }
 
 void BackgroundWidget::backPage()
