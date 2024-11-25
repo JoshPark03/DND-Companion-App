@@ -65,12 +65,12 @@ public:
 	explicit AddCharacter(QWidget *parent = 0);
 
 	// get functions for each widget variable
-	StartWidget * getStartWidget() { return this->startWidget; }
-	BaseStatsWidget * getBaseStatsWidget() { return this->baseStatsWidget; }
-	ClassWidget * getClassWidget() { return this->classWidget; }
-	RaceWidget * getRaceWidget() { return this->raceWidget; }
-	BackgroundWidget * getBackgroundWidget() { return this->backgroundWidget; }
-	InventoryWidget * getInventoryWidget() { return this->inventoryWidget; }
+	StartWidget *getStartWidget() { return this->startWidget; }
+	BaseStatsWidget *getBaseStatsWidget() { return this->baseStatsWidget; }
+	ClassWidget *getClassWidget() { return this->classWidget; }
+	RaceWidget *getRaceWidget() { return this->raceWidget; }
+	BackgroundWidget *getBackgroundWidget() { return this->backgroundWidget; }
+	InventoryWidget *getInventoryWidget() { return this->inventoryWidget; }
 public slots:
 	void createCharacter();
 };
@@ -301,10 +301,11 @@ class InventoryWidget : public QWidget
 public:
 	explicit InventoryWidget(QWidget *parent = 0);
 	QList<QString> getItems();
+
 private:
 	// Declaration for the items list widget
-	QListWidget * items;
-	QPushButton * removeItemButton;
+	QListWidget *items;
+	QPushButton *removeItemButton;
 signals:
 	void finished();
 public slots:
