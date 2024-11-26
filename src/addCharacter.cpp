@@ -1,7 +1,7 @@
 /*
 Name: addCharacter.cpp
 Description: Implementation of the AddCharacter class, which allows users to create new characters.
-Authors: Josh Park
+Authors: Josh Park, Chanu Lee, Carson Treece
 Other Sources: ...
 Date Created: 10/24/2024
 Last Modified: 11/24/2024
