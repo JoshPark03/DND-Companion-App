@@ -8,6 +8,7 @@ Date Created: 10/22/2024
 Last Modified: 11/24/2024
 */
 
+#include "addCharacter.h"
 #include "characterSelect.h"
 #include "viewCharacter.h"
 #include "viewInventory.h"
@@ -340,6 +341,16 @@ void CharacterSelect::gotoAddCharacter()
 	QStackedWidget *stackedWidget = qobject_cast<QStackedWidget *>(this->parentWidget());
 	if (stackedWidget)
 	{
+		if(!stackedWidget->widget(1))
+		{
+			qDebug() << "No addCharacter stack found";
+			return;
+		}
+		
+		QWidget *addCharacter = stackedWidget->widget(1); // Get the addCharacter page
+		stackedWidget->removeWidget(addCharacter); // Remove the addCharacter page
+		AddCharacter *newAddCharacter = new AddCharacter(); // Create a new addCharacter page
+		stackedWidget->insertWidget(1, newAddCharacter); // Insert the new addCharacter page
 		stackedWidget->setCurrentIndex(1); // character select is the first page so index 0
 	}
 }
