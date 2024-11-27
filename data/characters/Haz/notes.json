@@ -1,6 +1,10 @@
 {
-	"sortPreference": "lastUpdated",
-	"notes": [
-		
-	]
+    "notes": [
+        {
+            "lastUpdated": "27-11-2024|11:16:19",
+            "notes": "I'm making notes ma!",
+            "section": "Woah it works"
+        }
+    ],
+    "sortPreference": "lastUpdated"
 }

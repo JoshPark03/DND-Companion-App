@@ -4,7 +4,7 @@ Description: Implementation of the AddCharacter class, which allows users to cre
 Authors: Josh Park, Chanu Lee, Carson Treece
 Other Sources: ...
 Date Created: 10/24/2024
-Last Modified: 11/24/2024
+Last Modified: 11/27/2024
 */
 
 #ifndef ADD_CHARACTER_H
@@ -26,6 +26,7 @@ class Portrait;
 class StartWidget;
 class BaseStatsWidget;
 class ClassWidget;
+class SpellsWidget;
 class RaceWidget;
 class BackgroundWidget;
 class InventoryWidget;
@@ -57,6 +58,7 @@ private:
 	StartWidget *startWidget;
 	BaseStatsWidget *baseStatsWidget;
 	ClassWidget *classWidget;
+	SpellsWidget * spellsWidget;
 	RaceWidget *raceWidget;
 	BackgroundWidget *backgroundWidget;
 	InventoryWidget *inventoryWidget;
@@ -68,6 +70,7 @@ public:
 	StartWidget *getStartWidget() { return this->startWidget; }
 	BaseStatsWidget *getBaseStatsWidget() { return this->baseStatsWidget; }
 	ClassWidget *getClassWidget() { return this->classWidget; }
+	SpellsWidget * getSpellsWidget() { return this->spellsWidget; }
 	RaceWidget *getRaceWidget() { return this->raceWidget; }
 	BackgroundWidget *getBackgroundWidget() { return this->backgroundWidget; }
 	InventoryWidget *getInventoryWidget() { return this->inventoryWidget; }
@@ -149,33 +152,35 @@ class ClassWidget : public QWidget
 {
 	Q_OBJECT
 public:
-	explicit ClassWidget(QWidget *parent = 0);
+	explicit ClassWidget(QWidget * parent = 0);\
+	bool isSpellcaster() { return this->spellcasters.contains(this->getClass()); }
 	// function for getting which class is selected
 	QString getClass();
-	QList<QString> *getArmorProficincies();
-	QList<QString> *getWeaponProficincies();
-	QList<QString> *getToolProficincies();
-	QList<QString> *getSavingThrows();
-	QList<QString> *getSkillProficincies();
-	QList<QString> *getItems();
+	QList<QString> * getArmorProficincies();
+	QList<QString> * getWeaponProficincies();
+	QList<QString> * getToolProficincies();
+	QList<QString> * getSavingThrows();
+	QList<QString> * getSkillProficincies();
+	QList<QString> * getItems();
 
 private:
 	QMap<QString, ClassInfo *> classes;
-	QLabel *header;
-	Portrait *portrait;
-	QLabel *summary;
-	QLabel *armor;
-	QLabel *weapons;
-	QLabel *tools;
-	QLabel *savingThrows;
-	QVBoxLayout *skillsLayout;
-	QList<UpComboBox *> *skillsList;
-	QVBoxLayout *choicesLayout;
-	QList<UpComboBox *> *choicesList;
-	UpComboBox *multipleChoiceBox;
-	QList<QWidget *> *multipleChoice;
-	QLabel *givenEquipment;
-	UpComboBox *classComboBox;
+	QLabel * header;
+	Portrait * portrait;
+	QLabel * summary;
+	QLabel * armor;
+	QLabel * weapons;
+	QLabel * tools;
+	QLabel * savingThrows;
+	QVBoxLayout * skillsLayout;
+	QList<UpComboBox *> * skillsList;
+	QVBoxLayout * choicesLayout;
+	QList<UpComboBox *> * choicesList;
+	UpComboBox * multipleChoiceBox;
+	QList<QWidget *> * multipleChoice;
+	QLabel * givenEquipment;
+	UpComboBox * classComboBox;
+	QList<QString> spellcasters = {"Bard", "Cleric", "Druid", "Paladin", "Ranger", "Rogue", "Sorcerer", "Warlock", "Wizard"};
 	void loadClasses();
 private slots:
 	void backPage();
@@ -183,6 +188,18 @@ private slots:
 	void updateClassInfo(const QString &name);
 	void updateChoice();
 	void proficiencyDisableSkills();
+};
+
+class SpellsWidget : public QWidget {
+	Q_OBJECT
+public:
+	explicit SpellsWidget(QWidget * parent = 0);
+private:
+	QLabel * header;
+public slots:
+	void backPage();
+	void nextPage();
+	void recordSpells();
 };
 
 struct SubRaceInfo

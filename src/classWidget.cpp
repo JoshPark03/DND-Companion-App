@@ -142,9 +142,17 @@ void ClassWidget::backPage()
 void ClassWidget::nextPage()
 {
 	QStackedWidget * stackedWidget = qobject_cast<QStackedWidget *>(this->parentWidget());
-	if (stackedWidget)
+	if (!stackedWidget)
 	{
+		qDebug() << "Failed to change page because stackedWidget was not correctly casted";
+		return;
+	}
+	if (this->isSpellcaster()) {
+		// is a spellcaster so goes to spells page
 		stackedWidget->setCurrentIndex(3);
+	} else {
+		// is not a spellcaster so it skips the spells page
+		stackedWidget->setCurrentIndex(4);
 	}
 	qDebug() << "Class: " << this->getClass();
 	qDebug() << "Armors: " << *this->getArmorProficincies();

@@ -117,8 +117,19 @@ RaceWidget::RaceWidget(QWidget *parent) : QWidget(parent)
 void RaceWidget::backPage()
 {
     QStackedWidget *stackedWidget = qobject_cast<QStackedWidget *>(this->parentWidget());
-    if (stackedWidget)
+    ClassWidget * classWidget = qobject_cast<ClassWidget *>(stackedWidget->widget(2));
+    if (!stackedWidget) {
+		qDebug() << "Failed to change page because stackedWidget was not correctly casted";
+		return;
+    }
+    if (!classWidget)
     {
+		qDebug() << "Failed to change page because classWidget was not correctly casted";
+		return;
+    }
+    if (classWidget->isSpellcaster()) {
+        stackedWidget->setCurrentIndex(3);
+    } else {
         stackedWidget->setCurrentIndex(2);
     }
 }
@@ -131,7 +142,7 @@ void RaceWidget::nextPage()
     QStackedWidget *stackedWidget = qobject_cast<QStackedWidget *>(this->parentWidget());
     if (stackedWidget)
     {
-        stackedWidget->setCurrentIndex(4);
+        stackedWidget->setCurrentIndex(5);
     }
     qDebug() << "Race: " << this->getRace();
     qDebug() << "SubRace: " << this->getSubRace();

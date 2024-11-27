@@ -85,6 +85,7 @@ AddCharacter::AddCharacter(QWidget *parent) : QStackedWidget(parent)
 	startWidget = new StartWidget();
 	baseStatsWidget = new BaseStatsWidget();
 	classWidget = new ClassWidget();
+	spellsWidget = new SpellsWidget();
 	raceWidget = new RaceWidget();
 	backgroundWidget = new BackgroundWidget();
 	inventoryWidget = new InventoryWidget();
@@ -93,6 +94,7 @@ AddCharacter::AddCharacter(QWidget *parent) : QStackedWidget(parent)
 	this->addWidget(startWidget);
 	this->addWidget(baseStatsWidget);
 	this->addWidget(classWidget);
+	this->addWidget(spellsWidget);
 	this->addWidget(raceWidget);
 	this->addWidget(backgroundWidget);
 	this->addWidget(inventoryWidget);
@@ -102,8 +104,9 @@ AddCharacter::AddCharacter(QWidget *parent) : QStackedWidget(parent)
 
 	// connect function to autofill inventory when background widget is finished
 	connect(backgroundWidget, SIGNAL(finished()), inventoryWidget, SLOT(autofillInventory()));
-	// connect function to create the character's csv when finished with character creation
+	// connect function to create the character's csv files when finished with character creation
 	connect(inventoryWidget, SIGNAL(finished()), SLOT(createCharacter()));
+	connect(inventoryWidget, SIGNAL(finished()), spellsWidget, SLOT(recordSpells()));
 }
 
 /**
