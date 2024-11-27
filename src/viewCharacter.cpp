@@ -424,7 +424,7 @@ ViewCharacter::ViewCharacter(QWidget *parent, QString nameIn) :
     QWidget *combatStatsWidget = new QWidget(); // Creates a widget for the combat stats section
     QGridLayout *combatStatsLayout = new QGridLayout(combatStatsWidget); // Creates a grid layout for the combat stats section
     // combatStatsWidget->setFixedHeight(100); // Sets the height of the combat stats widget to 100px
-    QString initiativePrefix = (characterInitiative < 0) ? "-" : "+"; // Uses a ternary operator to determine if the initiative is negative or positive
+    QString initiativePrefix = (characterInitiative < 0) ? "" : "+"; // Uses a ternary operator to determine if the initiative is negative or positive
     QLabel *initiativeLabel = new QLabel("Initiative:\n" + initiativePrefix + QString::number(characterInitiative)); // Creates a label with the prefix and initiative as the text
     QLabel *armorClassLabel = new QLabel("Armor Class:\n" + QString::number(characterArmorClass)); // Creates a label with the armor class as the text
     QLabel *hitPointsLabel = new QLabel("Hit Points:\n" + QString::number(characterHitPoints) + "/" + QString::number(characterMaxHitPoints)); // Creates a label with the hit points as the text

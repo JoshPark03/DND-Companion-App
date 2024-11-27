@@ -712,7 +712,9 @@ void InventoryWidget::nextPage()
 	QStackedWidget *mainStackedWidget = qobject_cast<QStackedWidget *>(addCharacterWidget->parentWidget());
 	if (mainStackedWidget)
 	{
-		mainStackedWidget->setCurrentIndex(0);
+		CharacterSelect *charSelect = qobject_cast<CharacterSelect *>(mainStackedWidget->widget(0)); // Get the character select widget
+		charSelect->loadCharacterList(); // Reload the character list
+		mainStackedWidget->setCurrentIndex(0); // Switch to the character select page
 	}
 }
 
