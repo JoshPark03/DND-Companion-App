@@ -208,8 +208,6 @@ void CharacterSelect::loadCharacterList()
 CharacterSelect::CharacterSelect(QWidget *parent)
 	: QWidget(parent)
 {
-	// TODO SQL or function call to get list of characters
-
 	// Layout object for automatically centering and placing widgets
 	layout = new QGridLayout(this);
 

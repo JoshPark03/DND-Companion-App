@@ -620,7 +620,7 @@ void BackgroundWidget::backPage()
 	QStackedWidget *stackedWidget = qobject_cast<QStackedWidget *>(this->parentWidget());
 	if (stackedWidget)
 	{
-		stackedWidget->setCurrentIndex(3);
+		stackedWidget->setCurrentIndex(4);
 	}
 }
 
@@ -633,7 +633,7 @@ void BackgroundWidget::nextPage()
 	QStackedWidget *stackedWidget = qobject_cast<QStackedWidget *>(this->parentWidget());
 	if (stackedWidget)
 	{
-		stackedWidget->setCurrentIndex(5);
+		stackedWidget->setCurrentIndex(6);
 	}
 }
 
@@ -696,7 +696,7 @@ void InventoryWidget::backPage()
 	QStackedWidget *stackedWidget = qobject_cast<QStackedWidget *>(this->parentWidget());
 	if (stackedWidget)
 	{
-		stackedWidget->setCurrentIndex(4);
+		stackedWidget->setCurrentIndex(5);
 	}
 }
 

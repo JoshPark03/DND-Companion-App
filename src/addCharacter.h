@@ -180,7 +180,7 @@ private:
 	QList<QWidget *> * multipleChoice;
 	QLabel * givenEquipment;
 	UpComboBox * classComboBox;
-	QList<QString> spellcasters = {"Bard", "Cleric", "Druid", "Paladin", "Ranger", "Rogue", "Sorcerer", "Warlock", "Wizard"};
+	QList<QString> spellcasters = {"Bard", "Cleric", "Druid", "Paladin", "Ranger", "Sorcerer", "Warlock", "Wizard"};
 	void loadClasses();
 private slots:
 	void backPage();
@@ -195,11 +195,36 @@ class SpellsWidget : public QWidget {
 public:
 	explicit SpellsWidget(QWidget * parent = 0);
 private:
+	struct SpellInfo {
+		QString book;
+		int page;
+		int level;
+		QString school;
+		QString time;
+		int minRange;
+		int maxRange;
+		bool verbal;
+		bool somatic;
+		bool material;
+		QString duration;
+		bool concentration;
+		bool ritual;
+		QString description;
+	};
+
 	QLabel * header;
+	QListWidget * spellsList;
+	QPushButton * addSpellButton;
+	QPushButton * removeSpellButton;
+
+	QMap<QString, SpellInfo> * spells;
 public slots:
+	void recordSpells();
+private slots:
 	void backPage();
 	void nextPage();
-	void recordSpells();
+	void addSpell();
+	void removeSpell();
 };
 
 struct SubRaceInfo
