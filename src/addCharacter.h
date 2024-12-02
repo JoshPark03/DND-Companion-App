@@ -329,12 +329,12 @@ private:
 	QPushButton * addSpellButton;
 	QPushButton * removeSpellButton;
 
-	QMap<QString, SpellInfo> * spells;
+	QMap<QString, SpellInfo *> * spells;
 
 	int numSpells();
 public slots:
 	void updateNumSpells();
-	void recordSpells();
+	void recordSpells(QString charPath);
 private slots:
 	void backPage();
 	void nextPage();

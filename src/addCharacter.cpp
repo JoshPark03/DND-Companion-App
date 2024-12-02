@@ -108,7 +108,7 @@ AddCharacter::AddCharacter(QWidget *parent) : QStackedWidget(parent)
 	connect(backgroundWidget, SIGNAL(finished()), spellsWidget, SLOT(updateNumSpells()));
 	// connect function to create the character's csv files when finished with character creation
 	connect(inventoryWidget, SIGNAL(finished()), SLOT(createCharacter()));
-	connect(inventoryWidget, SIGNAL(finished()), spellsWidget, SLOT(recordSpells()));
+	// connect(inventoryWidget, SIGNAL(finished()), spellsWidget, SLOT(recordSpells()));
 }
 
 /**
@@ -217,6 +217,9 @@ void AddCharacter::createCharacter()
 		out << listToCommaString(armorWeaponProficiencies) + "\n";
 		out << numPlatCoins + "," + numGoldCoins + "," + numSilverCoins + "," + numCopperCoins + "\n";
 		characterFile.close();
+		if (this->classWidget->isSpellcaster()) {
+			this->spellsWidget->recordSpells(charPath);
+		}
 		emit this->createdCharacter();
 	}
 }

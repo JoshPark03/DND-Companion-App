@@ -9,13 +9,14 @@ Last Modified: 12/1/2024
 
 #include "addCharacter.h"
 
+#include <QFile>
 #include <QDialog>
 #include <QCheckBox>
 #include <QTextEdit>
 
 SpellsWidget::SpellsWidget(QWidget * parent) 
 : QWidget(parent) {
-	this->spells = new QMap<QString, SpellInfo>;
+	this->spells = new QMap<QString, SpellInfo *>;
 
 	// Create the main layout
 	QGridLayout * mainLayout = new QGridLayout(this);
@@ -243,6 +244,25 @@ void SpellsWidget::addSpell() {
 	if (popup.result() == QDialog::Accepted)
 	{
 		this->spellsList->addItem(spellName->text());
+		SpellInfo * info = new SpellInfo;
+		info->book = book->text();
+		info->page = page->value();
+		info->level = level->value();
+		info->school = school->text();
+		info->time = time->text();
+		info->minRange = minRange->value();
+		info->maxRange = maxRange->value();
+		info->verbal = verbal->isChecked();
+		info->somatic = somatic->isChecked();
+		info->material = material->isChecked();
+		info->duration = duration->text();
+		info->concentration = concentration->isChecked();
+		info->ritual = ritual->isChecked();
+		QString desc = description->toPlainText();
+		QRegularExpression re("\n");
+		desc.replace(re,"<br>");
+		info->description = desc;
+		(*this->spells)[spellName->text()] = info;
 	}
 	
 	// this is so that no spell is selected after creation
@@ -310,6 +330,7 @@ void SpellsWidget::removeSpell() {
 	if (popup.result() == QDialog::Accepted)
 	{
 		this->spellsList->removeItemWidget(item);
+		this->spells->remove(item->text());
 		delete item;
 	}
 
@@ -373,8 +394,8 @@ int SpellsWidget::numSpells() {
 		return 2 + 2;
 	}
 
-	if (className == "Wizard") { // cantrips + prepared spells (level + modifier)
-		return 3 + std::max(1, 1 + ((baseStatsWidget->getIntelligence() / 2) - 5));
+	if (className == "Wizard") { // cantrips + spells known
+		return 3 + 6;
 	}
 	return 0;
 }
@@ -388,6 +409,28 @@ void SpellsWidget::updateNumSpells() {
 	header->setText(headerstr.c_str());
 }
 
-void SpellsWidget::recordSpells() {
+void SpellsWidget::recordSpells(QString charPath) {
+	QFile spellsFile(charPath + "/spells.csv");
 
+	if (spellsFile.open(QIODevice::WriteOnly | QIODevice::Text)) {
+		while (auto spell = this->spellsList->takeItem(0)) {
+			QString spellName = spell->text();
+			SpellInfo * info = (*this->spells)[spellName];
+
+			QTextStream out(&spellsFile);
+
+			out << spellName << "," << info->book << "," << info->page << "," << info->level << "," << info->school << "," << info->time << "," << info->maxRange << ",";
+			if (info->verbal) {
+				out << "v";
+			}
+			if (info->somatic) {
+				out << "s";
+			}
+			if (info->material) {
+				out << "m";
+			}
+			out << "," << info->duration << "," << info->concentration << "," << info->ritual << ",false," << info->description << Qt::endl;
+		}
+		spellsFile.close();
+	}
 }
