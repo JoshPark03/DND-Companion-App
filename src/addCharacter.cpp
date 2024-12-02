@@ -85,18 +85,18 @@ AddCharacter::AddCharacter(QWidget *parent) : QStackedWidget(parent)
 	startWidget = new StartWidget();
 	baseStatsWidget = new BaseStatsWidget();
 	classWidget = new ClassWidget();
-	spellsWidget = new SpellsWidget();
 	raceWidget = new RaceWidget();
 	backgroundWidget = new BackgroundWidget();
+	spellsWidget = new SpellsWidget();
 	inventoryWidget = new InventoryWidget();
 
 	// adding all of the custom widgets to the stacked widget
 	this->addWidget(startWidget);
 	this->addWidget(baseStatsWidget);
 	this->addWidget(classWidget);
-	this->addWidget(spellsWidget);
 	this->addWidget(raceWidget);
 	this->addWidget(backgroundWidget);
+	this->addWidget(spellsWidget);
 	this->addWidget(inventoryWidget);
 
 	// seting the current widget to the startWidget
@@ -104,6 +104,8 @@ AddCharacter::AddCharacter(QWidget *parent) : QStackedWidget(parent)
 
 	// connect function to autofill inventory when background widget is finished
 	connect(backgroundWidget, SIGNAL(finished()), inventoryWidget, SLOT(autofillInventory()));
+	// connect function to update spells screen when background widget is finished
+	connect(backgroundWidget, SIGNAL(finished()), spellsWidget, SLOT(updateNumSpells()));
 	// connect function to create the character's csv files when finished with character creation
 	connect(inventoryWidget, SIGNAL(finished()), SLOT(createCharacter()));
 	connect(inventoryWidget, SIGNAL(finished()), spellsWidget, SLOT(recordSpells()));
@@ -425,10 +427,10 @@ void BaseStatsWidget::backPage()
  */
 void BaseStatsWidget::nextPage()
 {
-	QStackedWidget *stackedWidget = qobject_cast<QStackedWidget *>(this->parentWidget());
-	if (stackedWidget)
+	AddCharacter * addcharacter = qobject_cast<AddCharacter *>(this->parentWidget());
+	if (addcharacter)
 	{
-		stackedWidget->setCurrentIndex(2);
+		addcharacter->setCurrentIndex(2);
 	}
 }
 
@@ -620,7 +622,7 @@ void BackgroundWidget::backPage()
 	QStackedWidget *stackedWidget = qobject_cast<QStackedWidget *>(this->parentWidget());
 	if (stackedWidget)
 	{
-		stackedWidget->setCurrentIndex(4);
+		stackedWidget->setCurrentIndex(3);
 	}
 }
 
@@ -631,8 +633,20 @@ void BackgroundWidget::nextPage()
 {
 	emit this->finished();
 	QStackedWidget *stackedWidget = qobject_cast<QStackedWidget *>(this->parentWidget());
-	if (stackedWidget)
+    ClassWidget * classWidget = qobject_cast<ClassWidget *>(stackedWidget->widget(2));
+	if (!stackedWidget)
 	{
+		qDebug() << "Failed to change page because stackedWidget was not correctly casted";
+		return;
+	}
+    if (!classWidget)
+    {
+		qDebug() << "Failed to change page because classWidget was not correctly casted";
+		return;
+    }
+	if (classWidget->isSpellcaster()) {
+		stackedWidget->setCurrentIndex(5);
+	} else {
 		stackedWidget->setCurrentIndex(6);
 	}
 }
@@ -694,9 +708,21 @@ InventoryWidget::InventoryWidget(QWidget *parent) : QWidget(parent)
 void InventoryWidget::backPage()
 {
 	QStackedWidget *stackedWidget = qobject_cast<QStackedWidget *>(this->parentWidget());
-	if (stackedWidget)
+    ClassWidget * classWidget = qobject_cast<ClassWidget *>(stackedWidget->widget(2));
+	if (!stackedWidget)
 	{
+		qDebug() << "Failed to change page because stackedWidget was not correctly casted";
+		return;
+	}
+    if (!classWidget)
+    {
+		qDebug() << "Failed to change page because classWidget was not correctly casted";
+		return;
+    }
+	if (classWidget->isSpellcaster()) {
 		stackedWidget->setCurrentIndex(5);
+	} else {
+		stackedWidget->setCurrentIndex(4);
 	}
 }
 

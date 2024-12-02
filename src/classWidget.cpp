@@ -147,13 +147,7 @@ void ClassWidget::nextPage()
 		qDebug() << "Failed to change page because stackedWidget was not correctly casted";
 		return;
 	}
-	if (this->isSpellcaster()) {
-		// is a spellcaster so goes to spells page
-		stackedWidget->setCurrentIndex(3);
-	} else {
-		// is not a spellcaster so it skips the spells page
-		stackedWidget->setCurrentIndex(4);
-	}
+	stackedWidget->setCurrentIndex(3);
 	qDebug() << "Class: " << this->getClass();
 	qDebug() << "Armors: " << *this->getArmorProficincies();
 	qDebug() << "Weapons: " << *this->getWeaponProficincies();

@@ -4,7 +4,7 @@ body: Implementation of the SpellsWidget class, which allows users to select spe
 Authors: Josh Park
 Other Sources: ...
 Date Created: 11/27/2024
-Last Modified: 11/27/2024
+Last Modified: 12/1/2024
 */
 
 #include "addCharacter.h"
@@ -34,8 +34,9 @@ SpellsWidget::SpellsWidget(QWidget * parent)
 	navbarLayout->addWidget(nextButton);
 
 	// Create header
-	header = new QLabel("<h1>Spells</h1>");
-	header->setFixedHeight(50);
+	std::string headerstr = "<h1>Spells</h1><br><h3>Choose " + std::to_string(this->numSpells()) + " Spells</h3>";
+	header = new QLabel(headerstr.c_str());
+	// header->setFixedHeight(50);
 
 	// Create the body layout
 	QGridLayout * body = new QGridLayout();
@@ -60,10 +61,16 @@ SpellsWidget::SpellsWidget(QWidget * parent)
 	connect(backButton, SIGNAL(clicked()), SLOT(backPage()));
 	// When nextButton is clicked it calls the private SLOT function nextPage()
 	connect(nextButton, SIGNAL(clicked()), SLOT(nextPage()));
-	// When addSpellButton is clicked it calls the privat SLOT function addSpell()
+	// When addSpellButton is clicked it calls the private SLOT function addSpell()
 	connect(addSpellButton, SIGNAL(clicked()), SLOT(addSpell()));
-	// When addSpellButton is clicked it calls the privat SLOT function addSpell()
+	// When addSpellButton is clicked it calls the private SLOT function addSpell()
 	connect(removeSpellButton, SIGNAL(clicked()), SLOT(removeSpell()));
+	// When a spell is selected it calls the private SLOT function selectSpell()
+	connect(spellsList, SIGNAL(itemClicked(QListWidgetItem *)), SLOT(selectSpell()));
+	// When spellsList has a spell added or removed call private SLOT function checkNumSpells()
+	auto spellsModel = this->spellsList->model();
+	connect(spellsModel, SIGNAL(rowsInserted(const QModelIndex &, int, int)), SLOT(checkNumSpells()));
+	connect(spellsModel, SIGNAL(rowsRemoved(const QModelIndex &, int, int)), SLOT(checkNumSpells()));
 }
 
 /**
@@ -74,7 +81,7 @@ void SpellsWidget::backPage()
 	QStackedWidget * stackedWidget = qobject_cast<QStackedWidget *>(this->parentWidget());
 	if (stackedWidget)
 	{
-		stackedWidget->setCurrentIndex(2);
+		stackedWidget->setCurrentIndex(4);
 	}
 }
 
@@ -86,7 +93,7 @@ void SpellsWidget::nextPage()
 	QStackedWidget * stackedWidget = qobject_cast<QStackedWidget *>(this->parentWidget());
 	if (stackedWidget)
 	{
-		stackedWidget->setCurrentIndex(4);
+		stackedWidget->setCurrentIndex(6);
 	}
 }
 
@@ -103,6 +110,7 @@ void SpellsWidget::addSpell() {
 
 	QLabel * pageLabel = new QLabel("Page:");
 	QSpinBox * page = new QSpinBox();
+	page->setMaximum(999);
 
 	// spell attributes and labels
 	QLabel *nameLabel = new QLabel("Name"); // label for textbox
@@ -123,6 +131,7 @@ void SpellsWidget::addSpell() {
 	QLabel * maxRangeLabel = new QLabel("Max");
 	QSpinBox * minRange = new QSpinBox();	
 	QSpinBox * maxRange = new QSpinBox();
+	maxRange->setMaximum(360);
 
 	QLabel * componentsLabel = new QLabel("Components");
 	QLabel * verbalLabel = new QLabel("Verbal");
@@ -235,6 +244,10 @@ void SpellsWidget::addSpell() {
 	{
 		this->spellsList->addItem(spellName->text());
 	}
+	
+	// this is so that no spell is selected after creation
+	this->spellsList->selectionModel()->clear();
+	this->removeSpellButton->setEnabled(false);
 }
 
 void SpellsWidget::removeSpell() {
@@ -300,10 +313,79 @@ void SpellsWidget::removeSpell() {
 		delete item;
 	}
 
-
 	// clear the selection
 	// this is so that no spell is selected after deletion
 	this->spellsList->selectionModel()->clear();
+	this->removeSpellButton->setEnabled(false);
+}
+
+void SpellsWidget::checkNumSpells() {
+	if (this->spellsList->count() < this->numSpells()) { // cantrips + spells known
+		this->addSpellButton->setEnabled(true);
+	} else {
+		this->addSpellButton->setEnabled(false);
+	}
+}
+
+int SpellsWidget::numSpells() {
+	AddCharacter * stackedWidget = qobject_cast<AddCharacter *>(this->parentWidget());
+	if (!stackedWidget) {
+		qDebug() << "stackedWidget of AddCharcter not initialized";
+		return 0;
+	}
+	BaseStatsWidget * baseStatsWidget = qobject_cast<BaseStatsWidget *>(stackedWidget->widget(1));
+	if (!baseStatsWidget) {
+		qDebug() << "baseStatsWidget not initialized";
+		return 0;
+	}
+    ClassWidget * classWidget = qobject_cast<ClassWidget *>(stackedWidget->widget(2));
+	if (!classWidget) {
+		qDebug() << "classWidget not initialized";
+		return 0;
+	}
+	QString className = classWidget->getClass();
+
+	if (className == "Bard") { // cantrips + spells known
+		return 2 + 4;
+	}
+
+	if (className == "Cleric") { // cantrips + prepared spells (level + modifier)
+		return 3 + std::max(1, 1 + ((baseStatsWidget->getWisdom() / 2) - 5));
+	}
+
+	if (className == "Druid") { // cantrips + prepared spells (level + modifier)
+		return 2 + std::max(1, 1 + ((baseStatsWidget->getWisdom() / 2) - 5));
+	}
+
+	if (className == "Paladin") { // prepared spells (floor(level/2) + modifier)
+		return std::max(1, 1 + ((baseStatsWidget->getCharisma() / 2) - 5));
+	}
+
+	if (className == "Ranger") { // spells known
+		return 2;
+	}
+
+	if (className == "Sorcerer") { // cantrips + spells known
+		return 4 + 2;
+	}
+
+	if (className == "Warlock") { // cantrips + spells known
+		return 2 + 2;
+	}
+
+	if (className == "Wizard") { // cantrips + prepared spells (level + modifier)
+		return 3 + std::max(1, 1 + ((baseStatsWidget->getIntelligence() / 2) - 5));
+	}
+	return 0;
+}
+
+void SpellsWidget::selectSpell() {
+	this->removeSpellButton->setEnabled(true);
+}
+
+void SpellsWidget::updateNumSpells() {
+	std::string headerstr = "<h1>Spells</h1><br><h3>Choose " + std::to_string(this->numSpells()) + " Spells</h3>";
+	header->setText(headerstr.c_str());
 }
 
 void SpellsWidget::recordSpells() {

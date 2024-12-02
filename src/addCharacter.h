@@ -190,43 +190,6 @@ private slots:
 	void proficiencyDisableSkills();
 };
 
-class SpellsWidget : public QWidget {
-	Q_OBJECT
-public:
-	explicit SpellsWidget(QWidget * parent = 0);
-private:
-	struct SpellInfo {
-		QString book;
-		int page;
-		int level;
-		QString school;
-		QString time;
-		int minRange;
-		int maxRange;
-		bool verbal;
-		bool somatic;
-		bool material;
-		QString duration;
-		bool concentration;
-		bool ritual;
-		QString description;
-	};
-
-	QLabel * header;
-	QListWidget * spellsList;
-	QPushButton * addSpellButton;
-	QPushButton * removeSpellButton;
-
-	QMap<QString, SpellInfo> * spells;
-public slots:
-	void recordSpells();
-private slots:
-	void backPage();
-	void nextPage();
-	void addSpell();
-	void removeSpell();
-};
-
 struct SubRaceInfo
 {
 	QString abilityScoreIncrease;
@@ -337,6 +300,48 @@ signals:
 private slots:
 	void backPage();
 	void nextPage();
+};
+
+class SpellsWidget : public QWidget {
+	Q_OBJECT
+public:
+	explicit SpellsWidget(QWidget * parent = 0);
+private:
+	struct SpellInfo {
+		QString book;
+		int page;
+		int level;
+		QString school;
+		QString time;
+		int minRange;
+		int maxRange;
+		bool verbal;
+		bool somatic;
+		bool material;
+		QString duration;
+		bool concentration;
+		bool ritual;
+		QString description;
+	};
+
+	QLabel * header;
+	QListWidget * spellsList;
+	QPushButton * addSpellButton;
+	QPushButton * removeSpellButton;
+
+	QMap<QString, SpellInfo> * spells;
+
+	int numSpells();
+public slots:
+	void updateNumSpells();
+	void recordSpells();
+private slots:
+	void backPage();
+	void nextPage();
+	void addSpell();
+	void removeSpell();
+	void checkNumSpells();
+	void selectSpell();
 };
 
 class InventoryWidget : public QWidget
