@@ -353,8 +353,34 @@ public:
     // public function to grab the items list
     QList<QString> getItemsList() const {
         QList<QString> itemList;
+
         for (int i = 0; i < items->count(); ++i) {
-            itemList.append(items->item(i)->text());
+            
+			QString itemText = items->item(i)->text().trimmed();
+			int quantity = 1; // set default
+			int attunement = 0; // set default
+			int equipped = 0; // set default
+			QString itemName = itemText;
+
+			//check for a number at the beginning of the string, this is the quantity
+			QRegularExpression regex(R"(^(\d+)\s+(.+)$)");
+			QRegularExpressionMatch match = regex.match(itemText);
+			if (match.hasMatch()) {
+				quantity = match.captured(1).toInt();
+				itemName = match.captured(2);
+			}
+
+			// check if there is a coin and skip it
+			QRegularExpression coinRegex(R"(^(pp|gp|sp|cp)$)");
+			QRegularExpressionMatch coinMatch = coinRegex.match(itemName.trimmed());
+
+			if (coinMatch.hasMatch()) {
+				itemList.append(itemText);
+				continue;
+			}
+
+			// format the item string
+			itemList.append(itemName + "," + QString::number(quantity) + "," + QString::number(equipped) + "," + QString::number(attunement));
         }
         return itemList;
     }

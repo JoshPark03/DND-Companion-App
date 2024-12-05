@@ -205,11 +205,58 @@ void AddCharacter::createCharacter()
 		armorWeaponProficiencies.append(*this->classWidget->getWeaponProficincies());
 
 		// Coins
-		QString numPlatCoins = QString::number(0);
-		QString numGoldCoins = QString::number(100);
-		QString numSilverCoins = QString::number(0);
-		QString numCopperCoins = QString::number(0);
+		int platCoins = 0, goldCoins = 0, silverCoins = 0, copperCoins = 0;
 
+		// filter inventory and coin values
+		QList<QString> inventoryItems = inventoryWidget->getItemsList();
+		QList<QString> filteredInventory;
+
+		qDebug() << "Inventory Items:" << inventoryItems; // Debug inventory items
+
+		for (const QString &item : inventoryItems) {
+			qDebug() << "Processing item:" << item; // Debug each item
+
+			// regex to match coin values
+			QRegularExpression coinRegex(R"(^\s*(\d+)\s*(pp|gp|sp|cp)\s*$)");
+			QRegularExpressionMatch match = coinRegex.match(item);
+
+			if (match.hasMatch()) {
+				// get coin type and quantity
+				int quantity = match.captured(1).toInt();
+				QString coinType = match.captured(2);
+
+				// add coin values to total
+				if (coinType == "pp") {
+					platCoins += quantity;
+				} else if (coinType == "gp") {
+					goldCoins += quantity;
+				} else if (coinType == "sp") {
+					silverCoins += quantity;
+				} else if (coinType == "cp") {
+					copperCoins += quantity;
+				}
+
+				qDebug() << "Matched coin:" << quantity << coinType;
+
+			} else {
+				filteredInventory.append(item);
+			}
+		}
+
+		// Debug final coin values
+		qDebug() << "Final Coins:"
+				<< "Platinum:" << platCoins
+				<< "Gold:" << goldCoins
+				<< "Silver:" << silverCoins
+				<< "Copper:" << copperCoins;
+
+		// set real coin values
+		QString numPlatCoins = QString::number(platCoins);
+		QString numGoldCoins = QString::number(goldCoins);
+		QString numSilverCoins = QString::number(silverCoins);
+		QString numCopperCoins = QString::number(copperCoins);
+
+		// write the character data to the file
 		out << characterName + "," + strength + "," + dexterity + "," + constitution + "," + intelligence + "," + wisdom + "," + charisma + "," + level + ":" + experience + "," + maxHp + ":" + currentHp + ":" + tempHp + "," + characterClass + "," + characterSubClass + "," + characterRace + "," + characterSubRace + "\n";
 		out << listToCommaString(proficiencies) + "\n";
 		out << listToCommaString(feats) + "\n";
@@ -223,9 +270,8 @@ void AddCharacter::createCharacter()
 		if (inventoryFile.open(QIODevice::WriteOnly | QIODevice::Text)) { // Open the file
 			QTextStream inventoryOut(&inventoryFile); // Create a text stream
 
-			QList<QString> inventoryItems = inventoryWidget->getItemsList(); // Get the list of inventory items
-			for (const QString &item : inventoryItems) { // For each item in the list
-            	inventoryOut << item << ","; // Write the item to the file
+			for (const QString &item : filteredInventory) { // For each item in the list
+            	inventoryOut << item << "\n"; // Write the item to the file
         	}
 
 			inventoryFile.close(); // Close the file
