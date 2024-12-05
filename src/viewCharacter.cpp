@@ -226,9 +226,9 @@ void ViewCharacter::changeProfilePicture()
 
 
         // Check if a file already exists and delete it
-        for(const QString $ext : imageExtentions)
+        for(const QString &ext : imageExtentions)
         {
-            QString existingFileName = QDir::currentPath() + "/data/characters/" + characterName + "/character." + $ext;
+            QString existingFileName = QDir::currentPath() + "/data/characters/" + characterName + "/character." + ext;
             if (QFile::exists(existingFileName))
             {
                 QFile::remove(existingFileName); // Delete the existing picture
@@ -300,6 +300,61 @@ void ViewCharacter::loadPicture(const QString &imagePath)
         pictureLabel->setText("Image not available");
     }
 }
+
+// Function to load the equipped items into the equipped items list
+void ViewCharacter::loadEquippedItems()
+{
+    equippedItemsList->setEnabled(false); // Disable the list because there is no need to interact with
+    // Load the character's inventory
+    QString characterName = name;
+    QString filePath = QDir::currentPath() + "/data/characters/" + characterName + "/inventory.csv";
+
+    QFile file(filePath);
+    if (!file.open(QIODevice::ReadOnly | QIODevice::Text))
+    {
+        qWarning() << "Failed to open inventory file for loading:" << filePath;
+        return;
+    }
+
+    QTextStream in(&file);
+    equippedItemsList->clear();
+
+    while (!in.atEnd())
+    {
+        QString line = in.readLine().trimmed();
+        QStringList fields = line.split(",");
+        if (fields.size() < 4)
+        {
+            qWarning() << "Invalid inventory line:" << line;
+            continue; // Skip invalid lines
+        }
+
+        QString itemName = fields[0];
+        int quantity = fields[1].toInt();
+        int equipped = fields[2].toInt();
+        int attunement = fields[3].toInt();
+
+        if (equipped)
+        {   
+            QListWidgetItem *item = new QListWidgetItem("(x" + QString::number(quantity) + ") " + itemName);
+            item->setData(Qt::UserRole, line); // Store full data string in UserRole
+            if(attunement)
+            {
+                item->setText(item->text() + " [Attuned]");
+            }
+            equippedItemsList->addItem(item);
+        }
+    }
+
+    file.close();
+}
+
+// Function to load the prepped spells into the prepped spells list
+void ViewCharacter::loadPreppedSpells()
+{
+    // TODO once the character's spell list is implemented
+}
+
 
 ViewCharacter::ViewCharacter(QWidget *parent, QString nameIn) :
     QWidget(parent), pictureLabel(new ClickableLabel(this))
@@ -531,22 +586,15 @@ ViewCharacter::ViewCharacter(QWidget *parent, QString nameIn) :
     // Creates the list widget for the equipped items and the prepped spells and a widget for the list widgets
     QWidget *listsWidget = new QWidget();
     QGridLayout *listsLayout = new QGridLayout(listsWidget);
-    QListWidget *equippedItemsList = new QListWidget();
-    QListWidget *preppedSpellsList = new QListWidget();
+    
 
     // Create the labels for the list widgets
     QLabel *equippedItemsLabel = new QLabel("Equipped Items");
     QLabel *preppedSpellsLabel = new QLabel("Prepped Spells");
 
     // Add the attuned items and prepped spells to the list widgets
-    for(int i = 0; i < characterAttunedItems.length(); i++)
-    {
-        equippedItemsList->addItem(characterAttunedItems[i]);
-    }
-    for(int i = 0; i < characterPreppedSpells.length(); i++)
-    {
-        preppedSpellsList->addItem(characterPreppedSpells[i]);
-    }
+    loadEquippedItems();
+    loadPreppedSpells();
 
     // Add the list widgets to the list widget widget
     listsLayout->addWidget(equippedItemsLabel, 0, 0);

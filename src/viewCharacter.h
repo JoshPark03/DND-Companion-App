@@ -16,6 +16,7 @@ Last Modified: 11/6/2024
 #include <QPixmap>
 #include <QPushButton>
 #include <QMouseEvent>
+#include <QListWidget>
 
 class ClickableLabel : public QLabel
 {
@@ -51,6 +52,8 @@ private:
     void evaluateCharacterModifiers();
     void changeProfilePicture();
     void loadPicture(const QString &imagePath);
+    void loadEquippedItems();
+    void loadPreppedSpells();
     ClickableLabel *pictureLabel = new ClickableLabel();
     QString name;
     QString characterName;
@@ -65,7 +68,6 @@ private:
     QStringList characterFeats;
     QStringList characterLanguages;
     QStringList characterEquipmentProficiencies;
-    QStringList characterAttunedItems;
     QStringList imageExtentions = {"png", "jpg", "bmp", "jpeg"};
     QList<int> characterAbilities;
     QList<int> characterAbilityBonuses;
@@ -73,6 +75,8 @@ private:
     QList<int> characterSkillBonuses;
     QList<int> characterCoins;
     QList<int> deathThrows;
+    QListWidget *equippedItemsList = new QListWidget();
+    QListWidget *preppedSpellsList = new QListWidget();
     int characterHitPoints;
     int characterMaxHitPoints;
     int characterArmorClass;
