@@ -20,6 +20,7 @@ Last Modified: 11/27/2024
 #include <QList>
 #include <QLayout>
 #include <QPushButton>
+#include <QRadioButton>
 
 class UpComboBox;
 class Portrait;
@@ -58,7 +59,7 @@ private:
 	StartWidget *startWidget;
 	BaseStatsWidget *baseStatsWidget;
 	ClassWidget *classWidget;
-	SpellsWidget * spellsWidget;
+	SpellsWidget *spellsWidget;
 	RaceWidget *raceWidget;
 	BackgroundWidget *backgroundWidget;
 	InventoryWidget *inventoryWidget;
@@ -70,7 +71,7 @@ public:
 	StartWidget *getStartWidget() { return this->startWidget; }
 	BaseStatsWidget *getBaseStatsWidget() { return this->baseStatsWidget; }
 	ClassWidget *getClassWidget() { return this->classWidget; }
-	SpellsWidget * getSpellsWidget() { return this->spellsWidget; }
+	SpellsWidget *getSpellsWidget() { return this->spellsWidget; }
 	RaceWidget *getRaceWidget() { return this->raceWidget; }
 	BackgroundWidget *getBackgroundWidget() { return this->backgroundWidget; }
 	InventoryWidget *getInventoryWidget() { return this->inventoryWidget; }
@@ -88,9 +89,12 @@ public:
 
 	// get function for name widget
 	QString getName() { return this->name->text(); }
+	QString getLevelingType() { return xpLeveling->isChecked() ? xpLeveling->text() : milestoneLeveling->text(); }
 
 private:
 	QLineEdit *name;
+	QRadioButton *xpLeveling;
+	QRadioButton *milestoneLeveling;
 private slots:
 	void backPage();
 	void nextPage();
@@ -152,34 +156,34 @@ class ClassWidget : public QWidget
 {
 	Q_OBJECT
 public:
-	explicit ClassWidget(QWidget * parent = 0);\
+	explicit ClassWidget(QWidget *parent = 0);
 	bool isSpellcaster() { return this->spellcasters.contains(this->getClass()); }
 	// function for getting which class is selected
 	QString getClass();
-	QList<QString> * getArmorProficincies();
-	QList<QString> * getWeaponProficincies();
-	QList<QString> * getToolProficincies();
-	QList<QString> * getSavingThrows();
-	QList<QString> * getSkillProficincies();
-	QList<QString> * getItems();
+	QList<QString> *getArmorProficincies();
+	QList<QString> *getWeaponProficincies();
+	QList<QString> *getToolProficincies();
+	QList<QString> *getSavingThrows();
+	QList<QString> *getSkillProficincies();
+	QList<QString> *getItems();
 
 private:
 	QMap<QString, ClassInfo *> classes;
-	QLabel * header;
-	Portrait * portrait;
-	QLabel * summary;
-	QLabel * armor;
-	QLabel * weapons;
-	QLabel * tools;
-	QLabel * savingThrows;
-	QVBoxLayout * skillsLayout;
-	QList<UpComboBox *> * skillsList;
-	QVBoxLayout * choicesLayout;
-	QList<UpComboBox *> * choicesList;
-	UpComboBox * multipleChoiceBox;
-	QList<QWidget *> * multipleChoice;
-	QLabel * givenEquipment;
-	UpComboBox * classComboBox;
+	QLabel *header;
+	Portrait *portrait;
+	QLabel *summary;
+	QLabel *armor;
+	QLabel *weapons;
+	QLabel *tools;
+	QLabel *savingThrows;
+	QVBoxLayout *skillsLayout;
+	QList<UpComboBox *> *skillsList;
+	QVBoxLayout *choicesLayout;
+	QList<UpComboBox *> *choicesList;
+	UpComboBox *multipleChoiceBox;
+	QList<QWidget *> *multipleChoice;
+	QLabel *givenEquipment;
+	UpComboBox *classComboBox;
 	QList<QString> spellcasters = {"Bard", "Cleric", "Druid", "Paladin", "Ranger", "Sorcerer", "Warlock", "Wizard"};
 	void loadClasses();
 private slots:
@@ -302,12 +306,15 @@ private slots:
 	void nextPage();
 };
 
-class SpellsWidget : public QWidget {
+class SpellsWidget : public QWidget
+{
 	Q_OBJECT
 public:
-	explicit SpellsWidget(QWidget * parent = 0);
+	explicit SpellsWidget(QWidget *parent = 0);
+
 private:
-	struct SpellInfo {
+	struct SpellInfo
+	{
 		QString book;
 		int page;
 		int level;
@@ -324,12 +331,12 @@ private:
 		QString description;
 	};
 
-	QLabel * header;
-	QListWidget * spellsList;
-	QPushButton * addSpellButton;
-	QPushButton * removeSpellButton;
+	QLabel *header;
+	QListWidget *spellsList;
+	QPushButton *addSpellButton;
+	QPushButton *removeSpellButton;
 
-	QMap<QString, SpellInfo *> * spells;
+	QMap<QString, SpellInfo *> *spells;
 
 	int numSpells();
 public slots:
