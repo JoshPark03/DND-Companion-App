@@ -274,14 +274,9 @@ ViewCharacter::ViewCharacter(QWidget *parent, QString nameIn) :
         return;
     }
 
-    qDebug() << "before loadCharacter()";
-
     loadCharacter(nameIn);
-    qDebug() << "after loadCharacter()";
     printCharacterToConsole();
     evaluateCharacterModifiers();
-
-    qDebug() << "past modifiers evaluation";
 
     this->name = nameIn;
     // Create the verticle layout for buttons
@@ -328,8 +323,6 @@ ViewCharacter::ViewCharacter(QWidget *parent, QString nameIn) :
         QPixmap scaledCharacterPicture = characterPicture.scaled(200, 250, Qt::KeepAspectRatio, Qt::SmoothTransformation);
         pictureLabel->setPixmap(scaledCharacterPicture);
     }
-
-    qDebug() << "before class race level labels";
 
     QLabel *classAndSubclassLabel = new QLabel(characterClass + " | " + characterSubclass);
     QLabel *raceLabel = new QLabel(characterRace);
