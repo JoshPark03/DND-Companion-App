@@ -55,6 +55,8 @@ private:
     void loadPicture(const QString &imagePath);
     void loadEquippedItems();
     void loadPreppedSpells();
+    void levelUp();
+    void addExperience();
     ClickableLabel *pictureLabel = new ClickableLabel();
     QString name;
     QString characterName;
@@ -78,6 +80,7 @@ private:
     QList<int> deathThrows;
     QListWidget *equippedItemsList = new QListWidget();
     QListWidget *preppedSpellsList = new QListWidget();
+    bool isMilestone = false;
     int characterHitPoints;
     int characterMaxHitPoints;
     int characterArmorClass;

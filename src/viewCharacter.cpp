@@ -108,6 +108,11 @@ void ViewCharacter::loadCharacter(QString name)
         QStringList levelExperienceList = line1[7].split(":");
         characterLevel = levelExperienceList[0].toInt();
         characterExperience = levelExperienceList[1].toInt();
+
+        //  if character experience is -1, then the character is using milestone leveling
+        if(characterExperience == -1) isMilestone = true;
+        else isMilestone = false;
+
         QStringList hitPointsList = line1[8].split(":");
         characterHitPoints = hitPointsList[0].toInt();
         characterMaxHitPoints = hitPointsList[1].toInt();
@@ -416,6 +421,8 @@ ViewCharacter::ViewCharacter(QWidget *parent, QString nameIn) :
     QLabel *experienceLow = new QLabel(QString::number(experienceTable[characterLevel-1])); // Creates a label for the lower bound of the character's experience
     QLabel *experienceHigh = new QLabel(QString::number(experienceTable[characterLevel])); // Creates a label for the upper bound of the character's experience
     QLabel *experienceCurrent = new QLabel(QString::number(characterExperience)); // Creates a label for the character's current experience
+    QPushButton *levelUpButton = new QPushButton("Level Up"); // Creates a button to level up the character
+    QPushButton *addExperienceButton = new QPushButton("Add XP"); // Creates a button to add experience to the character
 
     // Set font for experience labels to be smaller
     experienceLow->setStyleSheet("font-size: 10px;");
@@ -444,6 +451,10 @@ ViewCharacter::ViewCharacter(QWidget *parent, QString nameIn) :
     // Add the characterInfoWidget and the spacer to the layout
     column1Layout->addWidget(characterInfoWidget);
     column1Layout->addSpacerItem(column1Spacer);
+
+    // These will eventually be moved to their final location
+    column1Layout->addWidget(levelUpButton);
+    column1Layout->addWidget(addExperienceButton);
 
     // Set stretch factors for the layout
     column1Layout->setStretch(0, 1); // Stretch factor for characterInfoWidget
@@ -745,6 +756,12 @@ ViewCharacter::ViewCharacter(QWidget *parent, QString nameIn) :
     // Picture Label Click Event
     connect(pictureLabel, &ClickableLabel::clicked, this, &ViewCharacter::changeProfilePicture);
 
+    // connect level up button to levelUp function
+    connect(levelUpButton, &QPushButton::clicked, this, &ViewCharacter::levelUp);
+
+    // connect add experience button to addExperience function
+    connect(addExperienceButton, &QPushButton::clicked, this, &ViewCharacter::addExperience);
+
     reloadTheme(); // Reload the theme after everything is placed
 }
 
@@ -768,6 +785,18 @@ void ViewCharacter::goBack()
         // If the parent is not the main stacked widget, set the current stacked widget to the parent
         currentStackedWidget = qobject_cast<QStackedWidget *>(parent);
     }
+}
+
+void ViewCharacter::levelUp()
+{
+    qDebug() << "Level Up Button Clicked";
+    // TODO implement level up functionality
+}
+
+void ViewCharacter::addExperience()
+{
+    qDebug() << "Add Experience Button Clicked";
+    // TODO implement add experience functionality
 }
 
 void ViewCharacter::goToInventory()
