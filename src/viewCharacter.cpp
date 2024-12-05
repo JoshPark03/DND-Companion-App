@@ -293,11 +293,11 @@ void ViewCharacter::loadPicture(const QString &imagePath)
             // Set the pixmap to the label
             pictureLabel->setPixmap(scaledPicture);
         }
-        else
-        {
-            qDebug() << "Failed to load image at path:" << imagePath;
-            pictureLabel->setText("Image not available");
-        }
+    }
+    else
+    {
+        qDebug() << "Failed to load image at path:" << imagePath;
+        pictureLabel->setText("Image not available");
     }
 }
 
