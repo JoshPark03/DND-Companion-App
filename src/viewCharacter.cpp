@@ -26,6 +26,8 @@ Last Modified: 11/18/2024
 #include <QRadioButton>
 #include <QButtonGroup>
 #include <QListWidget>
+#include <QFileDialog>
+#include <QCheckBox>
 #include <QApplication>
 #include <fstream>
 #include <iostream>
@@ -64,8 +66,6 @@ void ViewCharacter::loadCharacter(QString name)
     // Load the character's information, notes, and stats
     QString path = QDir::currentPath() + "/data/characters/" + name;
 
-    qDebug() << "Character Path: " << path;
-
     // Load the character's information
     QFile characterFile(path + "/character.csv");
 
@@ -75,15 +75,10 @@ void ViewCharacter::loadCharacter(QString name)
             Character File Format:
             1|    Name,Str,Dex,Con,Int,Wis,Cha,Level:Experience,CurrentHealth:MaxHealth,Class,Sub,Race
             2|    Stat Proficiencies (comma separated)(entire line)
-            3|    Prepped Spells (comma separated)(entire line) // removed
-                    SpellName:SpellLevel:Book:Page
-            4|    Known Spells (comma separated)(entire line) // removed
-                    SpellName:SpellLevel:Book:Page
-            5|    Feats (comma separated)(entire line)
-            6|    Languages (comma separated)(entire line)
-            7|    Equipment Proficiencies (comma separated)(entire line)
-            8|    Attuned Items (comma separated)(entire line)(max 3) // removed
-            9|    Coins (platinum,gold,silver,copper)
+            3|    Feats (comma separated)(entire line)
+            4|    Languages (comma separated)(entire line)
+            5|    Equipment Proficiencies (comma separated)(entire line)
+            6|    Coins (platinum,gold,silver,copper)
         */
 
 
@@ -91,7 +86,6 @@ void ViewCharacter::loadCharacter(QString name)
         // Can not loop through each line because lines are not consistent in context
         // Get the first line of character information
         QString line = in.readLine();
-
 
         // Get first line of character information
         QStringList line1 = line.split(",");
@@ -111,7 +105,6 @@ void ViewCharacter::loadCharacter(QString name)
         characterSubclass = line1[10];
         characterRace = line1[11];
 
-
         // Get the second line of character information
         line = in.readLine();
         QStringList line2 = line.split(",");
@@ -120,80 +113,37 @@ void ViewCharacter::loadCharacter(QString name)
             if(line2[i] != "" && line2[i] != " ") characterSkillProficiencies.append(line2[i]); // Add stat proficiencies to the list
         }
 
-    /* this portion of the csv has been removed
         // Get the third line of character information
         line = in.readLine();
         QStringList line3 = line.split(",");
         for(int i = 0; i < line3.size(); i++)
         {
-            QStringList spellInfo = line3[i].split(":");
-            for(int j = 0; j < spellInfo.size(); j++)
-            {
-                if(spellInfo[j] != "" && spellInfo[j] != " " && j == 0) characterPreppedSpells.append(spellInfo[j]); // Add prepped spells to the list
-            }
+            if(line3[i] != "" && line3[i] != " ") characterFeats.append(line3[i]); // Add feats to the list
         }
-    */
-
-    /* this portion of the csv has been removed
 
         // Get the fourth line of character information
         line = in.readLine();
         QStringList line4 = line.split(",");
         for(int i = 0; i < line4.size(); i++)
         {
-            QStringList spellInfo = line4[i].split(":");
-            for(int j = 0; j < spellInfo.size(); j++)
-            {
-                if(spellInfo[j] != "" && spellInfo[j] != " " && j == 0) characterKnownSpells.append(spellInfo[j]); // Add known spells to the list
-            }
+            if(line4[i] != "" && line4[i] != " ") characterLanguages.append(line4[i]); // Add languages to the list
         }
-    */
 
         // Get the fifth line of character information
         line = in.readLine();
         QStringList line5 = line.split(",");
         for(int i = 0; i < line5.size(); i++)
         {
-            if(line5[i] != "" && line5[i] != " ") characterFeats.append(line5[i]); // Add feats to the list
+            if(line5[i] != "" && line5[i] != " ") characterEquipmentProficiencies.append(line5[i]); // Add equipment proficiencies to the list
         }
-
 
         // Get the sixth line of character information
         line = in.readLine();
         QStringList line6 = line.split(",");
         for(int i = 0; i < line6.size(); i++)
         {
-            if(line6[i] != "" && line6[i] != " ") characterLanguages.append(line6[i]); // Add languages to the list
+            if(line6[i] != "" && line6[i] != " ") characterCoins.append(line6[i].toInt()); // Add coins to the list
         }
-
-
-        // Get the seventh line of character information
-        line = in.readLine();
-        QStringList line7 = line.split(",");
-        for(int i = 0; i < line7.size(); i++)
-        {
-            if(line7[i] != "" && line7[i] != " ") characterEquipmentProficiencies.append(line7[i]); // Add equipment proficiencies to the list
-        }
-
-
-    /* this portion of the csv has been removed
-        // Get the eighth line of character information
-        line = in.readLine();
-        QStringList line8 = line.split(",");
-        for(int i = 0; i < line8.size(); i++)
-        {
-            if(line8[i] != "" && line8[i] != " ") characterAttunedItems.append(line8[i]); // Add attuned items to the list
-        }
-    */
-
-        // Get the ninth line of character information
-        line = in.readLine();
-        QStringList line9 = line.split(",");
-        for(int i = 0; i < line9.size(); i++)
-        {
-            if(line9[i] != "" && line9[i] != " ") characterCoins.append(line9[i].toInt()); // Add coins to the list
-        }
-
 
         // Close the file
         characterFile.close();
@@ -216,12 +166,9 @@ void ViewCharacter::printCharacterToConsole()
     qDebug() << "Character Subclass: " << characterSubclass;
     qDebug() << "Character Race: " << characterRace;
     qDebug() << "Character Stat Proficiencies: " << characterSkillProficiencies;
-    qDebug() << "Character Prepped Spells: " << characterPreppedSpells;
-    qDebug() << "Character Known Spells: " << characterKnownSpells;
     qDebug() << "Character Feats: " << characterFeats;
     qDebug() << "Character Languages: " << characterLanguages;
     qDebug() << "Character Equipment Proficiencies: " << characterEquipmentProficiencies;
-    qDebug() << "Character Attuned Items: " << characterAttunedItems;
     qDebug() << "Character Coins: " << characterCoins;
 }
 
@@ -260,28 +207,106 @@ void ViewCharacter::evaluateCharacterModifiers()
 
     // Evaluate hit points
 
+}
+
+// Allows the user to change the character's profile picture
+void ViewCharacter::changeProfilePicture()
+{
+    // Open file dialog to select an image
+    QString fileName = QFileDialog::getOpenFileName(this, "Select Profile Picture", "", "Images (*.png *.jpg *.bmp *.jpeg)");
     
+    if (!fileName.isEmpty())
+    {
+        // Get the file extension of the selected file
+        QFileInfo fileInfo(fileName);
+        QString extension = fileInfo.suffix(); // Get file extension
+        
+        // Construct the new file name based on character's name and extension
+        QString newFileName = QDir::currentPath() + "/data/characters/" + characterName + "/character." + extension;
 
 
+        // Check if a file already exists and delete it
+        for(const QString $ext : imageExtentions)
+        {
+            QString existingFileName = QDir::currentPath() + "/data/characters/" + characterName + "/character." + $ext;
+            if (QFile::exists(existingFileName))
+            {
+                QFile::remove(existingFileName); // Delete the existing picture
+                qDebug() << "Deleted existing image: " << existingFileName;
+            }
+        }
+
+        // Copy the selected file to the new location
+        QFile::copy(fileName, newFileName); // Copy the selected image to the new name
+
+        // Load and display the new image
+        QPixmap newPixmap(newFileName);
+        if (!newPixmap.isNull())
+        {
+            pictureLabel->setPixmap(newPixmap.scaled(pictureLabel->size(), Qt::KeepAspectRatio, Qt::SmoothTransformation));
+        }
+        else
+        {
+            qDebug() << "Failed to load image:" << newFileName;
+        }
+
+        // Load and display the new image
+        loadPicture(newFileName);
+    }
+}
+
+// The function to load and display the picture
+void ViewCharacter::loadPicture(const QString &imagePath)
+{
+    if (!imagePath.isEmpty())
+    {
+        QPixmap characterPicture(imagePath);
+        const int maxWidth = 200;   // Max width
+        const int maxHeight = 300;  // Max height
+        
+        if (!characterPicture.isNull())
+        {
+            // Calculate the target aspect ratio (2:3)
+            const float targetAspectRatio = 2.0 / 3.0;
+            const float currentAspectRatio = static_cast<float>(characterPicture.width()) / characterPicture.height();
+            QRect cropRect;
+
+            if (currentAspectRatio > targetAspectRatio)
+            {
+                // If the image is wider than the target aspect ratio, crop the sides
+                int newWidth = static_cast<int>(targetAspectRatio * characterPicture.height());
+                int xOffset = (characterPicture.width() - newWidth) / 2;  // Center crop
+                cropRect = QRect(xOffset, 0, newWidth, characterPicture.height());
+            }
+            else
+            {
+                // If the image is taller than the target aspect ratio, crop the top and bottom
+                int newHeight = static_cast<int>(characterPicture.width() / targetAspectRatio);
+                int yOffset = (characterPicture.height() - newHeight) / 2;  // Center crop
+                cropRect = QRect(0, yOffset, characterPicture.width(), newHeight);
+            }
+
+            // Crop and scale the image
+            QPixmap croppedPicture = characterPicture.copy(cropRect);
+            QPixmap scaledPicture = croppedPicture.scaled(maxWidth, maxHeight, Qt::KeepAspectRatio, Qt::SmoothTransformation);
+
+            // Set the pixmap to the label
+            pictureLabel->setPixmap(scaledPicture);
+        }
+        else
+        {
+            qDebug() << "Failed to load image at path:" << imagePath;
+            pictureLabel->setText("Image not available");
+        }
+    }
 }
 
 ViewCharacter::ViewCharacter(QWidget *parent, QString nameIn) :
-    QWidget(parent)
+    QWidget(parent), pictureLabel(new ClickableLabel(this))
 {
-    if(nameIn == "")
-    {
-        qDebug() << "No character name provided";
-        return;
-    }
-
-    qDebug() << "before loadCharacter()";
-
     loadCharacter(nameIn);
-    qDebug() << "after loadCharacter()";
     printCharacterToConsole();
     evaluateCharacterModifiers();
-
-    qDebug() << "past modifiers evaluation";
 
     this->name = nameIn;
     // Create the verticle layout for buttons
@@ -296,55 +321,68 @@ ViewCharacter::ViewCharacter(QWidget *parent, QString nameIn) :
     QWidget *body = new QWidget();
     QHBoxLayout *bodyLayout = new QHBoxLayout(body);
 
-    // Create the buttons for the navbar
-
-
     // Create the first column
     QWidget *column1 = new QWidget();
     QVBoxLayout *column1Layout = new QVBoxLayout(column1);
     column1Layout->setSpacing(5);
     column1Layout->setContentsMargins(0, 0, 0, 0);
 
+    // Create the character picture
+    QString imageDir = QDir::currentPath() + "/data/characters/" + characterName + "/";
+    QString imagePath;
+    for(const QString &ext : imageExtentions)
+    {
+        if(QFile::exists(imageDir + "character." + ext))
+        {
+            imagePath = imageDir + "character." + ext;
+            break;
+        }
+    }
+
+    // Load and display the picture
+    loadPicture(imagePath);
+
     // Define all of the column 1 widgets
-    QLabel *nameLabel = new QLabel(characterName);
+    QLabel *nameAndLevelLabel = new QLabel(characterName + " | Level " + QString::number(characterLevel)); // Creates a label for the character's name and level
+    QLabel *raceClassAndSubclassLabel = new QLabel(characterRace + " " + characterClass + " | " + characterSubclass); // Creates a label for the character
+    QProgressBar *experienceProgressBar = new QProgressBar(); // Creates a progress bar for the character's experience
+    experienceProgressBar->setRange(experienceTable[characterLevel-1],experienceTable[characterLevel]); // Sets the range of the progress bar to the lower and upper bounds of the character's current level
+    experienceProgressBar->setValue(characterExperience); // Sets the value of the progress bar to the character's current experience
+    QLabel *experienceLow = new QLabel(QString::number(experienceTable[characterLevel-1])); // Creates a label for the lower bound of the character's experience
+    QLabel *experienceHigh = new QLabel(QString::number(experienceTable[characterLevel])); // Creates a label for the upper bound of the character's experience
+    QLabel *experienceCurrent = new QLabel(QString::number(characterExperience)); // Creates a label for the character's current experience
 
+    // Set font for experience labels to be smaller
+    experienceLow->setStyleSheet("font-size: 10px;");
+    experienceHigh->setStyleSheet("font-size: 10px;");
+    experienceCurrent->setStyleSheet("font-size: 10px;");
 
+    // Allow the picture to expand to fill the space
+    pictureLabel->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
 
-    QLabel *pictureLabel = new QLabel();
-    pictureLabel->setFixedSize(200,250);
+    // Create a widget for the first column to hold the character information
+    QWidget *characterInfoWidget = new QWidget();
+    QGridLayout *characterInfoLayout = new QGridLayout(characterInfoWidget);
 
-    QString imagePath = QDir::currentPath() + "/data/characters/" + characterName + "/character.png";
+    // Add all of the character info widgets to the widget
+    characterInfoLayout->addWidget(nameAndLevelLabel, 0, 0, 1, 2); // Adds the label with the name and level to the widget
+    characterInfoLayout->addWidget(pictureLabel, 0, 2, 5, 2, Qt::AlignRight); // Adds the picture label to the widget
+    characterInfoLayout->addWidget(raceClassAndSubclassLabel, 1, 0, 1, 2); // Adds the label with the character race class and subclass to the widget
+    characterInfoLayout->addWidget(experienceProgressBar, 6, 0, 1, 4); // Adds the experience progress bar to the widget
+    characterInfoLayout->addWidget(experienceLow, 7, 0, 1, 1, Qt::AlignLeft); // Adds the lower bound of the experience to the widget
+    characterInfoLayout->addWidget(experienceCurrent, 7, 1, 1, 2, Qt::AlignCenter); // Adds the current experience to the widget
+    characterInfoLayout->addWidget(experienceHigh, 7, 3, 1, 1, Qt::AlignRight); // Adds the upper bound of the experience to the widget
 
-    QPixmap characterPicture(imagePath);
+    // Add a spacer item to manage the remaining space
+    QSpacerItem *column1Spacer = new QSpacerItem(0, 0, QSizePolicy::Minimum, QSizePolicy::Expanding); 
 
-    // Check if the pixmap loaded successfully
-    if (characterPicture.isNull())
-    {
-        qDebug() << "Failed to load image at path:" << imagePath;
-        pictureLabel->setText("Image not available");  // Display placeholder text if image fails to load
-    }
-    else
-    {
-        QPixmap scaledCharacterPicture = characterPicture.scaled(200, 250, Qt::KeepAspectRatio, Qt::SmoothTransformation);
-        pictureLabel->setPixmap(scaledCharacterPicture);
-    }
+    // Add the characterInfoWidget and the spacer to the layout
+    column1Layout->addWidget(characterInfoWidget);
+    column1Layout->addSpacerItem(column1Spacer);
 
-    qDebug() << "before class race level labels";
-
-    QLabel *classAndSubclassLabel = new QLabel(characterClass + " | " + characterSubclass);
-    QLabel *raceLabel = new QLabel(characterRace);
-    QLabel *levelLabel = new QLabel(QString::number(characterLevel));
-    QProgressBar *experienceProgressBar = new QProgressBar();
-    experienceProgressBar->setRange(experienceTable[characterLevel-1],experienceTable[characterLevel]);
-    experienceProgressBar->setValue(characterExperience);
-
-    // Add all of the column 1 widgets to column 1
-    column1Layout->addWidget(nameLabel);
-    column1Layout->addWidget(pictureLabel);
-    column1Layout->addWidget(classAndSubclassLabel);
-    column1Layout->addWidget(raceLabel);
-    column1Layout->addWidget(levelLabel);
-    column1Layout->addWidget(experienceProgressBar);
+    // Set stretch factors for the layout
+    column1Layout->setStretch(0, 1); // Stretch factor for characterInfoWidget
+    column1Layout->setStretch(1, 1); // Stretch factor for the spacer (remaining space)
 
 
 
@@ -428,6 +466,11 @@ ViewCharacter::ViewCharacter(QWidget *parent, QString nameIn) :
     QLabel *initiativeLabel = new QLabel("Initiative:\n" + initiativePrefix + QString::number(characterInitiative)); // Creates a label with the prefix and initiative as the text
     QLabel *armorClassLabel = new QLabel("Armor Class:\n" + QString::number(characterArmorClass)); // Creates a label with the armor class as the text
     QLabel *hitPointsLabel = new QLabel("Hit Points:\n" + QString::number(characterHitPoints) + "/" + QString::number(characterMaxHitPoints)); // Creates a label with the hit points as the text
+    
+    // Allign the labels to the center
+    initiativeLabel->setAlignment(Qt::AlignCenter);
+    armorClassLabel->setAlignment(Qt::AlignCenter);
+    hitPointsLabel->setAlignment(Qt::AlignCenter);
 
     // Defining the area for the death saving throws
     QWidget *deathSavingThrows = new QWidget(); // Creates a widget for the death saving throws section
@@ -440,22 +483,35 @@ ViewCharacter::ViewCharacter(QWidget *parent, QString nameIn) :
     QHBoxLayout *deathSuccessesLayout = new QHBoxLayout(deathSuccesses); // Creates a horizontal layout for the death successes section
     QHBoxLayout *deathFailsLayout = new QHBoxLayout(deathFails); // Creates a horizontal layout for the death fails section
 
+    // Align death successes and fails to the right
+    deathSavingThrowsLayout->setAlignment(Qt::AlignRight);
+    deathSuccessesLayout->setAlignment(Qt::AlignRight);
+    deathFailsLayout->setAlignment(Qt::AlignRight);
+
+    deathSuccessesLayout->setSpacing(15); // Sets the spacing between the death saving throws section
+    deathFailsLayout->setSpacing(15); // Sets the spacing between the death saving throws section
+
     // Creating the death saving throw widgets
     QLabel *deathSavingThrowsLabel = new QLabel("Death Saving Throws"); // Creates a label for the death saving throws section
+    deathSavingThrowsLabel->setAlignment(Qt::AlignCenter); // Aligns the death saving throws label to the center
     QLabel *deathSuccessesLabel = new QLabel("Successes:"); // Creates a label for the death successes section
     QLabel *deathFailsLabel = new QLabel("Fails:"); // Creates a label for the death fails section
 
-    // Creating the death saving throw radio buttons
-    QRadioButton *deathSuccess1 = new QRadioButton(); // Creates a radio button for the first death success
-    QRadioButton *deathSuccess2 = new QRadioButton(); // Creates a radio button for the second death success
-    QRadioButton *deathSuccess3 = new QRadioButton(); // Creates a radio button for the third death success
-    QRadioButton *deathFail1 = new QRadioButton(); // Creates a radio button for the first death fail
-    QRadioButton *deathFail2 = new QRadioButton(); // Creates a radio button for the second death fail
-    QRadioButton *deathFail3 = new QRadioButton(); // Creates a radio button for the third death fail
+    // Creating the death saving throw checkboxes
+    QCheckBox *deathSuccess1 = new QCheckBox(); // Creates a checkboxes for the first death success
+    QCheckBox *deathSuccess2 = new QCheckBox(); // Creates a checkboxes for the second death success
+    QCheckBox *deathSuccess3 = new QCheckBox(); // Creates a checkboxes for the third death success
+    QCheckBox *deathFail1 = new QCheckBox(); // Creates a checkboxes for the first death fail
+    QCheckBox *deathFail2 = new QCheckBox(); // Creates a checkboxes for the second death fail
+    QCheckBox *deathFail3 = new QCheckBox(); // Creates a checkboxes for the third death fail
 
-
-
-    
+    // Sets the style of the checkboxes
+    deathSuccess1->setStyleSheet("QCheckBox::indicator:checked{ background-color: green; }");
+    deathSuccess2->setStyleSheet("QCheckBox::indicator:checked{ background-color: green; }");
+    deathSuccess3->setStyleSheet("QCheckBox::indicator:checked{ background-color: green; }");
+    deathFail1->setStyleSheet("QCheckBox::indicator:checked{ background-color: red; }");
+    deathFail2->setStyleSheet("QCheckBox::indicator:checked{ background-color: red; }");
+    deathFail3->setStyleSheet("QCheckBox::indicator:checked{ background-color: red; }");
 
     // Add the death successes and fails to their respective layouts
     deathSuccessesLayout->addWidget(deathSuccessesLabel); // Adds the death successes label to the list
@@ -471,12 +527,6 @@ ViewCharacter::ViewCharacter(QWidget *parent, QString nameIn) :
     deathSavingThrowsLayout->addWidget(deathSavingThrowsLabel); // Adds the death saving throws label to the list
     deathSavingThrowsLayout->addWidget(deathSuccesses); // Adds the death successes section to the list
     deathSavingThrowsLayout->addWidget(deathFails); // Adds the death fails section to the list
-
-
-    // Allign the labels to the center
-    initiativeLabel->setAlignment(Qt::AlignCenter);
-    armorClassLabel->setAlignment(Qt::AlignCenter);
-    hitPointsLabel->setAlignment(Qt::AlignCenter);
 
     // Creates the list widget for the equipped items and the prepped spells and a widget for the list widgets
     QWidget *listsWidget = new QWidget();
@@ -517,10 +567,10 @@ ViewCharacter::ViewCharacter(QWidget *parent, QString nameIn) :
     buttonsLayout->addWidget(notesButton, 1, 0, 1, 2);
 
     // Add all of the combat stats widgets to the combat stats widget
-    combatStatsLayout->addWidget(initiativeLabel, 0, 0);
-    combatStatsLayout->addWidget(armorClassLabel, 0, 1);
-    combatStatsLayout->addWidget(hitPointsLabel, 0, 2);
-    combatStatsLayout->addWidget(deathSavingThrows, 1, 1, 1, 2);
+    combatStatsLayout->addWidget(initiativeLabel, 0, 0, 1, 2);
+    combatStatsLayout->addWidget(armorClassLabel, 0, 2, 1, 2);
+    combatStatsLayout->addWidget(hitPointsLabel, 0, 4, 1, 2);
+    combatStatsLayout->addWidget(deathSavingThrows, 1, 3, 1, 3);
 
     // Add the column 3 widgets to column 3
     column3Layout->addWidget(combatStatsWidget);
@@ -564,7 +614,78 @@ ViewCharacter::ViewCharacter(QWidget *parent, QString nameIn) :
     // Make notes button go to notes page
     connect(notesButton, SIGNAL (clicked()), SLOT (goToNotes()));
 
+    // Connect checkboxes
+    connect(deathSuccess1, &QCheckBox::stateChanged, this, [deathSuccess2, deathSuccess3](int state)
+    {
+        // If the first death success checkbox is unchecked, uncheck the other checkboxes
+        if(state == Qt::Unchecked)
+        {
+            deathSuccess2->setCheckState(Qt::Unchecked);
+            deathSuccess3->setCheckState(Qt::Unchecked);
+        }
+    });
+
+    connect(deathSuccess2, &QCheckBox::stateChanged, this, [deathSuccess1, deathSuccess3](int state)
+    {
+        // If the second death success checkbox is unchecked, uncheck the 3rd checkbox
+        if(state == Qt::Unchecked)
+        {
+            deathSuccess3->setCheckState(Qt::Unchecked);
+        }
+        // If the second death success checkbox is checked, check the first checkbox
+        else if(state == Qt::Checked)
+        {
+            deathSuccess1->setCheckState(Qt::Checked);
+        }
+    });
+
+    connect(deathSuccess3, &QCheckBox::stateChanged, this, [deathSuccess1, deathSuccess2](int state)
+    {
+        // If the third death success checkbox is checked, check the other checkboxes
+        if(state == Qt::Checked)
+        {
+            deathSuccess1->setCheckState(Qt::Checked);
+            deathSuccess2->setCheckState(Qt::Checked);
+        }
+    });
+
     
+    connect(deathFail1, &QCheckBox::stateChanged, this, [deathFail2, deathFail3](int state)
+    {
+        // If the first death fail checkbox is unchecked, uncheck the other checkboxes
+        if(state == Qt::Unchecked)
+        {
+            deathFail2->setCheckState(Qt::Unchecked);
+            deathFail3->setCheckState(Qt::Unchecked);
+        }
+    });
+
+    connect(deathFail2, &QCheckBox::stateChanged, this, [deathFail1, deathFail3](int state)
+    {
+        // If the second death fail checkbox is unchecked, uncheck the 3rd checkbox
+        if(state == Qt::Unchecked)
+        {
+            deathFail3->setCheckState(Qt::Unchecked);
+        }
+        // If the second death fail checkbox is checked, check the first checkbox
+        else if(state == Qt::Checked)
+        {
+            deathFail1->setCheckState(Qt::Checked);
+        }
+    });
+
+    connect(deathFail3, &QCheckBox::stateChanged, this, [deathFail1, deathFail2](int state)
+    {
+        // If the third death fail checkbox is checked, check the other checkboxes
+        if(state == Qt::Checked)
+        {
+            deathFail1->setCheckState(Qt::Checked);
+            deathFail2->setCheckState(Qt::Checked);
+        }
+    });
+
+    // Picture Label Click Event
+    connect(pictureLabel, &ClickableLabel::clicked, this, &ViewCharacter::changeProfilePicture);
 
     reloadTheme(); // Reload the theme after everything is placed
 }
@@ -589,8 +710,6 @@ void ViewCharacter::goBack()
         // If the parent is not the main stacked widget, set the current stacked widget to the parent
         currentStackedWidget = qobject_cast<QStackedWidget *>(parent);
     }
-    // In the event that the main stacked widget is not found, print an error message
-    qDebug() << "Main stacked widget not found. Cannot return to Character Select.";
 }
 
 void ViewCharacter::goToInventory()

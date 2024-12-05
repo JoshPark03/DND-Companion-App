@@ -11,6 +11,32 @@ Last Modified: 11/6/2024
 #define VIEWCHARACTER_H
 
 #include <QWidget>
+#include <QLabel>
+#include <QFileDialog>
+#include <QPixmap>
+#include <QPushButton>
+#include <QMouseEvent>
+
+class ClickableLabel : public QLabel
+{
+    Q_OBJECT
+
+public:
+    ClickableLabel(QWidget *parent = nullptr) : QLabel(parent) {}
+
+signals:
+    void clicked();  // Signal to notify when the label is clicked
+
+protected:
+    void mousePressEvent(QMouseEvent *event) override
+    {
+        if (event->button() == Qt::LeftButton) {
+            emit clicked();  // Emit the clicked signal when the label is clicked
+        }
+        QLabel::mousePressEvent(event);  // Call the base class handler
+    }
+};
+
 
 class ViewCharacter : public QWidget
 {
@@ -23,6 +49,9 @@ public:
 private:
     void loadCharacter(QString name);
     void evaluateCharacterModifiers();
+    void changeProfilePicture();
+    void loadPicture(const QString &imagePath);
+    ClickableLabel *pictureLabel = new ClickableLabel();
     QString name;
     QString characterName;
     QString characterClass;
@@ -37,6 +66,7 @@ private:
     QStringList characterLanguages;
     QStringList characterEquipmentProficiencies;
     QStringList characterAttunedItems;
+    QStringList imageExtentions = {"png", "jpg", "bmp", "jpeg"};
     QList<int> characterAbilities;
     QList<int> characterAbilityBonuses;
     QList<int> characterSavingThrows;
