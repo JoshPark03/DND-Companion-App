@@ -46,6 +46,7 @@ public:
     explicit ViewCharacter(QWidget *parent = 0, QString name = "");
     ~ViewCharacter();
     void printCharacterToConsole();
+    void loadAll();
 
 private:
     void loadCharacter(QString name);

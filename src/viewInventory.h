@@ -13,6 +13,7 @@ Last Modified: 12/4/2024
 #include <QWidget>
 #include <QListWidget>
 #include <QLabel>
+#include <QPushButton>
 
 class ViewInventory : public QWidget
 {
@@ -35,6 +36,7 @@ private slots:
     void addItem(); // Add a new item to the inventory
     void equipItem(); // Equip the selected item
     void attuneItem(); // Attune the selected item
+    void updateButtons(QPushButton &equipItemButton, QPushButton &attuneItemButton); // Update button states based on selected item
 };
 
 #endif

@@ -9,6 +9,7 @@ Last Modified: 12/4/2024
 
 #include "viewInventory.h"
 #include "themeUtils.h"
+#include "viewCharacter.h"
 
 #include <QVBoxLayout>
 #include <QPushButton>
@@ -138,6 +139,7 @@ ViewInventory::ViewInventory(QWidget *parent, QString name) :
     connect(addItemButton, &QPushButton::clicked, this, &ViewInventory::addItem);
     connect(equipItemButton, &QPushButton::clicked, this, &ViewInventory::equipItem);
     connect(attuneItemButton, &QPushButton::clicked, this, &ViewInventory::attuneItem);
+    connect(inventoryList, &QListWidget::itemSelectionChanged, this, [this, equipItemButton, attuneItemButton](){ updateButtons(*equipItemButton, *attuneItemButton); });
 
     reloadTheme(); // Reload the theme after everything is placed
 
@@ -147,8 +149,50 @@ ViewInventory::ViewInventory(QWidget *parent, QString name) :
 
 void ViewInventory::goBack() {
     QStackedWidget *mainStackedWidget = qobject_cast<QStackedWidget *>(this->parentWidget());
-    if (mainStackedWidget) {
-        mainStackedWidget->setCurrentIndex(0); // Switch to CharacterSelect (index 0)
+    if (mainStackedWidget)
+    {
+        // cast the QWidget from index 0
+        QWidget *viewCharacterWidget = mainStackedWidget->widget(0);
+
+        // call the loadAll() function from viewCharacter which is the QWidget at index 0
+        ViewCharacter *character = qobject_cast<ViewCharacter *>(viewCharacterWidget);
+        if (character)
+        {
+            character->loadAll();
+        }
+
+        mainStackedWidget->setCurrentIndex(0); // Switch to ViewCharacter (index 0)
+    }
+}
+
+// Update the equip and attune buttons based on the selected item
+void ViewInventory::updateButtons(QPushButton &equipItemButton, QPushButton &attuneItemButton)
+{
+    // Get the selected item
+    QListWidgetItem *item = inventoryList->currentItem();
+    if (!item) return; // Return if no item is selected
+
+    QStringList fields = item->data(Qt::UserRole).toString().split(","); // Split the data string
+    if (fields.size() < 4) return; // Return if the data is invalid
+
+    int equipped = fields[2].toInt(); // Get the equipped value
+    int attunement = fields[3].toInt(); // Get the attunement value
+
+    if(equipped == 1) // If the item is equipped, change text to "Unequip Item"
+    {
+        equipItemButton.setText("Unequip Item");
+    }
+    else // Otherwise, change text to "Equip Item"
+    {
+        equipItemButton.setText("Equip Item");
+    }
+    if(attunement == 1) // If the item is attuned, change text to "Unattune Item"
+    {
+        attuneItemButton.setText("Unattune Item");
+    }
+    else // Otherwise, change text to "Attune Item"
+    {
+        attuneItemButton.setText("Attune Item");
     }
 }
 

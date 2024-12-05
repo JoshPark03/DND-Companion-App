@@ -61,6 +61,16 @@ QMap<QString, int> skillMap =
     {"Survival", 4}
 };
 
+// When we come back to this screen from the inventory or spells screen, we need to reload the character
+void ViewCharacter::loadAll()
+{
+    loadCharacter(name); // Load the character's information
+    evaluateCharacterModifiers(); // Evaluate the character's modifiers
+    loadPicture(QDir::currentPath() + "/data/characters/" + name + "/character.png"); // Load the character's picture
+    loadEquippedItems(); // Load the character's equipped items
+    loadPreppedSpells(); // Load the character's prepped spells
+}
+
 void ViewCharacter::loadCharacter(QString name)
 {
     // Load the character's information, notes, and stats
@@ -336,7 +346,7 @@ void ViewCharacter::loadEquippedItems()
 
         if (equipped)
         {   
-            QListWidgetItem *item = new QListWidgetItem("(x" + QString::number(quantity) + ") " + itemName);
+            QListWidgetItem *item = new QListWidgetItem("(" + QString::number(quantity) + ") " + itemName);
             item->setData(Qt::UserRole, line); // Store full data string in UserRole
             if(attunement)
             {
