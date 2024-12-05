@@ -41,9 +41,9 @@ void ViewSpells::loadSpells()
             QString line = in.readLine();
             this->addItem(line);
         }
-        this->spells->resizeColumnsToContents();
-        this->spells->sortByColumn(3, Qt::AscendingOrder);
     }
+    this->spells->resizeColumnsToContents();
+    this->spells->sortByColumn(3, Qt::AscendingOrder);
 }
 
 void ViewSpells::addItem(QString line) {
