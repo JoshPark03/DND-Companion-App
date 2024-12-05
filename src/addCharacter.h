@@ -346,25 +346,34 @@ private slots:
 
 class InventoryWidget : public QWidget
 {
-	Q_OBJECT
+    Q_OBJECT
 public:
-	explicit InventoryWidget(QWidget *parent = 0);
-	QList<QString> getItems();
+    explicit InventoryWidget(QWidget *parent = 0);
+    
+    // public function to grab the items list
+    QList<QString> getItemsList() const {
+        QList<QString> itemList;
+        for (int i = 0; i < items->count(); ++i) {
+            itemList.append(items->item(i)->text());
+        }
+        return itemList;
+    }
 
 private:
 	// Declaration for the items list widget
-	QListWidget *items;
-	QPushButton *removeItemButton;
+    QListWidget *items;
+    QPushButton *removeItemButton;
 signals:
-	void finished();
+    void finished();\
 public slots:
-	void autofillInventory();
+    void autofillInventory();
 private slots:
-	void backPage();
-	void nextPage();
-	void addItem();
-	void deleteItem();
-	void selectItem();
+    void backPage();
+    void nextPage();
+    void addItem();
+    void deleteItem();
+    void selectItem();
 };
+
 
 #endif // ADD_CHARACTER_H

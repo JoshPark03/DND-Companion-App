@@ -217,6 +217,20 @@ void AddCharacter::createCharacter()
 		out << listToCommaString(armorWeaponProficiencies) + "\n";
 		out << numPlatCoins + "," + numGoldCoins + "," + numSilverCoins + "," + numCopperCoins + "\n";
 		characterFile.close();
+
+		// Create the inventory file
+		QFile inventoryFile(charPath + "/inventory.csv"); // Create an inventory file
+		if (inventoryFile.open(QIODevice::WriteOnly | QIODevice::Text)) { // Open the file
+			QTextStream inventoryOut(&inventoryFile); // Create a text stream
+
+			QList<QString> inventoryItems = inventoryWidget->getItemsList(); // Get the list of inventory items
+			for (const QString &item : inventoryItems) { // For each item in the list
+            	inventoryOut << item << ","; // Write the item to the file
+        	}
+
+			inventoryFile.close(); // Close the file
+		}
+
 		if (this->classWidget->isSpellcaster()) {
 			this->spellsWidget->recordSpells(charPath);
 		}
