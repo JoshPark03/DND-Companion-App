@@ -4,7 +4,7 @@ Description: Implementation of the AddCharacter class, which allows users to cre
 Authors: Josh Park, Chanu Lee, Carson Treece
 Other Sources: ...
 Date Created: 10/24/2024
-Last Modified: 11/24/2024
+Last Modified: 12/4/2024
 */
 
 #include "addCharacter.h"
