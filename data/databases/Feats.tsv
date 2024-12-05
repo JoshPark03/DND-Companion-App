@@ -1,0 +1,89 @@
+Feat Name	Ability Score Requirements (Str, Dex, Con, Int, Wis, Cha)	Spellcasting Requirement (0 false 1 true)	Proficiency Requirement	Book	Page	Ability Score Improvements (Str, Dex, Con, Int, Wis, Cha)	Description
+Actor	0:0:0:0:0:0	0		PHB	165	0:0:0:0:0:1	+1 in Cha., advantage on Deception and Performance checks, mimic the speech of a person or the sounds made by a creature.
+Alert	0:0:0:0:0:0	0		PHB	165	0:0:0:0:0:0	+5 to initiative, you can't be surprised, and creatures you don't see don't gain advantage on attack roll against you.
+Athlete(Str)	0:0:0:0:0:0	0		PHB	165	1:0:0:0:0:0	+1 in Str. or Dex., you stand up and climb more quickly, and you can jump with only a 5-ft run.
+Athlete(Dex)	0:0:0:0:0:0	0		PHB	165	0:1:0:0:0:0	+1 in Str. or Dex., you stand up and climb more quickly, and you can jump with only a 5-ft run.
+Charger	0:0:0:0:0:0	0		PHB	165	0:0:0:0:0:0	As part of the Dash action you can make a melee attack with a +5 bonus if you move at least 10 ft before.
+Crossbow Expert	0:0:0:0:0:0	0		PHB	165	0:0:0:0:0:0	You ignore the loading property of crossbows and don't have disadvantage for being in contact with a creature when you shoot.
+Defensive Duelist	0:13:0:0:0:0	0		PHB	165	0:0:0:0:0:0	You can add your proficiency bonus to your AC if you are wielding a finesse weapon, in reaction to a melee attack.
+Dual Wielder	0:0:0:0:0:0	0		PHB	165	0:0:0:0:0:0	+1 to AC if you're wielding a melee weapon in each hand, two-weapon fighting with non-light weapon, draw two weapons.
+Dungeon Delver	0:0:0:0:0:0	0		PHB	166	0:0:0:0:0:0	Advantage to Perception and Investigation checks, to saving throws vs traps, and search for traps at normal pace.
+Durable	0:0:0:0:0:0	0		PHB	166	0:0:1:0:0:0	+1 in Con. and for each Hit Dice you regain a minimum of hit points equals to 2 x your Constitution modifier.
+Elemental Adept	0:0:0:0:0:0	1		PHB	166	0:0:0:0:0:0	Your spells ignore resistance to a damage type (acid, cold, fire, lightning, or thunder) and treat any 1 in damage as a 2.
+Grappler	13:0:0:0:0:0	0		PHB	167	0:0:0:0:0:0	You have advantage on attack rolls when grappling, and can try to restrained a creature grappled by you.
+Great Weapon Master	0:0:0:0:0:0	0		PHB	167	0:0:0:0:0:0	Extra attack after a melee critical hit and you can choose to take -5 to attack roll to add +10 to damage with an heavy weapon.
+Healer	0:0:0:0:0:0	0		PHB	167	0:0:0:0:0:0	You can stabilize a creature and restore it to 1 hp, or restore [1d6+4+its number of Hit Dice] hp to it.
+Heavily Armored	0:0:0:0:0:0	0	Medium	PHB	167	1:0:0:0:0:0	+1 in Str. and you gain proficiency with heavy armor.
+Heavy Armor Master	0:0:0:0:0:0	0	Heavy	PHB	167	1:0:0:0:0:0	+1 in Str. and bludgeoning, piercing, and slashing damage are reduced by 3 if you are wearing an heavy armor.
+Inspiring Leader	0:0:0:0:0:13	0		PHB	167	0:0:0:0:0:0	Up to 6 creatures within 30 ft of you can gain temporary hp equal to your level + your Cha. modifier.
+Keen Mind	0:0:0:0:0:0	0		PHB	167	0:0:0:1:0:0	+1 in Int., you know which way is north, when is the next sunrise/sunset, and recall any events within the past month.
+Lightly Armored	0:0:0:0:0:0	0		PHB	167	1:0:0:0:0:0	+1 in Str. or Dex. and you gain profociency with light armor.
+Linguist	0:0:0:0:0:0	0		PHB	167	0:0:0:1:0:0	+1 in Int., you learn three languages, and you can ably create ciphers.
+Lucky	0:0:0:0:0:0	0		PHB	167	0:0:0:0:0:0	You can reroll one d20 or force to reroll an attack roll against you (3/long rest).
+Mage Slayer	0:0:0:0:0:0	0		PHB	168	0:0:0:0:0:0	You can use a reaction to make a melee attack against a spellcaster and advantage on saving throws against spell within 5 ft.
+Magic Initiate	0:0:0:0:0:0	0		PHB	168	0:0:0:0:0:0	You learn two cantrips and one 1st-level spell from one class.
+Martial Adept	0:0:0:0:0:0	0		PHB	168	0:0:0:0:0:0	You learn two maneuvers from Battle Master archetype and gain one superiority die (d6).
+Medium Armor Master	0:0:0:0:0:0	0	Medium	PHB	168	0:0:0:0:0:0	No disadvantage to Stealth checks wearing medium armor and Dexterity bonus max to +3 instead of +2.
+Mobile	0:0:0:0:0:0	0		PHB	168	0:0:0:0:0:0	Your speed increase by 10 ft, you can Dash on difficult terrain without malus, and don't provoke opportunity attacks in melee.
+Moderately Armored (Str)	0:0:0:0:0:0	0	Light	PHB	168	1:0:0:0:0:0	+1 in Str. or Dex. and you gain proficiency with medium armor and shields.
+Moderately Armored (Dex)	0:0:0:0:0:0	0	Light	PHB	168	0:1:0:0:0:0	+1 in Str. or Dex. and you gain proficiency with medium armor and shields.
+Mounted Combatant	0:0:0:0:0:0	0		PHB	168	0:0:0:0:0:0	Advantage on melee attacks against unmounted creature and force an attack to target you instead of your mount.
+Observant (Int)	0:0:0:0:0:0	0		PHB	168	0:0:0:1:0:0	+1 in Int. or Wis., you can read on lips, and you have a +5 bonus in passive Perception and passive Investigation.
+Observant (Wis)	0:0:0:0:0:0	0		PHB	168	0:0:0:0:1:0	+1 in Int. or Wis., you can read on lips, and you have a +5 bonus in passive Perception and passive Investigation.
+Polearm Master	0:0:0:0:0:0	0		PHB	168	0:0:0:0:0:0	You can make an extra attack with a polearm weapon, and make an opportunity attack if a creature enter your reach.
+Resilient (Str)	0:0:0:0:0:0	0		PHB	168	1:0:0:0:0:0	+1 in one ability and you gain proficiency in saving throws using this ability.
+Resilient (Dex)	0:0:0:0:0:0	0		PHB	168	0:1:0:0:0:0	+1 in one ability and you gain proficiency in saving throws using this ability.
+Resilient (Con)	0:0:0:0:0:0	0		PHB	168	0:0:1:0:0:0	+1 in one ability and you gain proficiency in saving throws using this ability.
+Resilient (Int)	0:0:0:0:0:0	0		PHB	168	0:0:0:1:0:0	+1 in one ability and you gain proficiency in saving throws using this ability.
+Resilient (Wis)	0:0:0:0:0:0	0		PHB	168	0:0:0:0:1:0	+1 in one ability and you gain proficiency in saving throws using this ability.
+Resilient (Cha)	0:0:0:0:0:0	0		PHB	168	0:0:0:0:0:1	+1 in one ability and you gain proficiency in saving throws using this ability.
+Ritual Caster	0:0:0:13:13:0	0		PHB	169	0:0:0:0:0:0	You have a ritual book with two 1-st level ritual spells from one class and you can later on add other ritual spells you found.
+Savage Attacker	0:0:0:0:0:0	0		PHB	169	0:0:0:0:0:0	You can reroll melee weapon attack damage once per turn.
+Sentinel	0:0:0:0:0:0	0		PHB	169	0:0:0:0:0:0	A successful OA reduce creature's speed to 0 for this turn and possibility to make an OA even if the ennemy take Disengage.
+Sharpshooter	0:0:0:0:0:0	0		PHB	170	0:0:0:0:0:0	Your ranged attacks ignore some cover, no disavantage at long range, and possibility to take -5 to hit for +10 on ranged damage.
+Shield Master	0:0:0:0:0:0	0		PHB	170	0:0:0:0:0:0	Attack also allows to shove, shield bonus to Dex. saving throws againts spells, and no 1/2 damage on successful saving throw.
+Skilled	0:0:0:0:0:0	0		PHB	170	0:0:0:0:0:0	You gain proficiency with three skills or tools.
+Skulker	0:13:0:0:0:0	0		PHB	170	0:0:0:0:0:0	Ranged weapon attack doesn't reveal your position and possibility to hide in a lighlly obscured area.
+Spell Sniper	0:0:0:0:0:0	1		PHB	170	0:0:0:0:0:0	Offensive spell's range doubled, these spells ignore some cover, and you learn one offensive cantrip.
+Tavern Brawler (Str)	0:0:0:0:0:0	0		PHB	170	1:0:0:0:0:0	+1 in Str. or Con., proficiency with improvised weapons, d4 for unarmed strike, and grapple with a bonus action.
+Tavern Brawler (Con)	0:0:0:0:0:0	0		PHB	170	0:0:1:0:0:0	+1 in Str. or Con., proficiency with improvised weapons, d4 for unarmed strike, and grapple with a bonus action.
+Tough	0:0:0:0:0:0	0		PHB	170	0:0:0:0:0:0	Your hit point maximum increases by an amount equal to twice your level then by +2 at each level.
+War Caster	0:0:0:0:0:0	1		PHB	170	0:0:0:0:0:0	You have advantage on saving throws to maintain concentration and you can cast some spells as part of an OA with a reaction.
+Weapon Master	0:0:0:0:0:0	0		PHB	170	1:0:0:0:0:0	+1 in Str. or Dex. and you gain proficiency with four weapons.
+Weapon Master	0:0:0:0:0:0	0		PHB	170	0:1:0:0:0:0	+1 in Str. or Dex. and you gain proficiency with four weapons.
+Ability Score Improvement (Str)	0:0:0:0:0:0	0		PHB	165	2:0:0:0:0:0	+2 in Strength
+Ability Score Improvement (Str, Dex)	0:0:0:0:0:0	0		PHB	165	1:1:0:0:0:0	+1 in Strength and Dexterity
+Ability Score Improvement (Str, Con)	0:0:0:0:0:0	0		PHB	165	1:0:1:0:0:0	+1 in Strength and Constitution
+Ability Score Improvement (Str, Int)	0:0:0:0:0:0	0		PHB	165	1:0:0:1:0:0	+1 in Strength and Intelligence
+Ability Score Improvement (Str, Wis)	0:0:0:0:0:0	0		PHB	165	1:0:0:0:1:0	+1 in Strength and Wisdom
+Ability Score Improvement (Str, Cha)	0:0:0:0:0:0	0		PHB	165	1:0:0:0:0:1	+1 in Strength and Charisma
+Ability Score Improvement (Dex)	0:0:0:0:0:0	0		PHB	165	0:2:0:0:0:0	+2 in Dexterity
+Ability Score Improvement (Dex, Str)	0:0:0:0:0:0	0		PHB	165	1:1:0:0:0:0	+1 in Dexterity and Strength
+Ability Score Improvement (Dex, Con)	0:0:0:0:0:0	0		PHB	165	0:1:1:0:0:0	+1 in Dexterity and Constitution
+Ability Score Improvement (Dex, Int)	0:0:0:0:0:0	0		PHB	165	0:1:0:1:0:0	+1 in Dexterity and Intelligence
+Ability Score Improvement (Dex, Wis)	0:0:0:0:0:0	0		PHB	165	0:1:0:0:1:0	+1 in Dexterity and Wisdom
+Ability Score Improvement (Dex, Cha)	0:0:0:0:0:0	0		PHB	165	0:1:0:0:0:1	+1 in Dexterity and Charisma
+Ability Score Improvement (Con)	0:0:0:0:0:0	0		PHB	165	0:0:2:0:0:0	+2 in Constitution
+Ability Score Improvement (Con, Str)	0:0:0:0:0:0	0		PHB	165	1:0:1:0:0:0	+1 in Constitution and Strength
+Ability Score Improvement (Con, Dex)	0:0:0:0:0:0	0		PHB	165	0:1:1:0:0:0	+1 in Constitution and Dexterity
+Ability Score Improvement (Con, Int)	0:0:0:0:0:0	0		PHB	165	0:0:1:1:0:0	+1 in Constitution and Intelligence
+Ability Score Improvement (Con, Wis)	0:0:0:0:0:0	0		PHB	165	0:0:1:0:1:0	+1 in Constitution and Wisdom
+Ability Score Improvement (Con, Cha)	0:0:0:0:0:0	0		PHB	165	0:0:1:0:0:1	+1 in Constitution and Charisma
+Ability Score Improvement (Int)	0:0:0:0:0:0	0		PHB	165	0:0:0:2:0:0	+2 in Intelligence
+Ability Score Improvement (Int, Str)	0:0:0:0:0:0	0		PHB	165	1:0:0:1:0:0	+1 in Intelligence and Strength
+Ability Score Improvement (Int, Dex)	0:0:0:0:0:0	0		PHB	165	0:1:0:1:0:0	+1 in Intelligence and Dexterity
+Ability Score Improvement (Int, Con)	0:0:0:0:0:0	0		PHB	165	0:0:1:1:0:0	+1 in Intelligence and Constitution
+Ability Score Improvement (Int, Wis)	0:0:0:0:0:0	0		PHB	165	0:0:0:1:1:0	+1 in Intelligence and Wisdom
+Ability Score Improvement (Int, Cha)	0:0:0:0:0:0	0		PHB	165	0:0:0:1:0:1	+1 in Intelligence and Charisma
+Ability Score Improvement (Wis)	0:0:0:0:0:0	0		PHB	165	0:0:0:0:2:0	+2 in Wisdom
+Ability Score Improvement (Wis, Str)	0:0:0:0:0:0	0		PHB	165	1:0:0:0:1:0	+1 in Wisdom and Strength
+Ability Score Improvement (Wis, Dex)	0:0:0:0:0:0	0		PHB	165	0:1:0:0:1:0	+1 in Wisdom and Dexterity
+Ability Score Improvement (Wis, Con)	0:0:0:0:0:0	0		PHB	165	0:0:1:0:1:0	+1 in Wisdom and Constitution
+Ability Score Improvement (Wis, Int)	0:0:0:0:0:0	0		PHB	165	0:0:0:1:1:0	+1 in Wisdom and Intelligence
+Ability Score Improvement (Wis, Cha)	0:0:0:0:0:0	0		PHB	165	0:0:0:0:1:1	+1 in Wisdom and Charisma
+Ability Score Improvement (Cha)	0:0:0:0:0:0	0		PHB	165	0:0:0:0:0:2	+2 in Charisma
+Ability Score Improvement (Cha, Str)	0:0:0:0:0:0	0		PHB	165	1:0:0:0:0:1	+1 in Charisma and Strength
+Ability Score Improvement (Cha, Dex)	0:0:0:0:0:0	0		PHB	165	0:1:0:0:0:1	+1 in Charisma and Dexterity
+Ability Score Improvement (Cha, Con)	0:0:0:0:0:0	0		PHB	165	0:0:1:0:0:1	+1 in Charisma and Constitution
+Ability Score Improvement (Cha, Int)	0:0:0:0:0:0	0		PHB	165	0:0:0:1:0:1	+1 in Charisma and Intelligence
+Ability Score Improvement (Cha, Wis)	0:0:0:0:0:0	0		PHB	165	0:0:0:0:1:1	+1 in Charisma and Wisdom

@@ -11,6 +11,33 @@ Last Modified: 11/6/2024
 #define VIEWCHARACTER_H
 
 #include <QWidget>
+#include <QLabel>
+#include <QFileDialog>
+#include <QPixmap>
+#include <QPushButton>
+#include <QMouseEvent>
+#include <QListWidget>
+
+class ClickableLabel : public QLabel
+{
+    Q_OBJECT
+
+public:
+    ClickableLabel(QWidget *parent = nullptr) : QLabel(parent) {}
+
+signals:
+    void clicked();  // Signal to notify when the label is clicked
+
+protected:
+    void mousePressEvent(QMouseEvent *event) override
+    {
+        if (event->button() == Qt::LeftButton) {
+            emit clicked();  // Emit the clicked signal when the label is clicked
+        }
+        QLabel::mousePressEvent(event);  // Call the base class handler
+    }
+};
+
 
 class ViewCharacter : public QWidget
 {
@@ -19,10 +46,16 @@ public:
     explicit ViewCharacter(QWidget *parent = 0, QString name = "");
     ~ViewCharacter();
     void printCharacterToConsole();
+    void loadAll();
 
 private:
     void loadCharacter(QString name);
     void evaluateCharacterModifiers();
+    void changeProfilePicture();
+    void loadPicture(const QString &imagePath);
+    void loadEquippedItems();
+    void loadPreppedSpells();
+    ClickableLabel *pictureLabel = new ClickableLabel();
     QString name;
     QString characterName;
     QString characterClass;
@@ -36,13 +69,15 @@ private:
     QStringList characterFeats;
     QStringList characterLanguages;
     QStringList characterEquipmentProficiencies;
-    QStringList characterAttunedItems;
+    QStringList imageExtentions = {"png", "jpg", "bmp", "jpeg"};
     QList<int> characterAbilities;
     QList<int> characterAbilityBonuses;
     QList<int> characterSavingThrows;
     QList<int> characterSkillBonuses;
     QList<int> characterCoins;
     QList<int> deathThrows;
+    QListWidget *equippedItemsList = new QListWidget();
+    QListWidget *preppedSpellsList = new QListWidget();
     int characterHitPoints;
     int characterMaxHitPoints;
     int characterArmorClass;
