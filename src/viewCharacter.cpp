@@ -159,7 +159,7 @@ void ViewCharacter::loadCharacter(QString name)
         characterFile.close();
 
         // Print the character to the console for testing
-        printCharacterToConsole();
+        // printCharacterToConsole();
     }
 }
 
@@ -370,7 +370,7 @@ ViewCharacter::ViewCharacter(QWidget *parent, QString nameIn) :
     QWidget(parent), pictureLabel(new ClickableLabel(this))
 {
     loadCharacter(nameIn);
-    printCharacterToConsole();
+    // printCharacterToConsole();
     evaluateCharacterModifiers();
 
     this->name = nameIn;

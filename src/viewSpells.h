@@ -26,6 +26,8 @@ private:
     void loadSpells();
     void addItem(QString line);
 private slots:
+    void saveSpells();
+    void addSpell();
     void goBack();
 };
 

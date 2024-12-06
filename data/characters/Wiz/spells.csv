@@ -1,3 +1,4 @@
-Fireball,PHB,240,3,Evocation,1 action,120,vsm,Instantaneous,0,0,false,Firebal lol
-Fire Bolt,PHB,241,1,Evocation,1 action,120,vs,Instantaneous,0,0,false,Fire Bolt Cantrip
-Teleport,PHB,280,7,Transmusation,1 action,0,vsm,Instantaneous,0,0,false,Teleport anywhere at random
+Fire Bolt,PHB,241,1,Evocation,1 action,120,vs,Instantaneous,0,0,1,1
+Animate Dead,PHB,212,3,Necromancy,1 minute,10,vsm,Instantaneous,0,0,0,0
+Fireball,PHB,240,3,Evocation,1 action,120,vsm,Instantaneous,0,0,0,0
+Teleport,PHB,280,7,Transmusation,1 action,0,vsm,Instantaneous,0,0,0,0

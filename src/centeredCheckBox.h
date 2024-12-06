@@ -13,6 +13,7 @@ Last Modified: 12/3/2024
 #include <QCheckBox>
 
 class CenteredCheckBox : public QCheckBox {
+	Q_OBJECT
 public:
 	CenteredCheckBox(QWidget * parent = 0);
 	QWidget * getLayoutWidget() { return this->pWidget; }
