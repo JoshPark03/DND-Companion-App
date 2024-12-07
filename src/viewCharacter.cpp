@@ -28,7 +28,13 @@ Last Modified: 11/18/2024
 #include <QListWidget>
 #include <QFileDialog>
 #include <QCheckBox>
+#include <QSpinBox>
+#include <QDialog>
+#include <QObject>
 #include <QApplication>
+#include <QPropertyAnimation>
+#include <QParallelAnimationGroup>
+#include <QGraphicsOpacityEffect>
 #include <fstream>
 #include <iostream>
 #include <sstream>
@@ -110,6 +116,8 @@ void ViewCharacter::loadCharacter(QString name)
         characterExperience = levelExperienceList[1].toInt();
 
         //  if character experience is -1, then the character is using milestone leveling
+        qDebug() << "Character Experience: " << characterExperience;
+
         if(characterExperience == -1) isMilestone = true;
         else isMilestone = false;
 
@@ -319,7 +327,10 @@ void ViewCharacter::loadPicture(const QString &imagePath)
 // Function to load the equipped items into the equipped items list
 void ViewCharacter::loadEquippedItems()
 {
-    equippedItemsList->setEnabled(false); // Disable the list because there is no need to interact with
+    equippedItemsList->setSelectionMode(QAbstractItemView::NoSelection); // Disable selection
+    equippedItemsList->setFocusPolicy(Qt::NoFocus); // Disable focus
+    equippedItemsList->setEditTriggers(QAbstractItemView::NoEditTriggers); // Disable editing
+    equippedItemsList->setVerticalScrollMode(QAbstractItemView::ScrollPerPixel);
     // Load the character's inventory
     QString characterName = name;
     QString filePath = QDir::currentPath() + "/data/characters/" + characterName + "/inventory.csv";
@@ -367,7 +378,42 @@ void ViewCharacter::loadEquippedItems()
 // Function to load the prepped spells into the prepped spells list
 void ViewCharacter::loadPreppedSpells()
 {
-    // TODO once the character's spell list is implemented
+    // Load the character's inventory
+    QString characterName = name;
+    QString filePath = QDir::currentPath() + "/data/characters/" + characterName + "/spells.csv";
+
+    QFile file(filePath);
+    if (!file.open(QIODevice::ReadOnly | QIODevice::Text))
+    {
+        qWarning() << "Failed to open spells file for loading:" << filePath;
+        return;
+    }
+
+    QTextStream in(&file);
+    preppedSpellsList->clear();
+
+    while (!in.atEnd())
+    {
+        QString line = in.readLine().trimmed();
+        QStringList fields = line.split(",");
+        if (fields.size() < 13)
+        {
+            qWarning() << "Invalid spell line:" << line;
+            continue; // Skip invalid lines
+        }
+
+        QString spellName = fields[0];
+        int isPrepared = fields[11].toInt();
+
+        if (isPrepared)
+        {   
+            QListWidgetItem *item = new QListWidgetItem(spellName);
+            item->setData(Qt::UserRole, line); // Store full data string in UserRole
+            preppedSpellsList->addItem(item);
+        }
+    }
+
+    file.close();
 }
 
 
@@ -436,14 +482,49 @@ ViewCharacter::ViewCharacter(QWidget *parent, QString nameIn) :
     QWidget *characterInfoWidget = new QWidget();
     QGridLayout *characterInfoLayout = new QGridLayout(characterInfoWidget);
 
+    QWidget *coins = new QWidget();
+    QGridLayout *coinsLayout = new QGridLayout(coins);
+    QLabel *platinumLabel = new QLabel("PP\n" + QString::number(characterCoins[0]));
+    QLabel *goldLabel = new QLabel("GP\n" + QString::number(characterCoins[1]));
+    QLabel *silverLabel = new QLabel("SP\n" + QString::number(characterCoins[2]));
+    QLabel *copperLabel = new QLabel("CP\n" + QString::number(characterCoins[3]));
+    QPushButton * coinsButton = new QPushButton("Edit Coins");
+    coinsButton->setFixedHeight(30);
+
+    // Add all of the coin widgets to the coins widget
+    coinsLayout->addWidget(platinumLabel, 0, 0, Qt::AlignCenter);
+    coinsLayout->addWidget(goldLabel, 0, 1, Qt::AlignCenter);
+    coinsLayout->addWidget(silverLabel, 1, 0, Qt::AlignCenter);
+    coinsLayout->addWidget(copperLabel, 1, 1, Qt::AlignCenter);
+    coinsLayout->addWidget(coinsButton, 2, 0, 1, 2, Qt::AlignCenter);
+
     // Add all of the character info widgets to the widget
     characterInfoLayout->addWidget(nameAndLevelLabel, 0, 0, 1, 2); // Adds the label with the name and level to the widget
     characterInfoLayout->addWidget(pictureLabel, 0, 2, 5, 2, Qt::AlignRight); // Adds the picture label to the widget
     characterInfoLayout->addWidget(raceClassAndSubclassLabel, 1, 0, 1, 2); // Adds the label with the character race class and subclass to the widget
-    characterInfoLayout->addWidget(experienceProgressBar, 6, 0, 1, 4); // Adds the experience progress bar to the widget
-    characterInfoLayout->addWidget(experienceLow, 7, 0, 1, 1, Qt::AlignLeft); // Adds the lower bound of the experience to the widget
-    characterInfoLayout->addWidget(experienceCurrent, 7, 1, 1, 2, Qt::AlignCenter); // Adds the current experience to the widget
-    characterInfoLayout->addWidget(experienceHigh, 7, 3, 1, 1, Qt::AlignRight); // Adds the upper bound of the experience to the widget
+    characterInfoLayout->addWidget(coins, 2, 0, 3, 2);
+
+    // Set fixed width to 150px
+    levelUpButton->setFixedHeight(30);
+    // Set fixed height for the add experience button to 30px and set fixed width to 150px
+    addExperienceButton->setFixedHeight(30);
+    addExperienceButton->setFixedWidth(150);
+
+    if(isMilestone)
+    {
+        characterInfoLayout->addWidget(levelUpButton, 5, 0, 1, 2);
+    }
+    else
+    {
+        characterInfoLayout->addWidget(experienceProgressBar, 7, 0, 1, 4); // Adds the experience progress bar to the widget
+        characterInfoLayout->addWidget(experienceLow, 6, 0, Qt::AlignLeft); // Adds the lower bound of the experience to the widget
+        characterInfoLayout->addWidget(experienceCurrent, 6, 1, 1, 2, Qt::AlignCenter); // Adds the current experience to the widget
+        characterInfoLayout->addWidget(experienceHigh, 6, 3, Qt::AlignRight); // Adds the upper bound of the experience to the widget
+        
+        characterInfoLayout->addWidget(addExperienceButton, 8, 0, 1, 2, Qt::AlignLeft); // Adds the add experience button to the widget
+        characterInfoLayout->addWidget(levelUpButton, 8, 2, 1, 2, Qt::AlignRight); // Adds the level up button to the widget
+        levelUpButton->setFixedWidth(150); // Set fixed height for the level up button to 30px 
+    }
 
     // Add a spacer item to manage the remaining space
     QSpacerItem *column1Spacer = new QSpacerItem(0, 0, QSizePolicy::Minimum, QSizePolicy::Expanding); 
@@ -453,8 +534,7 @@ ViewCharacter::ViewCharacter(QWidget *parent, QString nameIn) :
     column1Layout->addSpacerItem(column1Spacer);
 
     // These will eventually be moved to their final location
-    column1Layout->addWidget(levelUpButton);
-    column1Layout->addWidget(addExperienceButton);
+    // column1Layout->addWidget(levelUpButton);
 
     // Set stretch factors for the layout
     column1Layout->setStretch(0, 1); // Stretch factor for characterInfoWidget
@@ -762,7 +842,196 @@ ViewCharacter::ViewCharacter(QWidget *parent, QString nameIn) :
     // connect add experience button to addExperience function
     connect(addExperienceButton, &QPushButton::clicked, this, &ViewCharacter::addExperience);
 
+    connect(coinsButton, &QPushButton::clicked, [this, platinumLabel, goldLabel, silverLabel, copperLabel]()
+    {
+        editCoins();
+        platinumLabel->setText("PP\n" + QString::number(characterCoins[0]));
+        goldLabel->setText("GP\n" + QString::number(characterCoins[1]));
+        silverLabel->setText("SP\n" + QString::number(characterCoins[2]));
+        copperLabel->setText("CP\n" + QString::number(characterCoins[3]));
+    });
+
     reloadTheme(); // Reload the theme after everything is placed
+}
+
+void ViewCharacter::editCoins()
+{
+    // Create a popup to edit the coins
+    QDialog popup;
+    popup.setWindowTitle("Edit Coins");
+    popup.setFixedSize(400, 200);
+
+    // Create a layout for the popup
+    QGridLayout layout(&popup);
+
+    // Create the widgets for the popup
+    QLabel *platinumLabel = new QLabel("Platnum:\n" + QString::number(characterCoins[0])); // Creates a label for the platinum coins
+    QLabel *goldLabel = new QLabel("Gold:\n" + QString::number(characterCoins[1])); // Creates a label for the gold coins
+    QLabel *silverLabel = new QLabel("Silver:\n" + QString::number(characterCoins[2])); // Creates a label for the silver coins
+    QLabel *copperLabel = new QLabel("Copper:\n" + QString::number(characterCoins[3])); // Creates a label for the copper coins
+    QSpinBox *platinumEdit = new QSpinBox(); // Creates a text edit for the platinum coins
+    QSpinBox *goldEdit = new QSpinBox(); // Creates a text edit for the gold coins
+    QSpinBox *silverEdit = new QSpinBox(); // Creates a text edit for the silver coins
+    QSpinBox *copperEdit = new QSpinBox(); // Creates a text edit for the copper coins
+    QPushButton *addCoins = new QPushButton("Add Coins"); // Creates a button to add coins
+    QPushButton *removeCoins = new QPushButton("Remove Coins"); // Creates a button to remove coins
+
+    // Set widget properties
+    addCoins->setFixedHeight(30); // Set the height of the add coins button to 30px
+    addCoins->setFixedWidth(150); // Set the width of the add coins button to 150px
+    removeCoins->setFixedHeight(30); // Set the height of the remove coins button to 30px
+    removeCoins->setFixedWidth(150); // Set the width of the remove coins button to 150px
+    platinumEdit->setRange(0, 1000); // Sets the range of the platinum coins to 0-1000
+    goldEdit->setRange(0, 1000); // Sets the range of the gold coins to 0-1000
+    silverEdit->setRange(0, 1000); // Sets the range of the silver coins to 0-1000
+    copperEdit->setRange(0, 1000); // Sets the range of the copper coins to 0-1000
+
+    // Add the widgets to the layout
+    layout.addWidget(platinumLabel, 0, 0, Qt::AlignCenter); // Adds the platinum label to the layout
+    layout.addWidget(platinumEdit, 1, 0); // Adds the platinum edit to the layout
+    layout.addWidget(goldLabel, 0, 1, Qt::AlignCenter); // Adds the gold label to the layout
+    layout.addWidget(goldEdit, 1, 1); // Adds the gold edit to the layout
+    layout.addWidget(silverLabel, 0, 2, Qt::AlignCenter); // Adds the silver label to the layout
+    layout.addWidget(silverEdit, 1, 2); // Adds the silver edit to the layout
+    layout.addWidget(copperLabel, 0, 3, Qt::AlignCenter); // Adds the copper label to the layout
+    layout.addWidget(copperEdit, 1, 3); // Adds the copper edit to the layout
+    layout.addItem(new QSpacerItem(0, 0, QSizePolicy::Expanding, QSizePolicy::Expanding), 2, 0, 1, 4); // Adds a spacer to the layout
+    layout.addWidget(addCoins, 3, 0, 1, 2, Qt::AlignLeft); // Adds the add coins button to the layout
+    layout.addWidget(removeCoins, 3, 2, 1, 2, Qt::AlignRight); // Adds the remove coins button to the layout
+    layout.setContentsMargins(10, 30, 10, 30); // Sets the margins of the layout to 10px
+
+    // Connect the add coins button to the addCoins function
+    QObject::connect(addCoins, &QPushButton::clicked, &popup, &QDialog::accept);
+    QObject::connect(removeCoins, &QPushButton::clicked, [&popup, this, platinumEdit, platinumLabel, goldEdit, goldLabel, silverEdit, silverLabel, copperEdit, copperLabel]()
+    {
+        bool anyExceeded = false; // Creates a boolean to check if any coins exceeded the amount the character has
+
+        if(platinumEdit->value() > characterCoins[0]) // If the platinum edit value is greater than the character's platinum coins
+        {
+            animateLabelBackground(platinumLabel); // Animate the platinum label background
+            anyExceeded = true; // Set anyExceeded to true
+        }
+
+        if(goldEdit->value() > characterCoins[1]) // If the gold edit value is greater than the character's gold coins
+        {
+            animateLabelBackground(goldLabel); // Animate the gold label background
+            anyExceeded = true; // Set anyExceeded to true
+        }
+
+        if(silverEdit->value() > characterCoins[2]) // If the silver edit value is greater than the character's silver coins
+        {
+            animateLabelBackground(silverLabel); // Animate the silver label background
+            anyExceeded = true; // Set anyExceeded to true
+        }
+
+        if(copperEdit->value() > characterCoins[3]) // If the copper edit value is greater than the character's copper coins
+        {
+            animateLabelBackground(copperLabel); // Animate the copper label background
+            anyExceeded = true; // Set anyExceeded to true
+        }
+
+        if(!anyExceeded) // If no coins exceeded the amount the character has, accept the dialog
+        {
+            popup.done(2); // Accept the dialog
+        }
+    });
+
+    popup.exec(); // Execute the popup
+
+    // Add coins if the add coins button was clicked
+    if(popup.result() == QDialog::Accepted)
+    {
+        characterCoins[0] += platinumEdit->value(); // Adds the platinum coins to the character's coins
+        characterCoins[1] += goldEdit->value(); // Adds the gold coins to the character's coins
+        characterCoins[2] += silverEdit->value(); // Adds the silver coins to the character's coins
+        characterCoins[3] += copperEdit->value(); // Adds the copper coins to the character's coins
+    }
+
+    // Remove coins if the remove coins button was clicked
+    if(popup.result() == 2)
+    {
+        // if(platinumEdit->value() > characterCoins[0] || goldEdit->value() > characterCoins[1] || silverEdit->value() > characterCoins[2] || copperEdit->value() > characterCoins[3])
+        // {
+            
+        // }
+        // else
+        // {
+            characterCoins[0] -= platinumEdit->value(); // Removes the platinum coins from the character's coins
+            characterCoins[1] -= goldEdit->value(); // Removes the gold coins from the character's coins
+            characterCoins[2] -= silverEdit->value(); // Removes the silver coins from the character's coins
+            characterCoins[3] -= copperEdit->value(); // Removes the copper coins from the character's coins
+        // }
+    }
+    saveCoins();
+}
+
+void ViewCharacter::animateLabelBackground(QLabel *label)
+{
+    if (!label) return; // Return if the label is null
+
+    label->setStyleSheet("color: red;"); // Set the label's stylesheet to red
+
+    QTimer::singleShot(3000, [label]()
+    {
+        label->setStyleSheet(""); // Reset the label's stylesheet after 3 seconds
+    });
+
+    QGraphicsOpacityEffect *effect = new QGraphicsOpacityEffect(this); // Create an opacity effect for the label
+    label->setGraphicsEffect(effect); // Set the opacity effect for the label
+
+    // Create the animation for the opacity effect
+    QPropertyAnimation *animation = new QPropertyAnimation(effect, "opacity", this);
+
+    animation->setDuration(500); // Set the duration of the animation to 500ms
+    animation->setStartValue(0.0); // Set the start value of the animation to 0.0
+    animation->setEndValue(1.0); // Set the end value of the animation to 1.0
+    animation->setEasingCurve(QEasingCurve::InOutQuad); // Set the easing curve of the animation
+    animation->setLoopCount(6); // Set the loop count of the animation to 6
+
+    animation->start(QAbstractAnimation::DeleteWhenStopped); // Start the animation
+}
+
+void ViewCharacter::saveCoins()
+{
+    // Saves coins to the character's character.csv file
+    QString filePath = QDir::currentPath() + "/data/characters/" + characterName + "/character.csv"; // Creates a file path for the character's character.csv file
+    QFile file(filePath); // Creates a file object for the character's character.csv file
+    if (!file.open(QIODevice::ReadOnly | QIODevice::Text))
+    {
+        qWarning() << "Failed to open character file for saving coins:" << filePath; // Outputs a warning if the file fails to open
+        return;
+    }
+    
+    QTextStream in(&file); // Create a text stream to read the file
+    QStringList lines; // Create a list of strings to store the lines of the file
+    while (!in.atEnd())
+    {
+        lines.append(in.readLine()); // Read each line of the file
+    }
+
+    QString coins = QString::number(characterCoins[0]) + "," +
+                    QString::number(characterCoins[1]) + "," +
+                    QString::number(characterCoins[2]) + "," +
+                    QString::number(characterCoins[3]); // Creates a string for the coins
+
+    lines[5] = coins; // Update the coins line
+
+    file.close(); // Close the file
+
+    if (!file.open(QIODevice::WriteOnly | QIODevice::Text))
+    {
+        qWarning() << "Failed to open character file for saving coins:" << filePath;
+        return;
+    }
+
+    QTextStream out(&file); // Create a text stream to write to the file
+
+    for (const QString &line : lines)
+    {
+        out << line << "\n"; // Write each line to the file
+    }
+
+    file.close(); // Close the file
 }
 
 void ViewCharacter::goBack()
