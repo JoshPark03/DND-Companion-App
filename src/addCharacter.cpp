@@ -340,6 +340,11 @@ StartWidget::StartWidget(QWidget *parent) : QWidget(parent)
 	// Create leveling type radio buttons
 	xpLeveling = new QRadioButton("XP");
 	milestoneLeveling = new QRadioButton("Milestone");
+
+	// Set xp leveling checked by default
+	xpLeveling->setChecked(true);
+
+	// Add radio buttons to leveling type layout
 	levelingTypeLayout->addWidget(xpLeveling);
 	levelingTypeLayout->addWidget(milestoneLeveling);
 
