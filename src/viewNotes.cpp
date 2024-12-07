@@ -28,8 +28,84 @@ Last Modified: 11/18/2024
 #include <QTimer>
 #include <QLineEdit>
 
+#include <QPropertyAnimation>
+#include <QParallelAnimationGroup>
+#include <QPushButton>
+#include <QVBoxLayout>
+#include <QListWidget>
+
+
+// Function to animate delete button
+void ViewNotes::animateDeleteButton(QPushButton *button, int startHeight, int endHeight, int duration)
+{
+    // Get the current height of the widget if maximumHeight is unset
+    if (startHeight >= 50000)
+    {
+        startHeight = button->height(); // Use the actual height of the widget
+    }
+    button->setMaximumHeight(startHeight);
+    QPropertyAnimation *animation = new QPropertyAnimation(button, "maximumHeight");
+    animation->setDuration(duration); // Set the duration of the animation
+    animation->setStartValue(startHeight); // Set the start value of the animation
+    animation->setEndValue(startHeight + endHeight); // Set the end value of the animation
+    animation->setEasingCurve(QEasingCurve::InOutQuad); // Smooth easing
+    animation->start(QAbstractAnimation::DeleteWhenStopped); // Auto-delete after completion
+
+    reloadTheme(); // Reload the theme after everything is placed
+}
+
+void ViewNotes::addDeleteButton()
+{
+    if(deleteButton->parentWidget() == notesListContainer) // If the delete button is already in the layout
+    {
+        return; // Skip adding the delete button
+    }
+
+    if (notesListContainerLayout->indexOf(deleteButton) == -1) // If the delete button is not in the layout
+    {
+        notesListContainerLayout->addWidget(deleteButton); // Add the delete button to the layout
+        deleteButton->show(); // Show the button
+    }
+
+    deleteButton->setStyleSheet(
+        "QPushButton {"
+        "   padding: 10px;"
+        "   font-size: 14px;"
+        "   text-align: center;"
+        "}"
+    );
+
+    // Add the delete button to the layout
+    deleteButton->setMaximumHeight(0);
+    notesListContainerLayout->addWidget(deleteButton);
+    animateDeleteButton(deleteButton, 0, 40);
+}
+
+void ViewNotes::removeDeleteButton()
+{
+    if (deleteButton->parentWidget() == nullptr)
+    {
+        return;
+    }
+
+    // Shrink the delete button
+    animateDeleteButton(deleteButton, 40, -40);
+
+    QTimer::singleShot(1000, this, [=]()
+    {
+        if (notesListContainerLayout->indexOf(deleteButton) != -1)
+        {
+            notesListContainerLayout->removeWidget(deleteButton); // Remove the button from the layout
+        }
+        deleteButton->hide(); // Hide the button
+        deleteButton->setParent(nullptr); // Remove the parent
+    });
+}
+
 void ViewNotes::loadNotes()
 {
+    noteEdit->setEnabled(false); // Disable the text edit by default
+
     // Get the path to the notes file
     QString notesPath = QDir::currentPath() + "/data/characters/" + name + "/notes.json";
 
@@ -128,6 +204,12 @@ void ViewNotes::onNoteSelected(QListWidgetItem *item)
             }
         });
 
+        // Connect for loss of focus of new note widget
+        connect(noteNameEdit, &QLineEdit::editingFinished, this, [=]()
+        {
+            checkButton->click(); // Automatically confirm the new note on loss of focus
+        });
+
         return;
     }
 
@@ -167,7 +249,9 @@ void ViewNotes::onNoteSelected(QListWidgetItem *item)
         {
             // Populate the noteEdit with the corresponding notes content
             noteEdit->setText(noteObj["notes"].toString());
+            noteEdit->setEnabled(true); // Enable the text edit for editing
             currentSection = newSectionName; // Update the current section
+            addDeleteButton(); // Add the delete button to the layout
             return;
         }
     }
@@ -332,6 +416,7 @@ void ViewNotes::deleteNoteSection(const QString &sectionName)
     notesFile.close();
     qDebug() << "Note deleted:" << sectionName;
 
+    removeDeleteButton(); // Remove the delete button from the layout
     loadNotes(); // Reload the notes list after deletion
 }
 
@@ -370,8 +455,6 @@ ViewNotes::ViewNotes(QWidget *parent, QString name) :
     QHBoxLayout *bodyLayout = new QHBoxLayout(body);
 
     // Create a container for the notes list
-    QWidget *notesListContainer = new QWidget();
-    QVBoxLayout *notesListContainerLayout = new QVBoxLayout(notesListContainer);
     notesListContainer->setFixedWidth(400); // Set the width of the notes list container to 400px
 
     // Create a label for the notes list
@@ -384,32 +467,19 @@ ViewNotes::ViewNotes(QWidget *parent, QString name) :
 
 
     // Add the label and list to the notes list container
-    notesListContainerLayout->addWidget(notesListLabel);
+    notesListContainerLayout->addWidget(notesListLabel, 0, Qt::AlignTop);
     notesListContainerLayout->addWidget(notesList);
+    notesListContainerLayout->setStretch(1, 1); // Allow the list to take up the rest of the space
+    notesListContainerLayout->addStretch(); // Add a stretch to push the list to the top
+
+    notesListContainerLayout->setContentsMargins(5, 0, 5, 0);
 
     // Load the notes
     loadNotes();
-
-    // Create a label where the title of the notes will be displayed
-    QLabel *notesTitle = new QLabel("Notes");
-    notesTitle->setAlignment(Qt::AlignCenter);
-    notesTitle->setFixedHeight(50);
-
-    // Create notes edit container
-    QWidget *notesEditContainer = new QWidget();
-    QVBoxLayout *notesEditContainerLayout = new QVBoxLayout(notesEditContainer);
-
-    // Add the title and text edit to the notes edit container
-    notesEditContainerLayout->addWidget(notesTitle);
-    notesEditContainerLayout->addWidget(noteEdit);
-
-    // Allow the text edit to take up the rest of the space
-    notesEditContainerLayout->setStretch(1, 1);
-
     
     // Add the widgets to the body layout
     bodyLayout->addWidget(notesListContainer);
-    bodyLayout->addWidget(notesEditContainer);
+    bodyLayout->addWidget(noteEdit);
 
     // Add the widgets to the main layout
     layout->addWidget(navbar);
@@ -420,18 +490,12 @@ ViewNotes::ViewNotes(QWidget *parent, QString name) :
 
     connect(notesList, &QListWidget::itemClicked, this, &ViewNotes::onNoteSelected);
 
-    // Just a test to see if the delete function works
-    // connect(notesList, &QListWidget::itemDoubleClicked, this, [=](QListWidgetItem *item)
-    // {
-    //     QString sectionName = item->text();
-    //     if (sectionName != "Create a New Note")
-    //     {
-    //         deleteNoteSection(sectionName);
-    //     }
-    // });
+    connect(deleteButton, &QPushButton::clicked, this, [=]()
+    {
+        deleteNoteSection(currentSection);
+    });
 
     reloadTheme(); // Reload the theme after everything is placed
-
 }
 
 void ViewNotes::goBack()
@@ -439,6 +503,11 @@ void ViewNotes::goBack()
     // Save the current note before going back
     saveCurrentNote();
     loadNotes();
+    notesList->clearSelection();
+    notesList->clearFocus();
+    currentSection = "";
+    removeDeleteButton();
+    noteEdit->setEnabled(false);
 
     QStackedWidget *mainStackedWidget = qobject_cast<QStackedWidget *>(this->parentWidget());
     
