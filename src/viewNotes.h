@@ -14,6 +14,8 @@ Last Modified: 11/18/2024
 #include <QListWidget>
 #include <QTextEdit>
 #include <QTimer>
+#include <QVBoxLayout>
+#include <QPushButton>
 
 class ViewNotes : public QWidget
 {
@@ -31,8 +33,14 @@ private:
     void saveCurrentNote();
     void createNewNote(const QString &newNoteName);
     void deleteNoteSection(const QString &sectionName);
+    void animateDeleteButton(QPushButton *button, int startHeight, int endHeight, int duration = 300);
+    void addDeleteButton();
+    void removeDeleteButton();
     QListWidget *notesList = new QListWidget();
+    QWidget *notesListContainer = new QWidget();
+    QVBoxLayout *notesListContainerLayout = new QVBoxLayout(notesListContainer);
     QTextEdit *noteEdit = new QTextEdit();
+    QPushButton *deleteButton = new QPushButton("Delete Note");
 
 private slots:
     void goBack();
