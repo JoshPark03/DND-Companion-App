@@ -1,6 +1,6 @@
-Aurora,9,12,11,16,14,13,9:50000,40:40,Wizard,Illusion,Human
+Aurora,9,12,11,16,14,13,9:50000,40:40:0,Wizard,Illusion,Human,None
 Arcana,Medicine,Investigation,,,,,,,,
 Spell Sniper,,,,,,,,,,
 Common,Elvish,,,,,,,,,
 Light Weapons,,,,,,,,,,
-0,50,30,60,,,,,,,
+0,50,30,60

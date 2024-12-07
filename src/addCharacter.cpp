@@ -9,6 +9,7 @@ Last Modified: 12/4/2024
 
 #include "addCharacter.h"
 #include "characterSelect.h"
+#include "utils.h"
 
 #include <iostream>
 
@@ -57,24 +58,6 @@ void Portrait::getImage(const QString &selection)
 		image = image.scaled(450, 600, Qt::KeepAspectRatio, Qt::SmoothTransformation);
 		this->setPixmap(image);
 	}
-}
-
-// Convert list of strings to comma delimited string
-QString listToCommaString(const QList<QString> strings)
-{
-	QString result;
-
-	// Iterate through the list, joining strings with commas
-	for (qsizetype i = 0; i < strings.size(); ++i)
-	{
-		result += strings[i];
-		if (i != strings.size() - 1)
-		{
-			result += ",";
-		}
-	}
-
-	return result;
 }
 
 /**
