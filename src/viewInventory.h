@@ -13,6 +13,7 @@ Last Modified: 12/4/2024
 #include <QWidget>
 #include <QListWidget>
 #include <QLabel>
+#include <QPushButton>
 
 class ViewInventory : public QWidget
 {
@@ -32,6 +33,10 @@ private slots:
     void deleteSelectedItem(); // Delete the selected item from the inventory
     void increaseItemQuantity(); // Increase the quantity of the selected item
     void decreaseItemQuantity(); // Decrease the quantity of the selected item
+    void addItem(); // Add a new item to the inventory
+    void equipItem(); // Equip the selected item
+    void attuneItem(); // Attune the selected item
+    void updateButtons(QPushButton &equipItemButton, QPushButton &attuneItemButton); // Update button states based on selected item
 };
 
 #endif
