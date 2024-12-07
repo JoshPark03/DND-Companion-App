@@ -23,10 +23,35 @@ public:
 private:
     QTableWidget * spells;
     QString name;
+    QString charPath;
+    int level;
+    int totalLevel1Slots;
+    int totalLevel2Slots;
+    int totalLevel3Slots;
+    int totalLevel4Slots;
+    int totalLevel5Slots;
+    int totalLevel6Slots;
+    int totalLevel7Slots;
+    int totalLevel8Slots;
+    int totalLevel9Slots;
+    int level1SlotsUsed;
+    int level2SlotsUsed;
+    int level3SlotsUsed;
+    int level4SlotsUsed;
+    int level5SlotsUsed;
+    int level6SlotsUsed;
+    int level7SlotsUsed;
+    int level8SlotsUsed;
+    int level9SlotsUsed;
+    int maxPrepared;
     void loadSpells();
     void addItem(QString line);
+
+public slots:
+    void castSpell(int level);
 private slots:
     void saveSpells();
+    void saveSlots();
     void addSpell();
     void goBack();
 };

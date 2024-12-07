@@ -30,6 +30,74 @@ Last Modified: 12/3/2024
 ViewSpells::ViewSpells(QWidget *parent, QString nameIn) :
     QWidget(parent), name(nameIn)
 {
+    // Load the character's information, notes, and stats
+    this->charPath = QDir::currentPath() + "/data/characters/" + name;
+
+    // Load the character's information
+    QFile characterFile(this->charPath + "/character.csv");
+
+    if (characterFile.open(QIODevice::ReadOnly))
+    {
+        QTextStream in(&characterFile);
+        // Can not loop through each line because lines are not consistent in context
+        // Get the first line of character information
+        QString line = in.readLine();
+
+        // Get first line of character information
+        QStringList line1 = line.split(",");
+
+        QString charClass = line1[9];
+        QStringList levelExperienceList = line1[7].split(":");
+        this->level = levelExperienceList[0].toInt();
+
+        QFile slotsDatabase(QDir::currentPath() + "/data/databases/SpellSlots.csv");
+
+        if (slotsDatabase.open(QIODevice::ReadOnly)) {
+            QTextStream in(&slotsDatabase);
+
+            while (!in.atEnd()) {
+                QString line = in.readLine();
+
+                QStringList lineVals = line.split(",");
+
+                if (charClass == lineVals[0] && this->level == lineVals[1].toInt()) {
+                    this->totalLevel1Slots = lineVals[2].toInt();
+                    this->totalLevel2Slots = lineVals[3].toInt();
+                    this->totalLevel3Slots = lineVals[4].toInt();
+                    this->totalLevel4Slots = lineVals[5].toInt();
+                    this->totalLevel5Slots = lineVals[6].toInt();
+                    this->totalLevel6Slots = lineVals[7].toInt();
+                    this->totalLevel7Slots = lineVals[8].toInt();
+                    this->totalLevel8Slots = lineVals[9].toInt();
+                    this->totalLevel9Slots = lineVals[10].toInt();
+                    break;
+                }
+            }
+            slotsDatabase.close();
+        }
+        characterFile.close();
+    }
+
+    QFile charSlots(this->charPath + "/slots.csv");
+
+    if (charSlots.open(QIODevice::ReadOnly))
+    {
+        QTextStream in(&charSlots);
+        QString line = in.readLine();
+        QStringList lineVals = line.split(",");
+
+        this->level1SlotsUsed = lineVals[0].toInt();
+        this->level2SlotsUsed = lineVals[1].toInt();
+        this->level3SlotsUsed = lineVals[2].toInt();
+        this->level4SlotsUsed = lineVals[3].toInt();
+        this->level5SlotsUsed = lineVals[4].toInt();
+        this->level6SlotsUsed = lineVals[5].toInt();
+        this->level7SlotsUsed = lineVals[6].toInt();
+        this->level8SlotsUsed = lineVals[7].toInt();
+        this->level9SlotsUsed = lineVals[8].toInt();
+        charSlots.close();
+    }
+
     // Create a row for the navbar
     QWidget *navbar = new QWidget();
     QHBoxLayout *navbarLayout = new QHBoxLayout(navbar);
@@ -64,18 +132,18 @@ ViewSpells::ViewSpells(QWidget *parent, QString nameIn) :
     QFont font = spellSlotsLabel->font();
     font.setPointSize(font.pointSize() + 2);
     spellSlotsLabel->setFont(font);
-    QLabel * level1Slots = new QLabel("Level 1: ");
-    QLabel * level2Slots = new QLabel("Level 2: ");
-    QLabel * level3Slots = new QLabel("Level 3: ");
-    QLabel * level4Slots = new QLabel("Level 4: ");
-    QLabel * level5Slots = new QLabel("Level 5: ");
-    QLabel * level6Slots = new QLabel("Level 6: ");
-    QLabel * level7Slots = new QLabel("Level 7: ");
-    QLabel * level8Slots = new QLabel("Level 8: ");
-    QLabel * level9Slots = new QLabel("Level 9: ");
+    QLabel * level1Slots = new QLabel(QString("Level 1: " + QString::number(this->level1SlotsUsed) + '/' + QString::number(this->totalLevel1Slots)));
+    QLabel * level2Slots = new QLabel(QString("Level 2: " + QString::number(this->level1SlotsUsed) + '/' + QString::number(this->totalLevel2Slots)));
+    QLabel * level3Slots = new QLabel(QString("Level 3: " + QString::number(this->level1SlotsUsed) + '/' + QString::number(this->totalLevel3Slots)));
+    QLabel * level4Slots = new QLabel(QString("Level 4: " + QString::number(this->level1SlotsUsed) + '/' + QString::number(this->totalLevel4Slots)));
+    QLabel * level5Slots = new QLabel(QString("Level 5: " + QString::number(this->level1SlotsUsed) + '/' + QString::number(this->totalLevel5Slots)));
+    QLabel * level6Slots = new QLabel(QString("Level 6: " + QString::number(this->level1SlotsUsed) + '/' + QString::number(this->totalLevel6Slots)));
+    QLabel * level7Slots = new QLabel(QString("Level 7: " + QString::number(this->level1SlotsUsed) + '/' + QString::number(this->totalLevel7Slots)));
+    QLabel * level8Slots = new QLabel(QString("Level 8: " + QString::number(this->level1SlotsUsed) + '/' + QString::number(this->totalLevel8Slots)));
+    QLabel * level9Slots = new QLabel(QString("Level 9: " + QString::number(this->level1SlotsUsed) + '/' + QString::number(this->totalLevel9Slots)));
 
     columnLayout->addWidget(addSpellButton, Qt::AlignHCenter);
-    columnLayout->addWidget(spellSlotsLabel, Qt::AlignHCenter);
+    columnLayout->addWidget(spellSlotsLabel);
     columnLayout->addWidget(level1Slots);
     columnLayout->addWidget(level2Slots);
     columnLayout->addWidget(level3Slots);
@@ -95,6 +163,8 @@ ViewSpells::ViewSpells(QWidget *parent, QString nameIn) :
 
     // Connect functions
     connect(backToCharacter, SIGNAL(clicked()), SLOT(saveSpells()));
+
+    connect(backToCharacter, SIGNAL(clicked()), SLOT(saveSlots()));
 
     connect(backToCharacter, SIGNAL(clicked()), SLOT(goBack()));
 
@@ -291,16 +361,14 @@ void ViewSpells::addSpell() {
 
 void ViewSpells::loadSpells()
 {
+    qDebug() << "beginning of load spells";
     this->spells->clear();
     QStringList colNames = {"Name", "Book", "Page", "Level", "School", "Casting Time", "Range", "Verbal", "Somatic", "Material", "Duration", "Concentration", "Ritual", "Prepared", "Description"};
     this->spells->setHorizontalHeaderLabels(colNames);
     // hide the description column because it would take too much space
     this->spells->setColumnHidden(14, true);
 
-	// Path to the characters directory
-	QString charPath = QDir::currentPath() + "/data/characters/" + this->name;
-
-    QFile charSpells(charPath + "/spells.csv");
+    QFile charSpells(this->charPath + "/spells.csv");
 
     if (charSpells.open(QIODevice::ReadOnly | QIODevice::Text)) {
         QTextStream in(&charSpells);
@@ -311,8 +379,12 @@ void ViewSpells::loadSpells()
         }
     }
     this->spells->resizeColumnsToContents();
+    // order by name
     this->spells->sortByColumn(0, Qt::AscendingOrder);
+    // order by level
     this->spells->sortByColumn(3, Qt::AscendingOrder);
+    // result ordered by level then name
+    qDebug() << "end of load spells";
 }
 
 void ViewSpells::addItem(QString line) {
@@ -439,24 +511,19 @@ void ViewSpells::saveSpells() {
                 qDebug() << "material CenteredCheckBox not retrieved";
                 continue;
             }
-            qDebug() << "verbal somatic and material exist";
 			if (verbal->isChecked()) {
 				components += "v";
 			}
-            qDebug() << "past verbal";
 			if (somatic->isChecked()) {
 				components += "s";
 			}
-            qDebug() << "past somatic";
 			if (material->isChecked()) {
 				components += "m";
 			}
-            qDebug() << "past material";
             QString duration = this->spells->item(i,10)->text();
             CenteredCheckBox * concentration = qobject_cast<CenteredCheckBox *>(this->spells->cellWidget(i,11)->children()[1]);
             CenteredCheckBox * ritual = qobject_cast<CenteredCheckBox *>(this->spells->cellWidget(i,12)->children()[1]);
             CenteredCheckBox * prepared = qobject_cast<CenteredCheckBox *>(this->spells->cellWidget(i,13)->children()[1]);
-            qDebug() << "before description";
             QString description = this->spells->item(i,14)->text();
             if (!concentration) {
                 qDebug() << "concentration CenteredCheckBox not retrieved";
@@ -475,6 +542,69 @@ void ViewSpells::saveSpells() {
                     duration << "," << concentration->isChecked() << "," << ritual->isChecked() << "," << prepared->isChecked() << "," << description << Qt::endl;
         }
         spellsFile.close();
+    }
+}
+
+void ViewSpells::saveSlots() {
+    QFile charSlots(this->charPath + "/slots.csv");
+
+    if (charSlots.open(QIODevice::WriteOnly | QIODevice::Text))
+    {
+        QTextStream out(&charSlots);
+
+        out << this->level1SlotsUsed << "," << this->level2SlotsUsed << "," << this->level3SlotsUsed << "," << this->level4SlotsUsed << "," << this->level5SlotsUsed <<"," <<
+                this->level6SlotsUsed << "," << this->level7SlotsUsed << "," << this->level8SlotsUsed << "," << this->level9SlotsUsed << Qt::endl;
+        charSlots.close();
+    }
+}
+
+void ViewSpells::castSpell(int level) {
+    switch (level) {
+        case 1:
+            if (this->level1SlotsUsed < this->totalLevel1Slots) {
+                this->level1SlotsUsed++;
+            }
+            break;
+        case 2:
+            if (this->level2SlotsUsed < this->totalLevel2Slots) {
+                this->level2SlotsUsed++;
+            }
+            break;
+        case 3:
+            if (this->level3SlotsUsed < this->totalLevel3Slots) {
+                this->level3SlotsUsed++;
+            }
+            break;
+        case 4:
+            if (this->level4SlotsUsed < this->totalLevel4Slots) {
+                this->level4SlotsUsed++;
+            }
+            break;
+        case 5:
+            if (this->level5SlotsUsed < this->totalLevel5Slots) {
+                this->level5SlotsUsed++;
+            }
+            break;
+        case 6:
+            if (this->level6SlotsUsed < this->totalLevel6Slots) {
+                this->level6SlotsUsed++;
+            }
+            break;
+        case 7:
+            if (this->level7SlotsUsed < this->totalLevel7Slots) {
+                this->level7SlotsUsed++;
+            }
+            break;
+        case 8:
+            if (this->level8SlotsUsed < this->totalLevel8Slots) {
+                this->level8SlotsUsed++;
+            }
+            break;
+        case 9:
+            if (this->level9SlotsUsed < this->totalLevel9Slots) {
+                this->level9SlotsUsed++;
+            }
+            break;
     }
 }
 
