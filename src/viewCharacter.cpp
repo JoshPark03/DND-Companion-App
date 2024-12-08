@@ -7,6 +7,8 @@ Date Created: 10/25/2024
 Last Modified: 11/18/2024
 */
 
+#include <QComboBox>
+#include <QLineEdit>
 #include <QVBoxLayout>
 #include <QPushButton>
 #include <QStackedWidget>
@@ -462,9 +464,98 @@ void ViewCharacter::loadPreppedSpells()
     file.close();
 }
 
+void ViewCharacter::loadFeatures()
+{
+    qDebug() << "In loadFeatures";
+    QFile file("data/databases/" + characterClass + ".tsv"); // read in the file
+    qDebug() << "Current working directory:" << QDir::currentPath();
+    if (!file.open(QIODevice::ReadOnly | QIODevice::Text))
+    {
+        // error checking for debugging
+        std::cerr << "Failed to open file" << std::endl;
+        return;
+    }
+
+    QTextStream in(&file); // read in the file
+    bool isHeader = true;  // our first line is a header
+
+    while (!in.atEnd())
+    {
+        QString line = in.readLine(); // read in the line
+        if (isHeader)
+        {
+            isHeader = false; // we are no longer on the header
+            continue;         // skip the header
+        }
+
+        QStringList fields = line.split("\t"); // split the line by \t
+
+        // Fill out info
+        FeatureInfo *info = new FeatureInfo{
+            fields[1],
+            fields[2],
+            fields[3].toInt(),
+            fields[4]};
+
+        this->featureList.append(info);
+    }
+}
+
+void ViewCharacter::loadFeats()
+{
+    qDebug() << "In loadFeats";
+    QFile file("data/databases/Feats.tsv"); // read in the file
+    qDebug() << "Current working directory:" << QDir::currentPath();
+    if (!file.open(QIODevice::ReadOnly | QIODevice::Text))
+    {
+        // error checking for debugging
+        std::cerr << "Failed to open file" << std::endl;
+        return;
+    }
+
+    QTextStream in(&file); // read in the file
+    bool isHeader = true;  // our first line is a header
+
+    while (!in.atEnd())
+    {
+        QString line = in.readLine(); // read in the line
+        if (isHeader)
+        {
+            isHeader = false; // we are no longer on the header
+            continue;         // skip the header
+        }
+
+        QStringList fields = line.split("\t"); // split the line by \t
+
+        QString featName = fields[0];
+
+        // Fill out info
+        FeatInfo *info = new FeatInfo{
+            fields[1],
+            fields[2].toInt(),
+            fields[3],
+            fields[4],
+            fields[5],
+            fields[6],
+            fields[7]};
+
+        this->featList[featName] = info;
+        // qDebug() << fields[0];
+        // qDebug() << fields[1];
+        // qDebug() << fields[2];
+        // qDebug() << fields[3];
+        // qDebug() << fields[4];
+        // qDebug() << fields[5];
+        // qDebug() << fields[6];
+        // qDebug() << fields[7];
+    }
+}
+
 ViewCharacter::ViewCharacter(QWidget *parent, QString nameIn) : QWidget(parent), pictureLabel(new ClickableLabel(this))
 {
     loadCharacter(nameIn);
+    loadFeatures();
+    loadFeats();
     printCharacterToConsole();
     evaluateCharacterModifiers();
 
@@ -606,9 +697,21 @@ ViewCharacter::ViewCharacter(QWidget *parent, QString nameIn) : QWidget(parent),
     // Add the ability names and values to the stats widget
     for (int i = 0; i < abilitiesNames.length(); i++)
     {
-        statsLayout->addWidget(new QLabel(abilitiesNames[i]), 0, i + 1);                      // Adds the ability names to the list
-        statsLayout->addWidget(new QLabel(QString::number(characterAbilities[i])), 1, i + 1); // Adds the ability scores to the list
+        statsLayout->addWidget(new QLabel(abilitiesNames[i]), 0, i + 1); // Adds the ability names to the list
     }
+
+    QLabel *strLabel = new QLabel(QString::number(characterAbilities[0]));
+    QLabel *dexLabel = new QLabel(QString::number(characterAbilities[1]));
+    QLabel *conLabel = new QLabel(QString::number(characterAbilities[2]));
+    QLabel *intLabel = new QLabel(QString::number(characterAbilities[3]));
+    QLabel *wisLabel = new QLabel(QString::number(characterAbilities[4]));
+    QLabel *chaLabel = new QLabel(QString::number(characterAbilities[5]));
+    statsLayout->addWidget(strLabel, 1, 1);
+    statsLayout->addWidget(dexLabel, 1, 2);
+    statsLayout->addWidget(conLabel, 1, 3);
+    statsLayout->addWidget(intLabel, 1, 4);
+    statsLayout->addWidget(wisLabel, 1, 5);
+    statsLayout->addWidget(chaLabel, 1, 6);
 
     // Add ability modifiers below ability scores
     for (int i = 0; i < characterAbilityBonuses.length(); i++)
@@ -872,7 +975,22 @@ ViewCharacter::ViewCharacter(QWidget *parent, QString nameIn) : QWidget(parent),
     connect(pictureLabel, &ClickableLabel::clicked, this, &ViewCharacter::changeProfilePicture);
 
     // connect level up button to levelUp function
-    connect(levelUpButton, &QPushButton::clicked, this, &ViewCharacter::levelUp);
+    connect(levelUpButton, &QPushButton::clicked, [this, experienceProgressBar, experienceLow, experienceHigh, nameAndLevelLabel, strLabel, dexLabel, conLabel, intLabel, wisLabel, chaLabel, hitPointsLabel]()
+            {
+        levelUp();
+        experienceProgressBar->setRange(experienceTable[characterLevel - 1], experienceTable[characterLevel]);
+        experienceProgressBar->setValue(characterExperience);
+        experienceLow->setText(QString::number(experienceTable[characterLevel - 1]));
+        experienceHigh->setText(QString::number(experienceTable[characterLevel]));
+
+        nameAndLevelLabel->setText(characterName + " | Level " + QString::number(characterLevel));
+        strLabel->setText(QString::number(characterAbilities[0]));
+        dexLabel->setText(QString::number(characterAbilities[1]));
+        conLabel->setText(QString::number(characterAbilities[2]));
+        intLabel->setText(QString::number(characterAbilities[3]));
+        wisLabel->setText(QString::number(characterAbilities[4]));
+        chaLabel->setText(QString::number(characterAbilities[5])); 
+        hitPointsLabel->setText("Hit Points:\n" + QString::number(characterHitPoints) + "/" + QString::number(characterMaxHitPoints)); });
 
     // connect add experience button to addExperience function
     connect(addExperienceButton, &QPushButton::clicked, [this, experienceProgressBar, experienceCurrent]()
@@ -1097,7 +1215,322 @@ void ViewCharacter::goBack()
 void ViewCharacter::levelUp()
 {
     qDebug() << "Level Up Button Clicked";
-    // TODO implement level up functionality
+    if (characterExperience < experienceTable[characterLevel])
+    {
+        return;
+    }
+
+    // Increase level
+    characterLevel += 1;
+
+    if (isSpellcaster())
+    {
+        for (int i = 0; i < 2; i++)
+        {
+            addSpell();
+        }
+    }
+
+    QDialog popup;
+    popup.setWindowModality(Qt::ApplicationModal);
+    popup.setWindowTitle("Level Up");
+
+    QVBoxLayout layout(&popup);
+
+    for (int i = 0; i < featureList.size(); ++i)
+    {
+        // List of new features from level up
+        FeatureInfo *info = featureList[i];
+        if (info->level == characterLevel && (info->subClass == characterSubclass || info->subClass == "Base"))
+        {
+            QString feature = info->featureName;
+            QString description = info->description;
+            QLabel *featureLabel = new QLabel(feature);
+            QLabel *descriptionLabel = new QLabel(description);
+            descriptionLabel->setWordWrap(true);
+            layout.addWidget(featureLabel);
+            layout.addWidget(descriptionLabel);
+        }
+    }
+
+    if (this->abilityScoreImprovementLevels.contains(characterLevel) && characterLevel != 4)
+    {
+        // For ability score improvement levels above 4
+        QString feature = featureList[2]->featureName;
+        QString description = featureList[2]->description;
+        QLabel *featureLabel = new QLabel(feature);
+        QLabel *descriptionLabel = new QLabel(description);
+        descriptionLabel->setWordWrap(true);
+        layout.addWidget(featureLabel);
+        layout.addWidget(descriptionLabel);
+    }
+
+    // Choose feat
+    QComboBox *featComboBox = new QComboBox();
+    if (this->abilityScoreImprovementLevels.contains(characterLevel))
+    {
+
+        featComboBox->setStyleSheet("QComboBox { combobox-popup: 0; }");
+        featComboBox->setMaxVisibleItems(10);
+
+        for (auto it = featList.begin(); it != featList.end(); ++it)
+        {
+            featComboBox->addItem(it.key());
+        }
+        layout.addWidget(featComboBox);
+    }
+
+    // make health spinbox
+    QLabel *hpLabel = new QLabel("HP Increase:");
+    QSpinBox *hpEdit = new QSpinBox();
+    hpEdit->setMaximum(hitDie[characterClass]);
+    layout.addWidget(hpLabel);
+    layout.addWidget(hpEdit);
+
+    // continue button
+    QPushButton *continueButton = new QPushButton("Continue");
+
+    // make widget for continue button
+    QWidget buttonWidget;
+    buttonWidget.setFixedHeight(50);
+
+    // make layout for add and cancel buttons
+    QHBoxLayout *buttonLayout = new QHBoxLayout(&buttonWidget);
+    buttonLayout->addWidget(continueButton);
+    layout.addWidget(&buttonWidget, Qt::AlignBottom);
+
+    // connect the buttons
+    QObject::connect(continueButton, &QPushButton::clicked, &popup, &QDialog::accept);
+    // QObject::connect(cancelButton, &QPushButton::clicked, &popup, &QDialog::reject);
+
+    // show the popup
+    popup.exec();
+
+    // if the user clicks the continue button
+    if (popup.result() == QDialog::Accepted)
+    {
+        if (this->abilityScoreImprovementLevels.contains(characterLevel))
+        {
+            // Update feats or ability scores
+            QString feat = featComboBox->currentText();
+            FeatInfo *info = featList[feat];
+            QStringList abilityScoreImprovements = info->abilityScoreImprovements.split(":");
+            for (int i = 0; i < characterAbilities.size(); ++i)
+            {
+                characterAbilities[i] += abilityScoreImprovements[i].toInt();
+            }
+            characterFeats.append(feat);
+        }
+        // Update max hp
+        characterMaxHitPoints += hpEdit->value();
+        // Save to csv
+        saveCharacterStatsAndFeats();
+    }
+}
+
+void ViewCharacter::addSpell()
+{
+    qDebug() << "In addSpell";
+    QDialog popup;
+
+    popup.setWindowModality(Qt::ApplicationModal); // stios the user from interacting with the main window while the popup is open
+    popup.setWindowTitle("Add Spell");             // set the title of the popup
+
+    QLabel *popupHeader = new QLabel("Add Spell"); // creates the header text for the popup
+
+    QLabel *bookLabel = new QLabel("Book Abbreviation:");
+    QLineEdit *book = new QLineEdit();
+
+    QLabel *pageLabel = new QLabel("Page:");
+    QSpinBox *page = new QSpinBox();
+    page->setMaximum(999);
+
+    // spell attributes and labels
+    QLabel *nameLabel = new QLabel("Name"); // label for textbox
+    QLineEdit *spellName = new QLineEdit();
+
+    QLabel *levelLabel = new QLabel("Level");
+    QSpinBox *level = new QSpinBox();
+    level->setRange(0, 9);
+
+    QLabel *schoolLabel = new QLabel("School of Magic");
+    QLineEdit *school = new QLineEdit();
+
+    QLabel *timeLabel = new QLabel("Casting Time");
+    QLineEdit *time = new QLineEdit();
+
+    QLabel *rangeLabel = new QLabel("Range");
+    QLabel *minRangeLabel = new QLabel("Min");
+    QLabel *maxRangeLabel = new QLabel("Max");
+    QSpinBox *minRange = new QSpinBox();
+    QSpinBox *maxRange = new QSpinBox();
+    maxRange->setMaximum(360);
+
+    QLabel *componentsLabel = new QLabel("Components");
+    QLabel *verbalLabel = new QLabel("Verbal");
+    QLabel *somaticLabel = new QLabel("Somatic");
+    QLabel *materialLabel = new QLabel("Material");
+    QCheckBox *verbal = new QCheckBox();
+    QCheckBox *somatic = new QCheckBox();
+    QCheckBox *material = new QCheckBox();
+
+    QLabel *durationLabel = new QLabel("Duration");
+    QLineEdit *duration = new QLineEdit();
+
+    QLabel *concentrationLabel = new QLabel("Concentration");
+    QCheckBox *concentration = new QCheckBox();
+
+    QLabel *ritualLabel = new QLabel("Ritual");
+    QCheckBox *ritual = new QCheckBox();
+
+    QLabel *descriptionLabel = new QLabel("Description");
+    QTextEdit *description = new QTextEdit();
+
+    // create the buttons for the popup
+    QPushButton *popupConfirm = new QPushButton("Confirm"); // creates the confirm button
+    QPushButton *popupCancel = new QPushButton("Cancel");   // creates the cancel button
+
+    // Gets rid of the padding around the text of the buttons
+    popupConfirm->setStyleSheet("padding: 5px 0px; margin: 0px;");
+    popupCancel->setStyleSheet("padding: 5px 0px; margin: 0px;");
+
+    // Connect the confirm button to accept the dialog (e.g., confirming the deletion)
+    QObject::connect(popupConfirm, &QPushButton::clicked, &popup, &QDialog::accept);
+
+    // Connect the cancel button to reject the dialog (e.g., canceling the deletion)
+    QObject::connect(popupCancel, &QPushButton::clicked, &popup, &QDialog::reject);
+
+    // create the layout for the popup
+    QVBoxLayout *popupLayout = new QVBoxLayout(&popup);
+
+    // create the layout for the header of the popup
+    QHBoxLayout *popupHeaderLayout = new QHBoxLayout();
+
+    // creates the layout for the body of the popup
+    QGridLayout *popupBodyLayout = new QGridLayout();
+
+    // Create button widget
+    QHBoxLayout *popupButtonLayout = new QHBoxLayout();
+
+    // adds the header components to the header layout
+    popupHeaderLayout->addWidget(popupHeader);
+    popupBodyLayout->addWidget(bookLabel, 0, 0, 1, 1, {Qt::AlignLeft});
+    popupBodyLayout->addWidget(book, 0, 1, 1, 1, {Qt::AlignLeft});
+    popupBodyLayout->addWidget(pageLabel, 0, 2, 1, 1, {Qt::AlignLeft});
+    popupBodyLayout->addWidget(page, 0, 3, 1, 1, {Qt::AlignLeft});
+
+    // adds the attributes to the body layout
+    popupBodyLayout->addWidget(nameLabel, 1, 0, 1, 1, {Qt::AlignCenter});
+    popupBodyLayout->addWidget(spellName, 2, 0, 2, 1);
+
+    popupBodyLayout->addWidget(levelLabel, 1, 1, 1, 1, {Qt::AlignCenter});
+    popupBodyLayout->addWidget(level, 2, 1, 2, 1);
+
+    popupBodyLayout->addWidget(schoolLabel, 1, 2, 1, 1, {Qt::AlignCenter});
+    popupBodyLayout->addWidget(school, 2, 2, 2, 1);
+
+    popupBodyLayout->addWidget(timeLabel, 1, 3, 1, 1, {Qt::AlignCenter});
+    popupBodyLayout->addWidget(time, 2, 3, 2, 1);
+
+    popupBodyLayout->addWidget(rangeLabel, 1, 4, 1, 2, {Qt::AlignCenter});
+    popupBodyLayout->addWidget(minRangeLabel, 2, 4, 1, 1, {Qt::AlignCenter});
+    popupBodyLayout->addWidget(minRange, 3, 4, 1, 1);
+    popupBodyLayout->addWidget(maxRangeLabel, 2, 5, 1, 1, {Qt::AlignCenter});
+    popupBodyLayout->addWidget(maxRange, 3, 5, 1, 1);
+
+    popupBodyLayout->addWidget(componentsLabel, 1, 6, 1, 3, {Qt::AlignCenter});
+    popupBodyLayout->addWidget(verbalLabel, 2, 6, 1, 1, {Qt::AlignCenter});
+    popupBodyLayout->addWidget(verbal, 3, 6, 1, 1, {Qt::AlignCenter});
+    popupBodyLayout->addWidget(somaticLabel, 2, 7, 1, 1, {Qt::AlignCenter});
+    popupBodyLayout->addWidget(somatic, 3, 7, 1, 1, {Qt::AlignCenter});
+    popupBodyLayout->addWidget(materialLabel, 2, 8, 1, 1, {Qt::AlignCenter});
+    popupBodyLayout->addWidget(material, 3, 8, 1, 1, {Qt::AlignCenter});
+
+    popupBodyLayout->addWidget(durationLabel, 1, 9, 1, 1, {Qt::AlignCenter});
+    popupBodyLayout->addWidget(duration, 2, 9, 2, 1);
+
+    popupBodyLayout->addWidget(concentrationLabel, 1, 10, 1, 1, {Qt::AlignCenter});
+    popupBodyLayout->addWidget(concentration, 2, 10, 2, 1, {Qt::AlignCenter});
+
+    popupBodyLayout->addWidget(ritualLabel, 1, 11, 1, 1, {Qt::AlignCenter});
+    popupBodyLayout->addWidget(ritual, 2, 11, 2, 1, {Qt::AlignCenter});
+
+    popupBodyLayout->addWidget(descriptionLabel, 4, 0, 1, -1, {Qt::AlignCenter});
+    popupBodyLayout->addWidget(description, 5, 0, -1, -1);
+
+    // adds the buttons to the button layout
+    popupButtonLayout->addWidget(popupConfirm);
+    popupButtonLayout->addWidget(popupCancel);
+
+    // adds the components to the popup
+    popupLayout->addLayout(popupHeaderLayout);
+    popupLayout->addLayout(popupBodyLayout);
+    popupLayout->addLayout(popupButtonLayout);
+
+    // makes the popup text take up more horizontal space
+    popupLayout->setStretch(0, 1);
+
+    // show the popup
+    popup.exec();
+
+    if (popup.result() == QDialog::Accepted)
+    {
+        // this->spellsList->addItem(spellName->text());
+        SpellInfo *info = new SpellInfo;
+        info->spellName = spellName->text();
+        info->book = book->text();
+        info->page = page->value();
+        info->level = level->value();
+        info->school = school->text();
+        info->time = time->text();
+        info->minRange = minRange->value();
+        info->maxRange = maxRange->value();
+        info->verbal = verbal->isChecked();
+        info->somatic = somatic->isChecked();
+        info->material = material->isChecked();
+        info->duration = duration->text();
+        info->concentration = concentration->isChecked();
+        info->ritual = ritual->isChecked();
+        QString desc = description->toPlainText();
+        QRegularExpression re("\n");
+        desc.replace(re, "<br>");
+        info->description = desc;
+        // (*this->spells)[spellName->text()] = info;
+        this->saveSpell(info);
+    }
+
+    // this is so that no spell is selected after creation
+    // this->spellsList->selectionModel()->clear();
+    // this->removeSpellButton->setEnabled(false);
+}
+
+void ViewCharacter::saveSpell(SpellInfo *info)
+{
+    QString filePath = QDir::currentPath() + "/data/characters/" + characterName + "/spells.csv"; // Creates a file path for the character's spell.csv file
+
+    QFile spellsFile(filePath);
+
+    if (spellsFile.open(QIODevice::WriteOnly | QIODevice::Append))
+    {
+        QTextStream out(&spellsFile);
+
+        out << info->spellName << "," << info->book << "," << info->page << "," << info->level << "," << info->school << "," << info->time << "," << info->maxRange << ",";
+        if (info->verbal)
+        {
+            out << "v";
+        }
+        if (info->somatic)
+        {
+            out << "s";
+        }
+        if (info->material)
+        {
+            out << "m";
+        }
+        out << "," << info->duration << "," << info->concentration << "," << info->ritual << ",false," << info->description << Qt::endl;
+
+        spellsFile.close();
+    }
 }
 
 void ViewCharacter::addExperience()
@@ -1152,11 +1585,11 @@ void ViewCharacter::addExperience()
         // update experience and save to csv file
         characterExperience += xp;
         qDebug() << characterExperience;
-        saveExperience();
+        saveCharacterStatsAndFeats();
     }
 }
 
-void ViewCharacter::saveExperience()
+void ViewCharacter::saveCharacterStatsAndFeats()
 {
     // Saves experience to the character's character.csv file
     QString filePath = QDir::currentPath() + "/data/characters/" + characterName + "/character.csv"; // Creates a file path for the character's character.csv file
