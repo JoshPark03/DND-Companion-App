@@ -1215,7 +1215,7 @@ void ViewCharacter::goBack()
 void ViewCharacter::levelUp()
 {
     qDebug() << "Level Up Button Clicked";
-    if (characterExperience < experienceTable[characterLevel])
+    if (characterExperience < experienceTable[characterLevel] && isMilestone == false)
     {
         return;
     }
