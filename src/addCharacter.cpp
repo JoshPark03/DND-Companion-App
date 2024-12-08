@@ -92,7 +92,6 @@ AddCharacter::AddCharacter(QWidget *parent) : QStackedWidget(parent)
 	connect(backgroundWidget, SIGNAL(finished()), spellsWidget, SLOT(updateNumSpells()));
 	// connect function to create the character's csv files when finished with character creation
 	connect(inventoryWidget, SIGNAL(finished()), SLOT(createCharacter()));
-	// connect(inventoryWidget, SIGNAL(finished()), spellsWidget, SLOT(recordSpells()));
 }
 
 /**

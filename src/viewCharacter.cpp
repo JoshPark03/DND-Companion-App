@@ -217,7 +217,7 @@ void ViewCharacter::loadCharacter(QString name)
         characterFile.close();
 
         // Print the character to the console for testing
-        printCharacterToConsole();
+        // printCharacterToConsole();
     }
 }
 
@@ -556,7 +556,7 @@ ViewCharacter::ViewCharacter(QWidget *parent, QString nameIn) : QWidget(parent),
     loadCharacter(nameIn);
     loadFeatures();
     loadFeats();
-    printCharacterToConsole();
+    // printCharacterToConsole();
     evaluateCharacterModifiers();
 
     this->name = nameIn;

@@ -429,7 +429,7 @@ void SpellsWidget::recordSpells(QString charPath) {
 			if (info->material) {
 				out << "m";
 			}
-			out << "," << info->duration << "," << info->concentration << "," << info->ritual << ",false," << info->description << Qt::endl;
+			out << "," << info->duration << "," << info->concentration << "," << info->ritual << ",0," << info->description << Qt::endl;
 		}
 		spellsFile.close();
 	}
