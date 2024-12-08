@@ -9,6 +9,7 @@ Last Modified: 12/4/2024
 
 #include "addCharacter.h"
 #include "characterSelect.h"
+#include "utils.h"
 
 #include <iostream>
 
@@ -19,6 +20,7 @@ Last Modified: 12/4/2024
 #include <QFormLayout>
 #include <QLabel>
 #include <QDir>
+#include <QRadioButton>
 
 void UpComboBox::showPopup()
 {
@@ -56,24 +58,6 @@ void Portrait::getImage(const QString &selection)
 		image = image.scaled(450, 600, Qt::KeepAspectRatio, Qt::SmoothTransformation);
 		this->setPixmap(image);
 	}
-}
-
-// Convert list of strings to comma delimited string
-QString listToCommaString(const QList<QString> strings)
-{
-	QString result;
-
-	// Iterate through the list, joining strings with commas
-	for (qsizetype i = 0; i < strings.size(); ++i)
-	{
-		result += strings[i];
-		if (i != strings.size() - 1)
-		{
-			result += ",";
-		}
-	}
-
-	return result;
 }
 
 /**
@@ -125,15 +109,20 @@ void AddCharacter::createCharacter()
 
 	// creates the character directory
 	QDir dir;
-	if (dir.exists(charPath)) {
+	if (dir.exists(charPath))
+	{
 		QMessageBox::warning(this, "Character Exists",
-								"A character with this name already exists!"); // This is a warning message if the character already exists
+							 "A character with this name already exists!"); // This is a warning message if the character already exists
 		return;
-	} else {
-		if (dir.mkpath(charPath)) {
+	}
+	else
+	{
+		if (dir.mkpath(charPath))
+		{
 			// Create the notes and databases files inside the folder
 			QFile notesFile(charPath + "/notes.json"); // Create a notes file
-			if (notesFile.open(QIODevice::WriteOnly | QIODevice::Text)) {
+			if (notesFile.open(QIODevice::WriteOnly | QIODevice::Text))
+			{
 				QTextStream out(&notesFile);
 				// Add default content to notes.txt
 				out << "{" << Qt::endl;
@@ -142,9 +131,11 @@ void AddCharacter::createCharacter()
 				out << "\t\t" << Qt::endl;
 				out << "\t]" << Qt::endl;
 				out << "}" << Qt::endl;
-				notesFile.close();		  // Close the file
+				notesFile.close(); // Close the file
 			}
-		} else {
+		}
+		else
+		{
 			QMessageBox::warning(this, "Error", "Failed to create character directory."); // This is a warning message if the directory creation fails
 		}
 	}
@@ -162,25 +153,24 @@ void AddCharacter::createCharacter()
 		QString wisdom = QString::number(this->baseStatsWidget->getWisdom());
 		QString charisma = QString::number(this->baseStatsWidget->getCharisma());
 		QString level = QString::number(1);
-		QString experience = QString::number(0);
+		QString experience = this->startWidget->getLevelingType() == "XP" ? QString::number(0) : QString::number(-1);
 		QString maxHp;
 		QString characterClass = this->classWidget->getClass();
 		int conMod = (this->baseStatsWidget->getConstitution() / 2) - 5;
-		if (characterClass == "Barbarian") {
+		if (characterClass == "Barbarian")
+		{
 			maxHp = QString::number(12 + conMod);
-		} else if (characterClass == "Fighter"
-					|| characterClass == "Paladin"
-					|| characterClass == "Ranger") {
+		}
+		else if (characterClass == "Fighter" || characterClass == "Paladin" || characterClass == "Ranger")
+		{
 			maxHp = QString::number(10 + conMod);
-		} else if (characterClass == "Bard"
-					|| characterClass == "Cleric"
-					|| characterClass == "Druid"
-					|| characterClass == "Monk"
-					|| characterClass == "Ranger"
-					|| characterClass == "Warlock") {
+		}
+		else if (characterClass == "Bard" || characterClass == "Cleric" || characterClass == "Druid" || characterClass == "Monk" || characterClass == "Ranger" || characterClass == "Warlock")
+		{
 			maxHp = QString::number(8 + conMod);
-		} else if (characterClass == "Sorcerer"
-					|| characterClass == "Wizard") {
+		}
+		else if (characterClass == "Sorcerer" || characterClass == "Wizard")
+		{
 			maxHp = QString::number(6 + conMod);
 		}
 		QString currentHp = maxHp;
@@ -212,42 +202,52 @@ void AddCharacter::createCharacter()
 
 		qDebug() << "Inventory Items:" << inventoryItems; // Debug inventory items
 
-		for (const QString &item : inventoryItems) {
+		for (const QString &item : inventoryItems)
+		{
 			qDebug() << "Processing item:" << item; // Debug each item
 
 			// regex to match coin values
 			QRegularExpression coinRegex(R"(^\s*(\d+)\s*(pp|gp|sp|cp)\s*$)");
 			QRegularExpressionMatch match = coinRegex.match(item);
 
-			if (match.hasMatch()) {
+			if (match.hasMatch())
+			{
 				// get coin type and quantity
 				int quantity = match.captured(1).toInt();
 				QString coinType = match.captured(2);
 
 				// add coin values to total
-				if (coinType == "pp") {
+				if (coinType == "pp")
+				{
 					platCoins += quantity;
-				} else if (coinType == "gp") {
+				}
+				else if (coinType == "gp")
+				{
 					goldCoins += quantity;
-				} else if (coinType == "sp") {
+				}
+				else if (coinType == "sp")
+				{
 					silverCoins += quantity;
-				} else if (coinType == "cp") {
+				}
+				else if (coinType == "cp")
+				{
 					copperCoins += quantity;
 				}
 
 				qDebug() << "Matched coin:" << quantity << coinType;
-
-			} else {
+			}
+			else
+			{
 				filteredInventory.append(item);
 			}
 		}
 
 		// Debug final coin values
 		qDebug() << "Final Coins:"
-				<< "Platinum:" << platCoins
-				<< "Gold:" << goldCoins
-				<< "Silver:" << silverCoins
-				<< "Copper:" << copperCoins;
+				 << "Platinum:" << platCoins
+				 << "Gold:" << goldCoins
+				 << "Silver:" << silverCoins
+				 << "Copper:" << copperCoins;
 
 		// set real coin values
 		QString numPlatCoins = QString::number(platCoins);
@@ -266,17 +266,20 @@ void AddCharacter::createCharacter()
 
 		// Create the inventory file
 		QFile inventoryFile(charPath + "/inventory.csv"); // Create an inventory file
-		if (inventoryFile.open(QIODevice::WriteOnly | QIODevice::Text)) { // Open the file
+		if (inventoryFile.open(QIODevice::WriteOnly | QIODevice::Text))
+		{											  // Open the file
 			QTextStream inventoryOut(&inventoryFile); // Create a text stream
 
-			for (const QString &item : filteredInventory) { // For each item in the list
-            	inventoryOut << item << "\n"; // Write the item to the file
-        	}
+			for (const QString &item : filteredInventory)
+			{								  // For each item in the list
+				inventoryOut << item << "\n"; // Write the item to the file
+			}
 
 			inventoryFile.close(); // Close the file
 		}
 
-		if (this->classWidget->isSpellcaster()) {
+		if (this->classWidget->isSpellcaster())
+		{
 			this->spellsWidget->recordSpells(charPath);
 		}
 		emit this->createdCharacter();
@@ -305,10 +308,27 @@ StartWidget::StartWidget(QWidget *parent) : QWidget(parent)
 	name = new QLineEdit();
 	name->setFixedWidth(100);
 
+	// Set up name widget, layout, label
 	QWidget *nameContainer = new QWidget();
 	QHBoxLayout *nameLayout = new QHBoxLayout(nameContainer);
 	nameLayout->addWidget(new QLabel("Character Name:"));
 	nameLayout->addWidget(name);
+
+	// Set up leveling up type widget, layout, label
+	QWidget *levelingTypeContainer = new QWidget();
+	QHBoxLayout *levelingTypeLayout = new QHBoxLayout(levelingTypeContainer);
+	levelingTypeLayout->addWidget(new QLabel("Leveling Type:"));
+
+	// Create leveling type radio buttons
+	xpLeveling = new QRadioButton("XP");
+	milestoneLeveling = new QRadioButton("Milestone");
+
+	// Set xp leveling checked by default
+	xpLeveling->setChecked(true);
+
+	// Add radio buttons to leveling type layout
+	levelingTypeLayout->addWidget(xpLeveling);
+	levelingTypeLayout->addWidget(milestoneLeveling);
 
 	// Create error message for invalid character name
 	QLabel *errorLabel = new QLabel();
@@ -318,8 +338,9 @@ StartWidget::StartWidget(QWidget *parent) : QWidget(parent)
 	QPushButton *backButton = new QPushButton("Back to Character Select");
 	QPushButton *nextButton = new QPushButton("Next");
 
-	// Add character name input to the form and also add the error label
+	// Add character name input, leveling type, error label to the form
 	formLayout->addWidget(nameContainer);
+	formLayout->addWidget(levelingTypeContainer);
 	formLayout->addWidget(errorLabel);
 
 	// Add buttons to navbar
@@ -489,7 +510,7 @@ void BaseStatsWidget::backPage()
  */
 void BaseStatsWidget::nextPage()
 {
-	AddCharacter * addcharacter = qobject_cast<AddCharacter *>(this->parentWidget());
+	AddCharacter *addcharacter = qobject_cast<AddCharacter *>(this->parentWidget());
 	if (addcharacter)
 	{
 		addcharacter->setCurrentIndex(2);
@@ -695,20 +716,23 @@ void BackgroundWidget::nextPage()
 {
 	emit this->finished();
 	QStackedWidget *stackedWidget = qobject_cast<QStackedWidget *>(this->parentWidget());
-    ClassWidget * classWidget = qobject_cast<ClassWidget *>(stackedWidget->widget(2));
+	ClassWidget *classWidget = qobject_cast<ClassWidget *>(stackedWidget->widget(2));
 	if (!stackedWidget)
 	{
 		qDebug() << "Failed to change page because stackedWidget was not correctly casted";
 		return;
 	}
-    if (!classWidget)
-    {
+	if (!classWidget)
+	{
 		qDebug() << "Failed to change page because classWidget was not correctly casted";
 		return;
-    }
-	if (classWidget->isSpellcaster()) {
+	}
+	if (classWidget->isSpellcaster())
+	{
 		stackedWidget->setCurrentIndex(5);
-	} else {
+	}
+	else
+	{
 		stackedWidget->setCurrentIndex(6);
 	}
 }
@@ -770,20 +794,23 @@ InventoryWidget::InventoryWidget(QWidget *parent) : QWidget(parent)
 void InventoryWidget::backPage()
 {
 	QStackedWidget *stackedWidget = qobject_cast<QStackedWidget *>(this->parentWidget());
-    ClassWidget * classWidget = qobject_cast<ClassWidget *>(stackedWidget->widget(2));
+	ClassWidget *classWidget = qobject_cast<ClassWidget *>(stackedWidget->widget(2));
 	if (!stackedWidget)
 	{
 		qDebug() << "Failed to change page because stackedWidget was not correctly casted";
 		return;
 	}
-    if (!classWidget)
-    {
+	if (!classWidget)
+	{
 		qDebug() << "Failed to change page because classWidget was not correctly casted";
 		return;
-    }
-	if (classWidget->isSpellcaster()) {
+	}
+	if (classWidget->isSpellcaster())
+	{
 		stackedWidget->setCurrentIndex(5);
-	} else {
+	}
+	else
+	{
 		stackedWidget->setCurrentIndex(4);
 	}
 }
@@ -804,8 +831,8 @@ void InventoryWidget::nextPage()
 	if (mainStackedWidget)
 	{
 		CharacterSelect *charSelect = qobject_cast<CharacterSelect *>(mainStackedWidget->widget(0)); // Get the character select widget
-		charSelect->loadCharacterList(); // Reload the character list
-		mainStackedWidget->setCurrentIndex(0); // Switch to the character select page
+		charSelect->loadCharacterList();															 // Reload the character list
+		mainStackedWidget->setCurrentIndex(0);														 // Switch to the character select page
 	}
 }
 

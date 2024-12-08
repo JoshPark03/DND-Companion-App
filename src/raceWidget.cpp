@@ -117,9 +117,10 @@ RaceWidget::RaceWidget(QWidget *parent) : QWidget(parent)
 void RaceWidget::backPage()
 {
     QStackedWidget *stackedWidget = qobject_cast<QStackedWidget *>(this->parentWidget());
-    if (!stackedWidget) {
-		qDebug() << "Failed to change page because stackedWidget was not correctly casted";
-		return;
+    if (!stackedWidget)
+    {
+        qDebug() << "Failed to change page because stackedWidget was not correctly casted";
+        return;
     }
     stackedWidget->setCurrentIndex(2);
 }
@@ -222,7 +223,7 @@ void RaceWidget::loadRaces()
 }
 
 /**
- * This function updates all information in ClassWidget to match what class is selected
+ * This function updates all information in RaceWidget to match what race is selected
  */
 void RaceWidget::updateRaceInfo(const QString &name)
 {
